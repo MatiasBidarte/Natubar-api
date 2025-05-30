@@ -1,9 +1,11 @@
 import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, InternalServerErrorException, Post } from '@nestjs/common';
-import { crearClienteDto } from './dto/crear-cliente.dto';
+import { CreateClienteDto } from './dto/crear-cliente.dto';
 import { ClienteService } from './cliente.service';
 import { plainToInstance } from 'class-transformer';
 import { Cliente } from './entities/cliente.entity';
 import { validate } from 'class-validator';
+import { ClientePersona } from 'src/cliente-persona/entities/cliente-persona.entity';
+import { ClienteEmpresa } from 'src/cliente-empresa/entities/cliente-empresa.entity';
 
 @Controller('cliente')
 export class ClienteController {
@@ -17,9 +19,15 @@ export class ClienteController {
     // }
 
     @Post()
-    async add(@Body() clienteDto: crearClienteDto) {
+    async add(@Body() clienteDto: CreateClienteDto) {
         try {
-            const cliente = plainToInstance(Cliente, clienteDto);
+            let cliente;
+            if (clienteDto.discriminator.equal(ClientePersona.discriminator)) {
+                cliente = plainToInstance(ClientePersona, clienteDto);
+            } else {
+                cliente = plainToInstance(ClienteEmpresa, clienteDto);
+            }
+
             const errores = await validate(cliente);
             if (errores.length > 0) {
                 const mensajes = errores.map(err => ({

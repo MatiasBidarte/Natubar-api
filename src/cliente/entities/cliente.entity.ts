@@ -1,8 +1,9 @@
 import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString, MinLength } from "class-validator";
 import { ClienteInterface } from "../cliente.interface";
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn, TableInheritance } from "typeorm";
 
 @Entity({name : 'cliente'})
+@TableInheritance({ column: { type: "varchar", name: "tipo" } })
 export class Cliente implements ClienteInterface {
 
     @PrimaryColumn()
@@ -38,6 +39,10 @@ export class Cliente implements ClienteInterface {
     @IsString()
     @IsPhoneNumber('UY')
     telefono: string;
+
+     @IsNotEmpty()
+    @IsString()
+    discriminador: string;
 
     constructor(email: string, contrasena: string, observaciones: string, departamento: string, ciudad: string, direccion: string, telefono: string) {
         this.email = email;

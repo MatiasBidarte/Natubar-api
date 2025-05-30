@@ -9,6 +9,8 @@ import { ClienteModule } from './cliente/cliente.module';
 import { ClienteController } from './cliente/cliente.controller';
 import { ClienteService } from './cliente/cliente.service';
 import { Cliente } from './cliente/entities/cliente.entity';
+import { ClientePersonaModule } from './cliente-persona/cliente-persona.module';
+import { ClienteEmpresaModule } from './cliente-empresa/cliente-empresa.module';
 
 @Module({
   
@@ -27,7 +29,9 @@ import { Cliente } from './cliente/entities/cliente.entity';
         password: configService.get('DB_PASSWORD'), // Sin comas
         entities: [join(process.cwd(), 'dist', '**', '*.entity{.ts,.js}')],
       })
-    }),],
+    }),
+    ClientePersonaModule,
+    ClienteEmpresaModule,],
   controllers: [AppController],
   providers: [AppService],
 
