@@ -1,15 +1,23 @@
+import { IsString } from "class-validator";
 
 
-export class CreateClienteDto{
+export class CreateClienteDto {
 
     email: string;
+
     contrasena: string;
+
     observaciones: string;
+
     departamento: string;
+
     ciudad: string;
+
     direccion: string;
+
     telefono: string;
-    discriminator;
+
+    discriminador: string;
 
     constructor(
         email: string,
@@ -19,7 +27,7 @@ export class CreateClienteDto{
         ciudad: string,
         direccion: string,
         telefono: string
-    ) { 
+    ) {
         this.email = email;
         this.contrasena = contrasena;
         this.observaciones = observaciones;

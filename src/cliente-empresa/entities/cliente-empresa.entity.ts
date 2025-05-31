@@ -8,7 +8,7 @@ export class ClienteEmpresa extends Cliente {
     @Column()
     @IsNotEmpty()
     @IsString()
-    NombreEmpresa: string;
+    nombreempresa: string;
 
     @Column()
     @IsNotEmpty()
@@ -18,15 +18,15 @@ export class ClienteEmpresa extends Cliente {
     @Column()
     @IsNotEmpty()
     @IsString()
-    NombreContacto: string;
+    nombrecontacto: string;
 
-        static discriminator = 'Empresa';
+        static discriminador = 'Empresa';
 
     constructor(email: string, contrasena: string, observaciones: string, departamento: string, ciudad: string, direccion: string, telefono: string, NombreEmpresa: string, RUT: string, NombreContacto: string) {
         super(email, contrasena, observaciones, departamento, ciudad, direccion, telefono);
-        this.NombreEmpresa = NombreEmpresa;
+        this.nombreempresa = NombreEmpresa;
         this.RUT = RUT;
-        this.NombreContacto = NombreContacto;
+        this.nombrecontacto = NombreContacto;
     }
 
 

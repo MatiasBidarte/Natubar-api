@@ -3,18 +3,18 @@ import { Cliente } from "src/cliente/entities/cliente.entity";
 import { ChildEntity, Column } from "typeorm";
 
 @ChildEntity()
-export class ClientePersona extends Cliente {
+export class Persona extends Cliente {
 
     @Column()
     @IsNotEmpty()
     @IsString()
-    Nombre: string;
+    nombre: string;
     @Column()
     @IsNotEmpty()
     @IsString()
-    Apellido: string;
+    apellido: string;
 
-    static discriminator = 'Persona';
+    static discriminador = 'Persona';
     
     constructor(
         email: string,
@@ -28,8 +28,8 @@ export class ClientePersona extends Cliente {
         apellido: string,
     ) {
         super(email, contrasena, observaciones, departamento, ciudad, direccion, telefono);
-        this.Nombre = nombre;
-        this.Apellido = apellido;
+        this.nombre = nombre;
+        this.apellido = apellido;
        
     }
 }

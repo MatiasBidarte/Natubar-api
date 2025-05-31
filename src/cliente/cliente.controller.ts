@@ -4,7 +4,7 @@ import { ClienteService } from './cliente.service';
 import { plainToInstance } from 'class-transformer';
 import { Cliente } from './entities/cliente.entity';
 import { validate } from 'class-validator';
-import { ClientePersona } from 'src/cliente-persona/entities/cliente-persona.entity';
+import { Persona } from 'src/cliente-persona/entities/persona.entity';
 import { ClienteEmpresa } from 'src/cliente-empresa/entities/cliente-empresa.entity';
 
 @Controller('cliente')
@@ -22,10 +22,13 @@ export class ClienteController {
     async add(@Body() clienteDto: CreateClienteDto) {
         try {
             let cliente;
-            if (clienteDto.discriminator.equal(ClientePersona.discriminator)) {
-                cliente = plainToInstance(ClientePersona, clienteDto);
+            if (clienteDto.discriminador === Persona.discriminador) {
+                cliente = plainToInstance(Persona, clienteDto, { enableImplicitConversion: true });
+                console.log('Cliente transformado:', cliente);
+
             } else {
                 cliente = plainToInstance(ClienteEmpresa, clienteDto);
+
             }
 
             const errores = await validate(cliente);
@@ -36,6 +39,7 @@ export class ClienteController {
                 }));
                 throw new BadRequestException(JSON.stringify(mensajes));
             }
+            console.log(cliente);
             return this.clienteService.create(cliente);
         } catch (ex) {
             if (ex instanceof BadRequestException) {
