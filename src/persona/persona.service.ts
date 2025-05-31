@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePersonaDto } from './dto/create-persona.dto';
 import { UpdatePersonaDto } from './dto/update-persona.dto';
+import { RetornoPersonaDto } from './dto/retorno-persona.dto';
 import { Persona } from './entities/persona.entity';
 import {NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
@@ -13,7 +14,7 @@ export class PersonaService {
 
   async create(createPersonaDto: CreatePersonaDto) {
     const persona = this.personasRepositorio.create(createPersonaDto);
-    return await this.personasRepositorio.save(persona);
+    return new RetornoPersonaDto(await this.personasRepositorio.save(persona));
   }
 
   async findAll() {
@@ -28,7 +29,7 @@ export class PersonaService {
     const persona = await this.personasRepositorio.findOne({where:{id}});
     if(!persona) throw new NotFoundException();
     Object.assign(persona, updatePersonaDto);
-    return await this.personasRepositorio.save(persona);
+    return new RetornoPersonaDto(await this.personasRepositorio.save(persona));
   }
 
   async remove(id: number) {

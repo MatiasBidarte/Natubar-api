@@ -6,6 +6,8 @@ import { EmpresaModule } from './empresa/empresa.module';
 import { PersonaModule } from './persona/persona.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
+import { DepartamentoModule } from './departamento/departamento.module';
+import { CiudadModule } from './ciudad/ciudad.module';
 
 @Module({
   imports: [
@@ -25,7 +27,9 @@ import { join } from 'path';
       }),
     }),
     EmpresaModule,
-    PersonaModule],
+    PersonaModule,
+    DepartamentoModule,
+    CiudadModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
+import { RetornoEmpresaDto } from './dto/retorno-empresa.dto';
 import {Repository} from 'typeorm';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Empresa} from './entities/empresa.entity';
@@ -15,7 +16,7 @@ export class EmpresaService {
 
   async create(createEmpresaDto: CreateEmpresaDto) {
     const empresa = this.empresasRepositorio.create(createEmpresaDto);
-    return await this.empresasRepositorio.save(empresa);
+    return new RetornoEmpresaDto(await this.empresasRepositorio.save(empresa));
   }
 
   async findAll() {
@@ -30,7 +31,7 @@ export class EmpresaService {
     const empresa = await this.empresasRepositorio.findOne({where:{id}});
     if(!empresa) throw new NotFoundException();
     Object.assign(empresa, updateEmpresaDto);
-    return await this.empresasRepositorio.save(empresa);
+    return new RetornoEmpresaDto(await this.empresasRepositorio.save(empresa));
   }
 
   async remove(id: number) {

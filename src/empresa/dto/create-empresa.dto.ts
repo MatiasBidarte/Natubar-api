@@ -9,4 +9,5 @@ export class CreateEmpresaDto {
     nombreContacto: string
     nombreEmpresa: string
     RUT: number
+    contrasena: string
 }
