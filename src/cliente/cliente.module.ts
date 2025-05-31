@@ -5,7 +5,7 @@ import { ClienteInterface } from './cliente.interface';
 import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString, MinLength } from 'class-validator';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Cliente } from './entities/cliente.entity';
-import { Persona } from 'src/cliente-persona/entities/persona.entity';
+import { ClientePersona } from 'src/cliente-persona/entities/cliente-persona.entity';
 import { ClienteEmpresa } from 'src/cliente-empresa/entities/cliente-empresa.entity';
 
 @Module({

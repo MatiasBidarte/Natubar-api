@@ -1,11 +1,11 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Cliente } from './entities/cliente.entity';
-import { CreateClienteDto } from './dto/crear-cliente.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { find } from 'rxjs';
-import { Persona } from 'src/cliente-persona/entities/persona.entity';
+import { ClientePersona } from 'src/cliente-persona/entities/cliente-persona.entity';
 import { ClienteEmpresa } from 'src/cliente-empresa/entities/cliente-empresa.entity';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class ClienteService {
@@ -17,15 +17,16 @@ export class ClienteService {
 
     }
 
-    async create(cliente: Cliente){
-        if (cliente instanceof Persona && !(cliente instanceof ClienteEmpresa)) {
-            const clientePersona = cliente as Persona;
-            const nuevoCliente = this.clienteRepository.create(clientePersona);
+    async create(cliente: Cliente) {
+        if (cliente instanceof ClientePersona && !(cliente instanceof ClienteEmpresa)) {
+              let clienteP = plainToClass(ClientePersona, cliente);
+            const nuevoCliente = this.clienteRepository.create(clienteP);
             return await this.clienteRepository.save(nuevoCliente);
         }
-        if (cliente instanceof ClienteEmpresa && !(cliente instanceof Persona)) {
-            const clienteEmpresa = cliente as ClienteEmpresa;
-            const nuevoCliente = this.clienteRepository.create(clienteEmpresa);
+
+        if (cliente instanceof ClienteEmpresa && !(cliente instanceof ClientePersona)) {
+              let clienteE = plainToClass(ClienteEmpresa, cliente);
+            const nuevoCliente = this.clienteRepository.create(clienteE);
             return await this.clienteRepository.save(nuevoCliente);
         }
     }

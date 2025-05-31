@@ -4,7 +4,7 @@ import { ClienteService } from './cliente.service';
 import { plainToInstance } from 'class-transformer';
 import { Cliente } from './entities/cliente.entity';
 import { validate } from 'class-validator';
-import { Persona } from 'src/cliente-persona/entities/persona.entity';
+import { ClientePersona } from 'src/cliente-persona/entities/cliente-persona.entity';
 import { ClienteEmpresa } from 'src/cliente-empresa/entities/cliente-empresa.entity';
 
 @Controller('cliente')
@@ -22,8 +22,8 @@ export class ClienteController {
     async add(@Body() clienteDto: CreateClienteDto) {
         try {
             let cliente;
-            if (clienteDto.discriminador === Persona.discriminador) {
-                cliente = plainToInstance(Persona, clienteDto, { enableImplicitConversion: true });
+            if (clienteDto.discriminador === ClientePersona.discriminador) {
+                cliente = plainToInstance(ClientePersona, clienteDto, { enableImplicitConversion: true });
                 console.log('Cliente transformado:', cliente);
 
             } else {

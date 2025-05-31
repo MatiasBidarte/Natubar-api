@@ -2,8 +2,8 @@ import { IsNotEmpty, IsString } from "class-validator";
 import { Cliente } from "src/cliente/entities/cliente.entity";
 import { ChildEntity, Column } from "typeorm";
 
-@ChildEntity()
-export class Persona extends Cliente {
+@ChildEntity({ name: 'Persona' })
+export class ClientePersona extends Cliente {
 
     @Column()
     @IsNotEmpty()
