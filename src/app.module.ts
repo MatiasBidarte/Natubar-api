@@ -11,6 +11,7 @@ import { ClienteService } from './cliente/cliente.service';
 import { Cliente } from './cliente/entities/cliente.entity';
 import { ClientePersonaModule } from './cliente-persona/cliente-persona.module';
 import { ClienteEmpresaModule } from './cliente-empresa/cliente-empresa.module';
+import { PruebaModule } from './prueba/prueba.module';
 
 @Module({
   
@@ -31,7 +32,8 @@ import { ClienteEmpresaModule } from './cliente-empresa/cliente-empresa.module';
       })
     }),
     ClientePersonaModule,
-    ClienteEmpresaModule,],
+    ClienteEmpresaModule,
+    PruebaModule,],
   controllers: [AppController],
   providers: [AppService],
 
