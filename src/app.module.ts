@@ -5,21 +5,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { join } from 'path';
-import { ClienteModule } from './cliente/cliente.module';
-import { ClienteController } from './cliente/cliente.controller';
-import { ClienteService } from './cliente/cliente.service';
-import { Cliente } from './cliente/entities/cliente.entity';
+import { ClienteModule } from './cliente/infraestructura/cliente.module';
 import { ClientePersonaModule } from './cliente-persona/cliente-persona.module';
 import { ClienteEmpresaModule } from './cliente-empresa/cliente-empresa.module';
-import { PruebaModule } from './prueba/prueba.module';
 
 @Module({
-  
   imports: [
     ClienteModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule,ClienteModule],
+      imports: [ConfigModule, ClienteModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
@@ -29,14 +24,12 @@ import { PruebaModule } from './prueba/prueba.module';
         username: configService.get('DB_USER'), // Sin comillas extra
         password: configService.get('DB_PASSWORD'), // Sin comas
         entities: [join(process.cwd(), 'dist', '**', '*.entity{.ts,.js}')],
-      })
+      }),
     }),
     ClientePersonaModule,
     ClienteEmpresaModule,
-    PruebaModule,],
+  ],
   controllers: [AppController],
   providers: [AppService],
-
-
 })
-export class AppModule { }
+export class AppModule {}

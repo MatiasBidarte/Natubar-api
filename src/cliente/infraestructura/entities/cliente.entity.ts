@@ -5,7 +5,7 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { ClienteInterface } from '../cliente.interface';
+import { ClienteInterface } from '../../dominio/Interfaces/dominio/cliente.interface';
 import { Column, Entity, PrimaryColumn, TableInheritance } from 'typeorm';
 
 @Entity({ name: 'cliente' })
