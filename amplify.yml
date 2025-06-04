@@ -8,6 +8,7 @@ frontend:
     build:
       commands:
         - npm run build
+        - cp src/index.html dist/
   artifacts:
     baseDirectory: dist
     files:
