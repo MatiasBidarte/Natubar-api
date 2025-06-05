@@ -20,5 +20,6 @@ export class CreateClientePersonaDto  extends CreateClienteDto {
         super(email, contrasena, observaciones, departamento, ciudad, direccion, telefono);
         this.nombre = nombre;
         this.apellido = apellido;
+        this.discriminador = "Persona";
     }
 }

@@ -24,6 +24,7 @@ export class CreateClienteEmpresaDto extends CreateClienteDto {
         this.NombreEmpresa = NombreEmpresa;
         this.RUT = RUT;
         this.NombreContacto = NombreContacto;
+        this.discriminador = "Empresa";
     }
 
 
