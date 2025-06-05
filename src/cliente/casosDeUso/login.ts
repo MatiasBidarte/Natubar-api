@@ -23,16 +23,16 @@ export class LoginCliente {
       throw new BadRequestException('Usuario no encontrado');
     }
 
-    //no termina de andar
-    const contrasena = await bcrypt.hash(clienteLoginDto.contrasena, 10);
+    const esContrasenaValida = await bcrypt.compare(
+      clienteLoginDto.contrasena,
+      cliente.contrasena,
+    );
 
-    console.log('recibida' + contrasena + '  ; logeada' + cliente.contrasena);
-
-    if (contrasena != cliente.contrasena) {
+    if (!esContrasenaValida) {
       throw new BadRequestException('Contraseña incorrecta');
+    } else {
+      //HACER EL TOKEN
+      return 'yippee';
     }
-
-    //HACER EL TOKEN
-    return 'yippee';
   }
 }
