@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ClienteRepository } from '../dominio/Interfaces/repositorio/ClienteRepository';
 import { ClienteService } from './cliente.service';
 import { Cliente } from './entities/cliente.entity';
@@ -12,12 +16,17 @@ export class ApiRestClientesRepository implements ClienteRepository {
 
   async alta(cliente: Cliente) {
     try {
+      if (await this.context.findByEmail(cliente.email)) {
+        throw new HttpException('El correo ya está en uso.', 409);
+      }
       await this.context.create(cliente);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(`Error al crear el cliente: ${error.message}`);
+      if (error instanceof HttpException) {
+        throw error;
       } else {
-        throw new Error('Error desconocido al crear el cliente.');
+        throw new InternalServerErrorException(
+          'Error desconocido al crear el cliente.',
+        );
       }
     }
   }
