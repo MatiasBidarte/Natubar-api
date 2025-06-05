@@ -15,13 +15,16 @@ import { Cliente } from './entities/cliente.entity';
 import { validate } from 'class-validator';
 import { ClientePersona } from 'src/cliente-persona/entities/cliente-persona.entity';
 import { ClienteEmpresa } from 'src/cliente-empresa/entities/cliente-empresa.entity';
+import { LoginClienteDto } from './dto/login-cliente.dto';
+import { LoginCliente } from './casosDeUso/login';
 
 @Controller('cliente')
 export class ClienteController {
-  constructor(private readonly clienteService: ClienteService) {}
+  constructor(
+    private readonly clienteService: ClienteService,
+    private readonly loginCU: LoginCliente,
+  ) {}
 
-  // Aquí puedes definir los endpoints del controlador de cliente
-  // Por ejemplo, un endpoint para crear un cliente:
   // @Post()
   // createCliente(@Body() createClienteDto: CreateClienteDto) {
   //   return this.clienteService.create(createClienteDto);
@@ -78,5 +81,10 @@ export class ClienteController {
   @Get('Prueba')
   prueba() {
     return 'Hola';
+  }
+
+  @Post('login')
+  async login(@Body() clienteDto: LoginClienteDto){
+    return await this.loginCU.ejecutar(clienteDto);
   }
 }

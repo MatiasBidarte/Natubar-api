@@ -24,6 +24,7 @@ import { ClienteEmpresaModule } from './cliente-empresa/cliente-empresa.module';
         username: configService.get('DB_USER'), // Sin comillas extra
         password: configService.get('DB_PASSWORD'), // Sin comas
         entities: [join(process.cwd(), 'dist', '**', '*.entity{.ts,.js}')],
+        synchronize: true,
       }),
     }),
     ClientePersonaModule,
