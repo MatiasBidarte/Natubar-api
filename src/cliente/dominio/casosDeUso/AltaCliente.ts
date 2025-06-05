@@ -1,15 +1,16 @@
 import { ClienteRepository } from '../Interfaces/repositorio/ClienteRepository';
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { IAlta } from '../Interfaces/genericas/IAlta';
 import { Cliente } from 'src/cliente/infraestructura/entities/cliente.entity';
+import { ApiRestClientesRepository } from 'src/cliente/infraestructura/ApiRestClientesRepository';
 @Injectable()
 export class AltaCliente implements IAlta<Cliente> {
   constructor(
-    @Inject('ClienteRepository') // use the provider token as a string
+    @Inject(forwardRef(() => ApiRestClientesRepository))
     private readonly clienteRepository: ClienteRepository,
   ) {}
 
   async ejecutar(dto: Cliente): Promise<Cliente> {
-    return this.clienteRepository.alta(dto); // Make sure clienteRepository is not undefined
+    return await this.clienteRepository.alta(dto); // Make sure clienteRepository is not undefined
   }
 }

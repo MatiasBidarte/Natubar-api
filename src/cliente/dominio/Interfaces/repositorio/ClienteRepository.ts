@@ -3,5 +3,5 @@ import { CreateClienteDto } from '../../dto/crear-cliente.dto';
 
 export interface ClienteRepository {
   obtenerTodos(): Cliente[] | PromiseLike<Cliente[]>;
-  alta(cliente: CreateClienteDto): Promise<Cliente>;
+  alta(cliente: CreateClienteDto);
 }

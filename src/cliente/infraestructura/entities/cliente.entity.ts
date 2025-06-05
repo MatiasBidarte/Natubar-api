@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { ClienteInterface } from '../../dominio/Interfaces/dominio/cliente.interface';
 import { Column, Entity, PrimaryColumn, TableInheritance } from 'typeorm';
-
+import * as bcrypt from 'bcrypt';
 @Entity({ name: 'cliente' })
 @TableInheritance({ column: { type: 'varchar', name: 'tipo' } })
 export class Cliente implements ClienteInterface {
@@ -81,5 +81,15 @@ export class Cliente implements ClienteInterface {
     this.ciudad = ciudad;
     this.direccion = direccion;
     this.telefono = telefono;
+  }
+
+  async setPassword(plainPassword: string) {
+    this.contrasena = await this.hashPass(plainPassword);
+  }
+
+  async hashPass(p: string): Promise<string> {
+    const saltOrRounds = 10;
+    const hash = await bcrypt.hash(p, saltOrRounds);
+    return hash;
   }
 }

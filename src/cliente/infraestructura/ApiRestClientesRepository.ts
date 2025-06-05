@@ -10,16 +10,9 @@ export class ApiRestClientesRepository implements ClienteRepository {
     return this.context.findAll();
   }
 
-  async alta(cliente: Cliente): Promise<Cliente> {
+  async alta(cliente: Cliente) {
     try {
-      const clienteModel = this.context.cliente as {
-        create: (args: { data: Cliente }) => Promise<Cliente>;
-      };
-      const createdCliente = await clienteModel.create({
-        data: cliente,
-      });
-      console.log('Cliente creado:', createdCliente);
-      return createdCliente;
+      await this.context.create(cliente);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(`Error al crear el cliente: ${error.message}`);
