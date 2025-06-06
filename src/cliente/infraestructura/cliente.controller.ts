@@ -4,7 +4,6 @@ import {
   Controller,
   Get,
   HttpException,
-  HttpStatus,
   InternalServerErrorException,
   Post,
 } from '@nestjs/common';
@@ -33,7 +32,6 @@ export class ClienteController {
       } else {
         cliente = plainToInstance(ClienteEmpresa, clienteDto);
       }
-
       const errores = await validate(cliente as object);
       if (errores.length > 0) {
         const mensajes = errores.map((err) => ({
@@ -44,16 +42,24 @@ export class ClienteController {
         }));
         throw new BadRequestException(JSON.stringify(mensajes));
       }
+      await cliente.setPassword();
       return this.alta.ejecutar(cliente);
     } catch (ex) {
       if (ex instanceof BadRequestException) {
-        throw new BadRequestException(
-          `Error al crear el cliente: ${ex.message}`,
-        );
+        const errorObject = JSON.parse(ex.message) as {
+          propiedad: string;
+          error: string[];
+        }[];
+        const errorMessage =
+          errorObject[0]?.error?.join(', ') || 'Error desconocido';
+        throw new BadRequestException({
+          message: `Error al crear el cliente: ${errorMessage}`,
+          statusCode: ex.getStatus(),
+        });
       } else if (ex instanceof HttpException) {
         throw new HttpException(
           `El correo ${clienteDto.email} ya está en uso.`,
-          HttpStatus.CONFLICT,
+          ex.getStatus(),
         );
       } else {
         throw new InternalServerErrorException(
@@ -63,7 +69,7 @@ export class ClienteController {
     }
   }
 
-  @Get()
+  @Get('GetAll')
   findAll() {
     return this.obtenerTodos.ejecutar();
   }

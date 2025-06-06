@@ -11,6 +11,6 @@ export class AltaCliente implements IAlta<Cliente> {
   ) {}
 
   async ejecutar(dto: Cliente): Promise<Cliente> {
-    return await this.clienteRepository.alta(dto); // Make sure clienteRepository is not undefined
+    return await this.clienteRepository.alta(dto);
   }
 }

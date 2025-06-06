@@ -42,7 +42,7 @@ export class Cliente implements ClienteInterface {
   @Column()
   @IsNotEmpty()
   @IsString()
-  @IsPhoneNumber('UY')
+  @IsPhoneNumber('UY', { message: 'El teléfono debe ser un número válido' })
   telefono: string;
 
   discriminador: string;
@@ -83,12 +83,12 @@ export class Cliente implements ClienteInterface {
     this.telefono = telefono;
   }
 
-  async setPassword(plainPassword: string) {
-    this.contrasena = await this.hashPass(plainPassword);
+  async setPassword() {
+    this.contrasena = await this.hashPass(this.contrasena);
   }
 
   async hashPass(p: string): Promise<string> {
-    const saltOrRounds = 10;
+    const saltOrRounds = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(p, saltOrRounds);
     return hash;
   }
