@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ClienteController } from './cliente.controller';
+import { ClienteController } from '../cliente.controller';
 
 describe('ClienteController', () => {
   let controller: ClienteController;
@@ -8,7 +8,7 @@ describe('ClienteController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ClienteController],
     }).compile();
-
+    
     controller = module.get<ClienteController>(ClienteController);
   });
 

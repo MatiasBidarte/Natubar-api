@@ -4,43 +4,35 @@ import {
   Controller,
   Get,
   HttpException,
-  HttpStatus,
   InternalServerErrorException,
   Post,
 } from '@nestjs/common';
-import { CreateClienteDto } from './dto/crear-cliente.dto';
-import { ClienteService } from './cliente.service';
+import { CreateClienteDto } from '../dominio/dto/crear-cliente.dto';
 import { plainToInstance } from 'class-transformer';
-import { Cliente } from './entities/cliente.entity';
 import { validate } from 'class-validator';
 import { ClientePersona } from 'src/cliente-persona/entities/cliente-persona.entity';
 import { ClienteEmpresa } from 'src/cliente-empresa/entities/cliente-empresa.entity';
+import { AltaCliente } from '../dominio/casosDeUso/AltaCliente';
+import { ObtenerTodosCliente } from '../dominio/casosDeUso/ObtenerTodosCliente';
 
 @Controller('cliente')
 export class ClienteController {
-  constructor(private readonly clienteService: ClienteService) {}
-
-  // Aquí puedes definir los endpoints del controlador de cliente
-  // Por ejemplo, un endpoint para crear un cliente:
-  // @Post()
-  // createCliente(@Body() createClienteDto: CreateClienteDto) {
-  //   return this.clienteService.create(createClienteDto);
-  // }
-
+  constructor(
+    private readonly alta: AltaCliente,
+    private readonly obtenerTodos: ObtenerTodosCliente,
+  ) {}
   @Post()
   async add(@Body() clienteDto: CreateClienteDto) {
     try {
-      let cliente;
+      let cliente: ClientePersona | ClienteEmpresa;
       if (clienteDto.discriminador === ClientePersona.discriminador) {
         cliente = plainToInstance(ClientePersona, clienteDto, {
           enableImplicitConversion: true,
         });
-        console.log('Cliente transformado:', cliente);
       } else {
         cliente = plainToInstance(ClienteEmpresa, clienteDto);
       }
-
-      const errores = await validate(cliente);
+      const errores = await validate(cliente as object);
       if (errores.length > 0) {
         const mensajes = errores.map((err) => ({
           propiedad: err.property,
@@ -50,17 +42,24 @@ export class ClienteController {
         }));
         throw new BadRequestException(JSON.stringify(mensajes));
       }
-      console.log(cliente);
-      return this.clienteService.create(cliente);
+      await cliente.setPassword();
+      return this.alta.ejecutar(cliente);
     } catch (ex) {
       if (ex instanceof BadRequestException) {
-        throw new BadRequestException(
-          `Error al crear el cliente: ${ex.message}`,
-        );
+        const errorObject = JSON.parse(ex.message) as {
+          propiedad: string;
+          error: string[];
+        }[];
+        const errorMessage =
+          errorObject[0]?.error?.join(', ') || 'Error desconocido';
+        throw new BadRequestException({
+          message: `Error al crear el cliente: ${errorMessage}`,
+          statusCode: ex.getStatus(),
+        });
       } else if (ex instanceof HttpException) {
         throw new HttpException(
           `El correo ${clienteDto.email} ya está en uso.`,
-          HttpStatus.CONFLICT,
+          ex.getStatus(),
         );
       } else {
         throw new InternalServerErrorException(
@@ -70,9 +69,9 @@ export class ClienteController {
     }
   }
 
-  @Get()
+  @Get('GetAll')
   findAll() {
-    return this.clienteService.findAll();
+    return this.obtenerTodos.ejecutar();
   }
 
   @Get('Prueba')

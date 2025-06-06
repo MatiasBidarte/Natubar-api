@@ -5,9 +5,9 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { ClienteInterface } from '../cliente.interface';
+import { ClienteInterface } from '../../dominio/Interfaces/dominio/cliente.interface';
 import { Column, Entity, PrimaryColumn, TableInheritance } from 'typeorm';
-
+import * as bcrypt from 'bcrypt';
 @Entity({ name: 'cliente' })
 @TableInheritance({ column: { type: 'varchar', name: 'tipo' } })
 export class Cliente implements ClienteInterface {
@@ -42,7 +42,7 @@ export class Cliente implements ClienteInterface {
   @Column()
   @IsNotEmpty()
   @IsString()
-  @IsPhoneNumber('UY')
+  @IsPhoneNumber('UY', { message: 'El teléfono debe ser un número válido' })
   telefono: string;
 
   discriminador: string;
@@ -81,5 +81,15 @@ export class Cliente implements ClienteInterface {
     this.ciudad = ciudad;
     this.direccion = direccion;
     this.telefono = telefono;
+  }
+
+  async setPassword() {
+    this.contrasena = await this.hashPass(this.contrasena);
+  }
+
+  async hashPass(p: string): Promise<string> {
+    const saltOrRounds = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(p, saltOrRounds);
+    return hash;
   }
 }

@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from "class-validator";
-import { Cliente } from "src/cliente/entities/cliente.entity";
+import { Cliente } from "src/cliente/infraestructura/entities/cliente.entity";
 import { ChildEntity, Column } from "typeorm";
 
 @ChildEntity({ name: 'Empresa' })

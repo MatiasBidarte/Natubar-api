@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { join } from 'path';
-import { ClienteModule } from './cliente/cliente.module';
+import { ClienteModule } from './cliente/infraestructura/cliente.module';
 import { ClientePersonaModule } from './cliente-persona/cliente-persona.module';
 import { ClienteEmpresaModule } from './cliente-empresa/cliente-empresa.module';
 
