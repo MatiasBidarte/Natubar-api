@@ -5,16 +5,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { join } from 'path';
-import { ClienteModule } from './cliente/infraestructura/cliente.module';
-import { ClientePersonaModule } from './cliente-persona/cliente-persona.module';
-import { ClienteEmpresaModule } from './cliente-empresa/cliente-empresa.module';
+import { ClienteModule } from './modules/cliente/infraestructura/cliente.module';
+import { ProductosModule } from './modules/productos/infraestructura/productos.module';
 
 @Module({
   imports: [
     ClienteModule,
+    ProductosModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule, ClienteModule],
+      imports: [ConfigModule, ClienteModule, ProductosModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
@@ -24,10 +24,9 @@ import { ClienteEmpresaModule } from './cliente-empresa/cliente-empresa.module';
         username: configService.get('DB_USER'), // Sin comillas extra
         password: configService.get('DB_PASSWORD'), // Sin comas
         entities: [join(process.cwd(), 'dist', '**', '*.entity{.ts,.js}')],
+        synchronize: true, // Cambiar a false en producción
       }),
     }),
-    ClientePersonaModule,
-    ClienteEmpresaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
