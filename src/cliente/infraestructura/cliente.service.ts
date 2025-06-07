@@ -1,12 +1,13 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Cliente } from './entities/cliente.entity';
-import { InjectRepository } from '@nestjs/typeorm' 
+import { InjectRepository } from '@nestjs/typeorm';
 import { ClientePersona } from 'src/cliente-persona/entities/cliente-persona.entity';
 import { ClienteEmpresa } from 'src/cliente-empresa/entities/cliente-empresa.entity';
 import { plainToClass } from 'class-transformer';
 @Injectable()
 export class ClienteService {
+  cliente: any;
   constructor(
     @InjectRepository(Cliente)
     private readonly clienteRepository: Repository<Cliente>,
@@ -17,7 +18,7 @@ export class ClienteService {
       cliente instanceof ClientePersona &&
       !(cliente instanceof ClienteEmpresa)
     ) {
-      let clienteP = plainToClass(ClientePersona, cliente);
+      const clienteP = plainToClass(ClientePersona, cliente);
       const nuevoCliente = this.clienteRepository.create(clienteP);
       return await this.clienteRepository.save(nuevoCliente);
     }
@@ -26,7 +27,7 @@ export class ClienteService {
       cliente instanceof ClienteEmpresa &&
       !(cliente instanceof ClientePersona)
     ) {
-      let clienteE = plainToClass(ClienteEmpresa, cliente);
+      const clienteE = plainToClass(ClienteEmpresa, cliente);
       const nuevoCliente = this.clienteRepository.create(clienteE);
       return await this.clienteRepository.save(nuevoCliente);
     }

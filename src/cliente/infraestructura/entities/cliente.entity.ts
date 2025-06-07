@@ -5,10 +5,9 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { ClienteInterface } from '../cliente.interface';
-import { Column, Entity, PrimaryColumn, TableInheritance, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { ClienteInterface } from '../../dominio/Interfaces/dominio/cliente.interface';
+import { Column, Entity, PrimaryColumn, TableInheritance } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-
 @Entity({ name: 'cliente' })
 @TableInheritance({ column: { type: 'varchar', name: 'tipo' } })
 export class Cliente implements ClienteInterface {
@@ -23,6 +22,7 @@ export class Cliente implements ClienteInterface {
   @Column({ select: false })
   contrasena: string;
 
+  /* me parece que esto ya no va
   @BeforeInsert()
   @BeforeUpdate()
   async hashContrasena() {
@@ -30,7 +30,7 @@ export class Cliente implements ClienteInterface {
       //10 son las rondas de hasheo, es un número arbitrario
       this.contrasena = await bcrypt.hash(this.contrasena, 10);
     }
-  }
+  }*/
 
   @Column()
   @IsString()
@@ -51,24 +51,24 @@ export class Cliente implements ClienteInterface {
   @Column()
   @IsNotEmpty()
   @IsString()
-  @IsPhoneNumber('UY')
+  @IsPhoneNumber('UY', { message: 'El teléfono debe ser un número válido' })
   telefono: string;
 
   discriminador: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   nombre: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   apellido: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   nombreempresa: string;
 
-  @Column({ name: 'rut' , nullable: true})
+  @Column({ name: 'rut', nullable: true })
   RUT: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   nombrecontacto: string;
 
   @Column({ type: 'varchar' })
@@ -90,5 +90,15 @@ export class Cliente implements ClienteInterface {
     this.ciudad = ciudad;
     this.direccion = direccion;
     this.telefono = telefono;
+  }
+
+  async setPassword() {
+    this.contrasena = await this.hashPass(this.contrasena);
+  }
+
+  async hashPass(p: string): Promise<string> {
+    const saltOrRounds = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(p, saltOrRounds);
+    return hash;
   }
 }

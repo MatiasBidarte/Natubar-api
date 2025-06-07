@@ -1,5 +1,5 @@
 
-import { CreateClienteDto } from "src/cliente/dto/crear-cliente.dto";
+import { CreateClienteDto } from "src/cliente/dominio/dto/crear-cliente.dto";
 import { ChildEntity } from "typeorm";
 
 
