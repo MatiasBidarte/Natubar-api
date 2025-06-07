@@ -5,6 +5,11 @@ import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 export class Producto {
   @PrimaryColumn()
   @IsNotEmpty()
+  @IsNumber()
+  id: number;
+
+  @Column()
+  @IsNotEmpty()
   @IsString()
   nombre: string;
 
@@ -32,6 +37,7 @@ export class Producto {
   urlImagen?: string;
 
   constructor(
+    id: number,
     nombre: string,
     descripcion: string,
     precioPersonas: number,
@@ -39,6 +45,7 @@ export class Producto {
     stock: boolean,
     urlImagen: string,
   ) {
+    this.id = id;
     this.nombre = nombre;
     this.descripcion = descripcion;
     this.precioPersonas = precioPersonas;
