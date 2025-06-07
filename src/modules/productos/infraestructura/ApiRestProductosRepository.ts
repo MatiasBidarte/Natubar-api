@@ -12,6 +12,7 @@ export class ApiRestProductosRepository implements ProductosRepository {
     return rawProductos.map(
       (producto) =>
         new ProductoDto(
+          producto.id,
           producto.nombre,
           producto.descripcion,
           producto.precioPersonas,
