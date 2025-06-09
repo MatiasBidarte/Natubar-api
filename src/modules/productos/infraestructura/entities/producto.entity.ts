@@ -17,12 +17,12 @@ export class Producto {
   @IsString()
   descripcion: string;
 
-  @Column()
+  @Column({ name: 'preciopersonas' })
   @IsNotEmpty()
   @IsNumber()
   precioPersonas: number;
 
-  @Column()
+  @Column({ name: 'precioempresas' })
   @IsNotEmpty()
   @IsNumber()
   precioEmpresas: number;
@@ -32,7 +32,7 @@ export class Producto {
   @IsBoolean()
   stock: boolean;
 
-  @Column()
+  @Column({ name: 'urlimagen' })
   @IsString()
   urlImagen?: string;
 

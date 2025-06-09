@@ -24,7 +24,6 @@ import { ProductosModule } from './modules/productos/infraestructura/productos.m
         username: configService.get('DB_USER'), // Sin comillas extra
         password: configService.get('DB_PASSWORD'), // Sin comas
         entities: [join(process.cwd(), 'dist', '**', '*.entity{.ts,.js}')],
-        synchronize: true, // Cambiar a false en producción
       }),
     }),
   ],
