@@ -6,15 +6,18 @@ import {
   MinLength,
 } from 'class-validator';
 import { ClienteInterface } from '../../dominio/Interfaces/dominio/cliente.interface';
-import { Column, Entity, PrimaryColumn, TableInheritance } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, TableInheritance } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 @Entity({ name: 'cliente' })
 @TableInheritance({ column: { type: 'varchar', name: 'tipo' } })
 export class Cliente implements ClienteInterface {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @IsNotEmpty()
   @IsString()
   @IsEmail()
+  @Column({unique: true})
   email: string;
 
   //MANEJO DE LA CONTRASEÑA CON HASHEO

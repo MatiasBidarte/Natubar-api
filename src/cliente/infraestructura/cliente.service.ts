@@ -42,9 +42,9 @@ export class ClienteService {
     return !!usuario;
   }
 
-  async findOne(email: string): Promise<Cliente|null>{
+  async findOne(email: string): Promise<Cliente | null> {
     const usuario = await this.clienteRepository.findOne({
-      select: ['email','contrasena'],
+      select: ['email', 'contrasena'],
       where: { email: email },
     });
     return usuario;

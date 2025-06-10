@@ -46,6 +46,7 @@ export class ClienteController {
         throw new BadRequestException(JSON.stringify(mensajes));
       }
       await cliente.setPassword();
+      console.log("PC");
       return this.alta.ejecutar(cliente);
     } catch (ex) {
       if (ex instanceof BadRequestException) {

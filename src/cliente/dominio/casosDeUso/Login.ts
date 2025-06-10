@@ -1,21 +1,20 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { LoginClienteDto } from '../dto/login-cliente.dto';
-import { ClienteService } from '../cliente.service';
+import { ClienteService } from 'src/cliente/infraestructura/cliente.service';
 import {
   BadRequestException,
   Body,
-  Controller,
-  Get,
-  HttpException,
-  HttpStatus,
-  InternalServerErrorException,
-  Post,
+  UnauthorizedException,
 } from '@nestjs/common';
+import { AuthService } from 'src/auth/auth.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class LoginCliente {
-  constructor(private readonly clienteService: ClienteService) {}
+  constructor(
+    private readonly clienteService: ClienteService,
+    private jwtService: AuthService,
+  ) {}
 
   async ejecutar(clienteLoginDto: LoginClienteDto) {
     const cliente = await this.clienteService.findOne(clienteLoginDto.email);
@@ -29,10 +28,10 @@ export class LoginCliente {
     );
 
     if (!esContrasenaValida) {
-      throw new BadRequestException('Contraseña incorrecta');
+      throw new UnauthorizedException('Contraseña incorrecta');
     } else {
       //HACER EL TOKEN
-      return 'yippee';
+      this.jwtService.signIn(cliente.email, clienteLoginDto.contrasena);
     }
   }
 }
