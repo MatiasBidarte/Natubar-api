@@ -17,7 +17,7 @@ import { ClienteEmpresaModule } from './cliente-empresa/cliente-empresa.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule, ClienteModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({ 
         type: 'postgres',
         host: configService.get('DB_HOST'),
         port: configService.get('DB_PORT'), // Convertir el puerto a número
