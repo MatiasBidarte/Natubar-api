@@ -20,7 +20,7 @@ import { AuthService } from 'src/auth/auth.service';
     AltaCliente,
     ObtenerTodosCliente,
     JwtService,
-    AuthService
+    AuthService,
   ],
   exports: [
     ClienteService,
