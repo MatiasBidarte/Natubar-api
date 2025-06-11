@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ClienteModule } from '../cliente/infraestructura/cliente.module';
+import { ClienteModule } from '../modules/cliente/infraestructura/cliente.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { jwtConstants } from './constants';

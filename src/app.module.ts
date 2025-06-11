@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { join } from 'path';
-import { ClienteModule } from './cliente/infraestructura/cliente.module';
-import { ClientePersonaModule } from './cliente-persona/cliente-persona.module';
-import { ClienteEmpresaModule } from './cliente-empresa/cliente-empresa.module';
+import { ClienteModule } from 'src/modules/cliente/infraestructura/cliente.module';
+//import { ClientePersonaModule } from './cliente-persona/cliente-persona.module';
+//import { ClienteEmpresaModule } from './cliente-empresa/cliente-empresa.module';
+import { ProductosModule } from 'src/modules/productos/infraestructura/productos.module';
 
 @Module({
   imports: [
@@ -27,8 +28,8 @@ import { ClienteEmpresaModule } from './cliente-empresa/cliente-empresa.module';
         entities: [join(process.cwd(), 'dist', '**', '*.entity{.ts,.js}')],
       }),
     }),
-    ClientePersonaModule,
-    ClienteEmpresaModule,
+    //ClientePersonaModule,
+    //ClienteEmpresaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

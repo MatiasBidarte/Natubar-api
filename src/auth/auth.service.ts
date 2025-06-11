@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ClienteService } from '../cliente/infraestructura/cliente.service';
+import { ClienteService } from '../modules/cliente/infraestructura/cliente.service';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()

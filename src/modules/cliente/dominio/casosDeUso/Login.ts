@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { LoginClienteDto } from '../dto/login-cliente.dto';
-import { ClienteService } from 'src/cliente/infraestructura/cliente.service';
+import { ClienteService } from 'src/modules/cliente/infraestructura/cliente.service';
 import {
   BadRequestException,
   Body,
