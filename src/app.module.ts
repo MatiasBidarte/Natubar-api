@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PassportModule } from '@nestjs/passport';
 import { join } from 'path';
 import { ClienteModule } from 'src/modules/cliente/infraestructura/cliente.module';
 //import { ClientePersonaModule } from './cliente-persona/cliente-persona.module';
@@ -14,7 +13,7 @@ import { ProductosModule } from 'src/modules/productos/infraestructura/productos
   imports: [
     ClienteModule,
     ProductosModule,
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule, ClienteModule],
       inject: [ConfigService],
