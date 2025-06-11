@@ -25,7 +25,6 @@ import { ProductosModule } from 'src/modules/productos/infraestructura/productos
         username: configService.get('PGUSER'), // Sin comillas extra
         password: configService.get('PGPASSWORD'), // Sin comas
         entities: [join(process.cwd(), 'dist', '**', '*.entity{.ts,.js}')],
-        synchronize: true,
       }),
     }),
     //ClientePersonaModule,
