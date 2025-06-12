@@ -6,23 +6,35 @@ import {
   MinLength,
 } from 'class-validator';
 import { ClienteInterface } from '../../dominio/Interfaces/dominio/cliente.interface';
-import { Column, Entity, PrimaryColumn, TableInheritance } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, TableInheritance } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 @Entity({ name: 'cliente' })
 @TableInheritance({ column: { type: 'varchar', name: 'tipo' } })
 export class Cliente implements ClienteInterface {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @IsNotEmpty()
   @IsString()
   @IsEmail()
+  @Column({unique: true})
   email: string;
 
-  @Column()
+  //MANEJO DE LA CONTRASEÑA CON HASHEO
   @IsNotEmpty()
-  @IsString()
-  @MinLength(8)
+  @Column({ select: false })
   contrasena: string;
+
+  /* me parece que esto ya no va
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashContrasena() {
+    if (this.contrasena) {
+      //10 son las rondas de hasheo, es un número arbitrario
+      this.contrasena = await bcrypt.hash(this.contrasena, 10);
+    }
+  }*/
 
   @Column()
   @IsString()
@@ -48,19 +60,19 @@ export class Cliente implements ClienteInterface {
 
   discriminador: string;
 
-  @Column()
+  @Column({ nullable: true })
   nombre: string;
 
-  @Column()
+  @Column({ nullable: true })
   apellido: string;
 
-  @Column()
+  @Column({ nullable: true })
   nombreempresa: string;
 
-  @Column({ name: 'rut' })
+  @Column({ name: 'rut', nullable: true })
   RUT: string;
 
-  @Column()
+  @Column({ nullable: true })
   nombrecontacto: string;
 
   @Column({ type: 'varchar' })

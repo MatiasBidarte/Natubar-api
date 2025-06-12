@@ -10,12 +10,14 @@ import { Cliente } from './entities/cliente.entity';
 @Injectable()
 export class ApiRestClientesRepository implements ClienteRepository {
   constructor(private readonly context: ClienteService) {}
+  
   obtenerTodos(): Cliente[] | PromiseLike<Cliente[]> {
     return this.context.findAll();
   }
 
   async alta(cliente: Cliente) {
     try {
+      
       if (await this.context.findByEmail(cliente.email)) {
         throw new HttpException('El correo ya está en uso.', 409);
       }

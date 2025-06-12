@@ -8,11 +8,13 @@ import {
   Post,
 } from '@nestjs/common';
 import { CreateClienteDto } from '../dominio/dto/crear-cliente.dto';
+import { LoginClienteDto } from '../dominio/dto/login-cliente.dto';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { ClientePersona } from 'src/modules/cliente/infraestructura/entities/cliente-persona.entity';
 import { ClienteEmpresa } from 'src/modules/cliente/infraestructura/entities/cliente-empresa.entity';
 import { AltaCliente } from '../dominio/casosDeUso/AltaCliente';
+import { LoginCliente } from '../dominio/casosDeUso/Login';
 import { ObtenerTodosCliente } from '../dominio/casosDeUso/ObtenerTodosCliente';
 
 @Controller('cliente')
@@ -20,6 +22,7 @@ export class ClienteController {
   constructor(
     private readonly alta: AltaCliente,
     private readonly obtenerTodos: ObtenerTodosCliente,
+    private readonly loginCU: LoginCliente,
   ) {}
   @Post()
   async add(@Body() clienteDto: CreateClienteDto) {
@@ -43,6 +46,7 @@ export class ClienteController {
         throw new BadRequestException(JSON.stringify(mensajes));
       }
       await cliente.setPassword();
+      console.log("PC");
       return this.alta.ejecutar(cliente);
     } catch (ex) {
       if (ex instanceof BadRequestException) {
@@ -77,5 +81,10 @@ export class ClienteController {
   @Get('Prueba')
   prueba() {
     return 'Hola';
+  }
+
+  @Post('login')
+  async login(@Body() clienteDto: LoginClienteDto){
+    return await this.loginCU.ejecutar(clienteDto);
   }
 }
