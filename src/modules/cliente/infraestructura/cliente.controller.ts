@@ -6,6 +6,7 @@ import {
   HttpException,
   InternalServerErrorException,
   Post,
+  HttpCode,
 } from '@nestjs/common';
 import { CreateClienteDto } from '../dominio/dto/crear-cliente.dto';
 import { LoginClienteDto } from '../dominio/dto/login-cliente.dto';
@@ -46,7 +47,7 @@ export class ClienteController {
         throw new BadRequestException(JSON.stringify(mensajes));
       }
       await cliente.setPassword();
-      console.log("PC");
+      console.log('PC');
       return this.alta.ejecutar(cliente);
     } catch (ex) {
       if (ex instanceof BadRequestException) {
@@ -84,7 +85,8 @@ export class ClienteController {
   }
 
   @Post('login')
-  async login(@Body() clienteDto: LoginClienteDto){
+  @HttpCode(200)
+  async login(@Body() clienteDto: LoginClienteDto) {
     return await this.loginCU.ejecutar(clienteDto);
   }
 }

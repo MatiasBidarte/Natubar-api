@@ -9,11 +9,13 @@ import { ClienteModule } from 'src/modules/cliente/infraestructura/cliente.modul
 //import { ClientePersonaModule } from './cliente-persona/cliente-persona.module';
 //import { ClienteEmpresaModule } from './cliente-empresa/cliente-empresa.module';
 import { ProductosModule } from 'src/modules/productos/infraestructura/productos.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
     ClienteModule,
     ProductosModule,
+    AuthModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule, ClienteModule],
@@ -26,6 +28,7 @@ import { ProductosModule } from 'src/modules/productos/infraestructura/productos
         username: configService.get('DB_USERNAME'), // Sin comillas extra
         password: configService.get('DB_PASSWORD'), // Sin comas
         entities: [join(process.cwd(), 'dist', '**', '*.entity{.ts,.js}')],
+        synchronize: true,
       }),
     }),
     //ClientePersonaModule,

@@ -17,7 +17,7 @@ export class LoginCliente {
   ) {}
 
   async ejecutar(clienteLoginDto: LoginClienteDto) {
-    const cliente = await this.clienteService.findOne(clienteLoginDto.email);
+    const cliente = await this.clienteService.findOneLogin(clienteLoginDto.email);
     if (cliente == null) {
       throw new BadRequestException('Usuario no encontrado');
     }
@@ -31,7 +31,7 @@ export class LoginCliente {
       throw new UnauthorizedException('Contraseña incorrecta');
     } else {
       //HACER EL TOKEN
-      this.jwtService.signIn(cliente.email, clienteLoginDto.contrasena);
+      return this.jwtService.signIn(cliente.email, clienteLoginDto.contrasena);
     }
   }
 }

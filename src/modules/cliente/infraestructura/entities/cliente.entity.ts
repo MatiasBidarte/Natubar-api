@@ -78,6 +78,8 @@ export class Cliente implements ClienteInterface {
   @Column({ type: 'varchar' })
   tipo: string;
 
+  static discriminador;
+
   constructor(
     email: string,
     contrasena: string,
