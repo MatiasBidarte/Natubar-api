@@ -1,10 +1,18 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ClienteService } from '../modules/cliente/infraestructura/cliente.service';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(
+    @Inject(forwardRef(() => ClienteService))
     private ClienteService: ClienteService,
     private jwtService: JwtService,
   ) {}
@@ -17,9 +25,17 @@ export class AuthService {
     if (user == null) {
       throw new UnauthorizedException();
     }
-    const payload = { mail: user.email, id: user.id };
+    if (
+      contra !== user.contrasena &&
+      !(await bcrypt.compare(contra, user.contrasena))
+    ) {
+      throw new UnauthorizedException('Contraseña incorrecta');
+    }
+    const { contrasena, ...userWithoutPassword } = user;
+    const payload = { ...userWithoutPassword };
+    const token = this.jwtService.sign(payload);
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: token,
     };
   }
 }

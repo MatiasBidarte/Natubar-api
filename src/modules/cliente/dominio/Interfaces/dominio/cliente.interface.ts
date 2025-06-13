@@ -6,5 +6,5 @@ export interface ClienteInterface {
   ciudad: string;
   direccion: string;
   telefono: string;
-  discriminador: string;
+  tipo: string;
 }
