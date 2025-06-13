@@ -27,6 +27,15 @@ export class ClienteService {
     }
   }
 
+  async update(cliente: Cliente) {
+    try {
+      return await this.clienteRepository.save(cliente);
+    } catch (error) {
+      console.error('Error al actualizar cliente:', error);
+      throw error;
+    }
+  }
+
   async findAll() {
     return await this.clienteRepository.find();
   }
@@ -34,6 +43,12 @@ export class ClienteService {
   async findByEmail(email: string): Promise<boolean> {
     const usuario = await this.clienteRepository.findOneBy({ email });
     return !!usuario;
+  }
+
+  async findById(id: number): Promise<Cliente | null> {
+    return await this.clienteRepository.findOne({
+      where: { id: id },
+    });
   }
 
   async findOne(email: string): Promise<Cliente | null> {
