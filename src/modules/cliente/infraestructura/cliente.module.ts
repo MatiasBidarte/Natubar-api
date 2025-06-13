@@ -8,6 +8,7 @@ import { LoginCliente } from '../dominio/casosDeUso/Login';
 import { ObtenerTodosCliente } from '../dominio/casosDeUso/ObtenerTodosCliente';
 import { ApiRestClientesRepository } from './ApiRestClientesRepository';
 import { AuthModule } from 'src/auth/auth.module';
+import { ActualizarCliente } from '../dominio/casosDeUso/ActualizarCliente';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Cliente]), forwardRef(() => AuthModule)],
@@ -18,6 +19,7 @@ import { AuthModule } from 'src/auth/auth.module';
     LoginCliente,
     AltaCliente,
     ObtenerTodosCliente,
+    ActualizarCliente,
   ],
   exports: [
     ClienteService,
@@ -25,6 +27,7 @@ import { AuthModule } from 'src/auth/auth.module';
     AltaCliente,
     LoginCliente,
     ObtenerTodosCliente,
+    ActualizarCliente,
   ],
 })
 export class ClienteModule {}
