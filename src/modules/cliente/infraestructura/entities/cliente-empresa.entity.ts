@@ -2,24 +2,24 @@ import { IsNotEmpty, IsString } from 'class-validator';
 import { Cliente } from 'src/modules/cliente/infraestructura/entities/cliente.entity';
 import { ChildEntity, Column } from 'typeorm';
 
-@ChildEntity({ name: 'Empresa' })
+@ChildEntity('Empresa')
 export class ClienteEmpresa extends Cliente {
   @Column()
   @IsNotEmpty()
   @IsString()
-  nombreempresa: string;
+  nombreEmpresa: string;
 
   @Column()
   @IsNotEmpty()
   @IsString()
-  RUT: string;
+  rut: string;
 
   @Column()
   @IsNotEmpty()
   @IsString()
-  nombrecontacto: string;
+  nombreContacto: string;
 
-  static discriminador = 'Empresa';
+  static readonly tipo = 'Empresa';
 
   constructor(
     email: string,
@@ -29,9 +29,9 @@ export class ClienteEmpresa extends Cliente {
     ciudad: string,
     direccion: string,
     telefono: string,
-    NombreEmpresa: string,
-    RUT: string,
-    NombreContacto: string,
+    nombreContacto: string,
+    rut: string,
+    nombreEmpresa: string,
   ) {
     super(
       email,
@@ -42,8 +42,8 @@ export class ClienteEmpresa extends Cliente {
       direccion,
       telefono,
     );
-    this.nombreempresa = NombreEmpresa;
-    this.RUT = RUT;
-    this.nombrecontacto = NombreContacto;
+    this.nombreEmpresa = nombreEmpresa;
+    this.rut = rut;
+    this.nombreContacto = nombreContacto;
   }
 }

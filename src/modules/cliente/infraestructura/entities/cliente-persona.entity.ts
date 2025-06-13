@@ -2,7 +2,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 import { Cliente } from 'src/modules/cliente/infraestructura/entities/cliente.entity';
 import { ChildEntity, Column } from 'typeorm';
 
-@ChildEntity({ name: 'Persona' })
+@ChildEntity('Persona')
 export class ClientePersona extends Cliente {
   @Column()
   @IsNotEmpty()
@@ -13,7 +13,7 @@ export class ClientePersona extends Cliente {
   @IsString()
   apellido: string;
 
-  static discriminador = 'Persona';
+  static readonly tipo = 'Persona';
 
   constructor(
     email: string,
