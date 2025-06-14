@@ -5,35 +5,58 @@ import {
   Get,
   HttpException,
   InternalServerErrorException,
+  Param,
   Post,
+  Put,
 } from '@nestjs/common';
 import { CreateClienteDto } from '../dominio/dto/crear-cliente.dto';
 import { LoginClienteDto } from '../dominio/dto/login-cliente.dto';
-import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { ClientePersona } from 'src/modules/cliente/infraestructura/entities/cliente-persona.entity';
 import { ClienteEmpresa } from 'src/modules/cliente/infraestructura/entities/cliente-empresa.entity';
 import { AltaCliente } from '../dominio/casosDeUso/AltaCliente';
 import { LoginCliente } from '../dominio/casosDeUso/Login';
 import { ObtenerTodosCliente } from '../dominio/casosDeUso/ObtenerTodosCliente';
+import { ActualizarClienteDto } from '../dominio/dto/actualizar-cliente.dto';
+import { ActualizarCliente } from '../dominio/casosDeUso/ActualizarCliente';
 
-@Controller('cliente')
+@Controller('clientes')
 export class ClienteController {
   constructor(
     private readonly alta: AltaCliente,
     private readonly obtenerTodos: ObtenerTodosCliente,
     private readonly loginCU: LoginCliente,
+    private readonly actualizar: ActualizarCliente,
   ) {}
   @Post()
   async add(@Body() clienteDto: CreateClienteDto) {
     try {
       let cliente: ClientePersona | ClienteEmpresa;
-      if (clienteDto.discriminador === ClientePersona.discriminador) {
-        cliente = plainToInstance(ClientePersona, clienteDto, {
-          enableImplicitConversion: true,
-        });
+      if (clienteDto.tipo === ClientePersona.tipo) {
+        cliente = new ClientePersona(
+          clienteDto.email,
+          clienteDto.contrasena,
+          clienteDto.observaciones,
+          clienteDto.departamento,
+          clienteDto.ciudad,
+          clienteDto.direccion,
+          clienteDto.telefono,
+          clienteDto.nombre!,
+          clienteDto.apellido!,
+        );
       } else {
-        cliente = plainToInstance(ClienteEmpresa, clienteDto);
+        cliente = new ClienteEmpresa(
+          clienteDto.email,
+          clienteDto.contrasena,
+          clienteDto.observaciones,
+          clienteDto.departamento,
+          clienteDto.ciudad,
+          clienteDto.direccion,
+          clienteDto.telefono,
+          clienteDto.nombreContacto!,
+          clienteDto.rut!,
+          clienteDto.nombreEmpresa!,
+        );
       }
       const errores = await validate(cliente as object);
       if (errores.length > 0) {
@@ -46,7 +69,6 @@ export class ClienteController {
         throw new BadRequestException(JSON.stringify(mensajes));
       }
       await cliente.setPassword();
-      console.log("PC");
       return this.alta.ejecutar(cliente);
     } catch (ex) {
       if (ex instanceof BadRequestException) {
@@ -67,7 +89,30 @@ export class ClienteController {
         );
       } else {
         throw new InternalServerErrorException(
-          'Error al crear el cliente: error desconocido',
+          'Error al crear el cliente: intente mas tarde',
+        );
+      }
+    }
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: number,
+    @Body() clienteDto: ActualizarClienteDto,
+  ) {
+    try {
+      const resultado = await this.actualizar.ejecutar(id, clienteDto);
+      return {
+        message: 'Datos actualizados correctamente',
+        cliente: resultado.cliente,
+        access_token: resultado.access_token,
+      };
+    } catch (ex) {
+      if (ex instanceof HttpException) {
+        throw ex;
+      } else {
+        throw new InternalServerErrorException(
+          'Error al actualizar el cliente: intente mas tarde',
         );
       }
     }
@@ -84,7 +129,7 @@ export class ClienteController {
   }
 
   @Post('login')
-  async login(@Body() clienteDto: LoginClienteDto){
+  async login(@Body() clienteDto: LoginClienteDto) {
     return await this.loginCU.ejecutar(clienteDto);
   }
 }
