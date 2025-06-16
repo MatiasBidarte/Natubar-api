@@ -1,4 +1,4 @@
-import { Sabor } from 'src/sabores/infraestructura/entities/sabore.entity';
+import { Sabor } from 'src/modules/sabores/infraestructura/entities/sabore.entity';
 import { SaborDto } from '../dto/sabor.dto';
 
 export interface SaboresRepository {

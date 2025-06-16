@@ -1,5 +1,5 @@
 import { forwardRef, Inject } from '@nestjs/common';
-import { ApiRestSaboresRepository } from 'src/sabores/infraestructura/ApiRestSaboresRepository';
+import { ApiRestSaboresRepository } from 'src/modules/sabores/infraestructura/ApiRestSaboresRepository';
 import { SaborDto } from '../dto/sabor.dto';
 import { SaboresRepository } from '../interfaces/SaboresRepository';
 
