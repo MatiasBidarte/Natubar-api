@@ -18,12 +18,12 @@ export class Producto {
   @IsString()
   descripcion: string;
 
-  @Column({ name: 'preciopersonas' })
+  @Column()
   @IsNotEmpty()
   @IsNumber()
   precioPersonas: number;
 
-  @Column({ name: 'precioempresas' })
+  @Column()
   @IsNotEmpty()
   @IsNumber()
   precioEmpresas: number;
