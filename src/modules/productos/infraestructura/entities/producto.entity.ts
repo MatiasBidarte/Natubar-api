@@ -33,7 +33,7 @@ export class Producto {
   @IsBoolean()
   stock: boolean;
 
-  @Column({ name: 'urlimagen' })
+  @Column()
   @IsString()
   urlImagen?: string;
 
