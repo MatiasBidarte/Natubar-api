@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { ApiRestSaboresRepository } from 'src/sabores/infraestructura/ApiRestSaboresRepository';
+import { ApiRestSaboresRepository } from 'src/modules/sabores/infraestructura/ApiRestSaboresRepository';
 import { SaboresRepository } from '../interfaces/SaboresRepository';
-import { Sabor } from 'src/sabores/infraestructura/entities/sabore.entity';
+import { Sabor } from 'src/modules/sabores/infraestructura/entities/sabore.entity';
 import { SaborDto } from '../dto/sabor.dto';
 import { Producto } from 'src/modules/productos/infraestructura/entities/producto.entity';
 @Injectable()

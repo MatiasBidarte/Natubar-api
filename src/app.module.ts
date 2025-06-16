@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { ClienteModule } from 'src/modules/cliente/infraestructura/cliente.module';
 import { ProductosModule } from 'src/modules/productos/infraestructura/productos.module';
+import { SaboresModule } from './modules/sabores/infraestructura/sabores.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ProductosModule } from 'src/modules/productos/infraestructura/productos
         synchronize: configService.get('ENV') === 'dev' ? true : false,
       }),
     }),
+    SaboresModule,
   ],
   controllers: [AppController],
   providers: [AppService],

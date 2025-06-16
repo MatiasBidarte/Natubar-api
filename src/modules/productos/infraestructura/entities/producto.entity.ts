@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from 'typeorm';
 import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
-
+import { Sabor } from 'src/modules/sabores/infraestructura/entities/sabore.entity';
+//entidad productos
 @Entity({ name: 'productos' })
 export class Producto {
   @PrimaryColumn()
@@ -35,6 +36,10 @@ export class Producto {
   @Column({ name: 'urlimagen' })
   @IsString()
   urlImagen?: string;
+
+  @ManyToMany(() => Sabor)
+  @JoinTable()
+  sabores: Sabor[];
 
   constructor(
     id: number,
