@@ -1,42 +1,29 @@
+import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
 import {
-  IsEmail,
-  IsNotEmpty,
-  IsPhoneNumber,
-  IsString,
-  MinLength,
-} from 'class-validator';
-import { ClienteInterface } from '../../dominio/Interfaces/dominio/cliente.interface';
-import { Column, Entity, PrimaryGeneratedColumn, TableInheritance } from 'typeorm';
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  TableInheritance,
+} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-@Entity({ name: 'cliente' })
+@Entity({ name: 'clientes' })
 @TableInheritance({ column: { type: 'varchar', name: 'tipo' } })
-export class Cliente implements ClienteInterface {
+export class Cliente {
   @PrimaryGeneratedColumn()
   id: number;
 
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  @Column({unique: true})
+  @Column({ unique: true })
   email: string;
 
-  //MANEJO DE LA CONTRASEÑA CON HASHEO
   @IsNotEmpty()
-  @Column({ select: false })
+  @Column()
   contrasena: string;
 
-  /* me parece que esto ya no va
-  @BeforeInsert()
-  @BeforeUpdate()
-  async hashContrasena() {
-    if (this.contrasena) {
-      //10 son las rondas de hasheo, es un número arbitrario
-      this.contrasena = await bcrypt.hash(this.contrasena, 10);
-    }
-  }*/
-
-  @Column()
+  @Column({ nullable: true })
   @IsString()
   observaciones: string;
 
@@ -57,28 +44,6 @@ export class Cliente implements ClienteInterface {
   @IsString()
   @IsPhoneNumber('UY', { message: 'El teléfono debe ser un número válido' })
   telefono: string;
-
-  discriminador: string;
-
-  @Column({ nullable: true })
-  nombre: string;
-
-  @Column({ nullable: true })
-  apellido: string;
-
-  @Column({ nullable: true })
-  nombreempresa: string;
-
-  @Column({ name: 'rut', nullable: true })
-  RUT: string;
-
-  @Column({ nullable: true })
-  nombrecontacto: string;
-
-  @Column({ type: 'varchar' })
-  tipo: string;
-
-  static discriminador;
 
   constructor(
     email: string,

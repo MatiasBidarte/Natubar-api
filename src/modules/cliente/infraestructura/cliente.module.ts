@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ClienteController } from './cliente.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Cliente } from './entities/cliente.entity';
@@ -7,11 +7,11 @@ import { AltaCliente } from '../dominio/casosDeUso/AltaCliente';
 import { LoginCliente } from '../dominio/casosDeUso/Login';
 import { ObtenerTodosCliente } from '../dominio/casosDeUso/ObtenerTodosCliente';
 import { ApiRestClientesRepository } from './ApiRestClientesRepository';
-import { JwtService } from '@nestjs/jwt';
-import { AuthService } from 'src/auth/auth.service';
+import { AuthModule } from 'src/auth/auth.module';
+import { ActualizarCliente } from '../dominio/casosDeUso/ActualizarCliente';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Cliente])],
+  imports: [TypeOrmModule.forFeature([Cliente]), forwardRef(() => AuthModule)],
   controllers: [ClienteController],
   providers: [
     ClienteService,
@@ -19,8 +19,7 @@ import { AuthService } from 'src/auth/auth.service';
     LoginCliente,
     AltaCliente,
     ObtenerTodosCliente,
-    JwtService,
-    AuthService
+    ActualizarCliente,
   ],
   exports: [
     ClienteService,
@@ -28,6 +27,7 @@ import { AuthService } from 'src/auth/auth.service';
     AltaCliente,
     LoginCliente,
     ObtenerTodosCliente,
+    ActualizarCliente,
   ],
 })
 export class ClienteModule {}

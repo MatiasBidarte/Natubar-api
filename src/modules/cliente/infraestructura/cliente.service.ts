@@ -4,7 +4,7 @@ import { Cliente } from './entities/cliente.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ClientePersona } from 'src/modules/cliente/infraestructura/entities/cliente-persona.entity';
 import { ClienteEmpresa } from 'src/modules/cliente/infraestructura/entities/cliente-empresa.entity';
-import { plainToClass } from 'class-transformer';
+
 @Injectable()
 export class ClienteService {
   cliente: any;
@@ -14,22 +14,25 @@ export class ClienteService {
   ) {}
 
   async create(cliente: Cliente) {
-    if (
-      cliente instanceof ClientePersona &&
-      !(cliente instanceof ClienteEmpresa)
-    ) {
-      const clienteP = plainToClass(ClientePersona, cliente);
-      const nuevoCliente = this.clienteRepository.create(clienteP);
-      return await this.clienteRepository.save(nuevoCliente);
+    try {
+      if (cliente instanceof ClientePersona) {
+        return await this.clienteRepository.save(cliente);
+      }
+      if (cliente instanceof ClienteEmpresa) {
+        return await this.clienteRepository.save(cliente);
+      }
+    } catch (error) {
+      console.error('Error al crear cliente:', error);
+      throw error;
     }
+  }
 
-    if (
-      cliente instanceof ClienteEmpresa &&
-      !(cliente instanceof ClientePersona)
-    ) {
-      const clienteE = plainToClass(ClienteEmpresa, cliente);
-      const nuevoCliente = this.clienteRepository.create(clienteE);
-      return await this.clienteRepository.save(nuevoCliente);
+  async update(cliente: Cliente) {
+    try {
+      return await this.clienteRepository.save(cliente);
+    } catch (error) {
+      console.error('Error al actualizar cliente:', error);
+      throw error;
     }
   }
 
@@ -42,12 +45,10 @@ export class ClienteService {
     return !!usuario;
   }
 
-  async findOneLogin(email: string): Promise<Cliente | null> {
-    const usuario = await this.clienteRepository.findOne({
-      select: ['email', 'contrasena'],
-      where: { email: email },
+  async findById(id: number): Promise<Cliente | null> {
+    return await this.clienteRepository.findOne({
+      where: { id: id },
     });
-    return usuario;
   }
 
   async findOne(email: string): Promise<Cliente | null> {
