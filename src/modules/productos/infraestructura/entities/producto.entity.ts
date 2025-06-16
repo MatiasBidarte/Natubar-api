@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { DetallePedido } from 'src/modules/pedidos/infraestructura/entities/detalle-pedido.entity';
 
 @Entity({ name: 'productos' })
 export class Producto {
@@ -35,6 +36,9 @@ export class Producto {
   @Column()
   @IsString()
   urlImagen?: string;
+
+  @OneToMany(() => DetallePedido, (detallePedido) => detallePedido.producto)
+  detallesPedidos: DetallePedido[];
 
   constructor(
     id: number,

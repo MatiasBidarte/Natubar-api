@@ -118,9 +118,19 @@ export class ClienteController {
     }
   }
 
-  @Get()
-  findAll() {
-    return this.obtenerTodos.ejecutar();
+  @Get(':id/pedidos')
+  async getPedidos(@Param('id') id: number) {
+    try {
+      return await this.obtenerTodos.ejecutar(id);
+    } catch (ex) {
+      if (ex instanceof HttpException) {
+        throw ex;
+      } else {
+        throw new InternalServerErrorException(
+          'Error al obtener los pedidos del cliente: intente mas tarde',
+        );
+      }
+    }
   }
 
   @Get('Prueba')
