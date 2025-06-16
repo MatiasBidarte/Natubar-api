@@ -33,6 +33,16 @@ export class Producto {
   @IsBoolean()
   stock: boolean;
 
+  @Column({ nullable: true })
+  esCajaDeBarras: boolean;
+
+  @Column({ nullable: true })
+  @IsNumber()
+  cantidadDeBarras: number;
+
+  @Column({ nullable: true })
+  peso: number;
+
   @Column()
   @IsString()
   urlImagen?: string;

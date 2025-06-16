@@ -1,7 +1,8 @@
+import { ClientePersona } from '../../infraestructura/entities/cliente-persona.entity';
 import { Cliente } from '../../infraestructura/entities/cliente.entity';
-import { CreateClienteDto } from '../dto/crear-cliente.dto';
+import { ClienteDto } from '../dto/cliente.dto';
 export class ClienteMapper {
-  static toDomain(raw: CreateClienteDto): Cliente {
+  static toDomain(raw: ClienteDto): Cliente {
     return new Cliente(
       raw.email,
       raw.contrasena,
@@ -13,7 +14,7 @@ export class ClienteMapper {
     );
   }
 
-  static toPersistence(cliente: Cliente): any {
+  static toDto(cliente: Cliente): ClienteDto {
     return {
       email: cliente.email,
       contrasena: cliente.contrasena,
@@ -22,6 +23,7 @@ export class ClienteMapper {
       ciudad: cliente.ciudad,
       direccion: cliente.direccion,
       telefono: cliente.telefono,
+      tipo: cliente instanceof ClientePersona ? 'Persona' : 'Empresa',
     };
   }
 }

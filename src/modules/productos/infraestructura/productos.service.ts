@@ -9,7 +9,6 @@ export class ProductosService {
     @InjectRepository(Producto)
     private readonly productoRepository: Repository<Producto>,
   ) {}
-
   obtener(): Promise<Producto[]> {
     return this.productoRepository.find();
   }

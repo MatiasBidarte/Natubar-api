@@ -1,5 +1,12 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { DetallePedido } from './detalle-pedido.entity';
+import { Cliente } from 'src/modules/cliente/infraestructura/entities/cliente.entity';
 
 @Entity({ name: 'pedidos' })
 export class Pedido {
@@ -15,6 +22,14 @@ export class Pedido {
   @Column()
   montoTotal: number;
 
-  @OneToMany(() => DetallePedido, (detallePedido) => detallePedido.pedido)
+  @Column()
+  descuento: number;
+
+  @OneToMany(() => DetallePedido, (detallePedido) => detallePedido.pedido, {
+    eager: true,
+  })
   detallesPedidos: DetallePedido[];
+
+  @ManyToOne(() => Cliente, (cliente) => cliente.pedidos, { eager: true })
+  cliente: Cliente;
 }

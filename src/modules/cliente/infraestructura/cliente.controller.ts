@@ -9,7 +9,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { CreateClienteDto } from '../dominio/dto/crear-cliente.dto';
+import { ClienteDto } from '../dominio/dto/cliente.dto';
 import { LoginClienteDto } from '../dominio/dto/login-cliente.dto';
 import { validate } from 'class-validator';
 import { ClientePersona } from 'src/modules/cliente/infraestructura/entities/cliente-persona.entity';
@@ -19,6 +19,7 @@ import { LoginCliente } from '../dominio/casosDeUso/Login';
 import { ObtenerTodosCliente } from '../dominio/casosDeUso/ObtenerTodosCliente';
 import { ActualizarClienteDto } from '../dominio/dto/actualizar-cliente.dto';
 import { ActualizarCliente } from '../dominio/casosDeUso/ActualizarCliente';
+import { PedidosDeCliente } from '../dominio/casosDeUso/PedidosDeCliente';
 
 @Controller('clientes')
 export class ClienteController {
@@ -27,9 +28,10 @@ export class ClienteController {
     private readonly obtenerTodos: ObtenerTodosCliente,
     private readonly loginCU: LoginCliente,
     private readonly actualizar: ActualizarCliente,
+    private readonly pedidosDeCliente: PedidosDeCliente,
   ) {}
   @Post()
-  async add(@Body() clienteDto: CreateClienteDto) {
+  async add(@Body() clienteDto: ClienteDto) {
     try {
       let cliente: ClientePersona | ClienteEmpresa;
       if (clienteDto.tipo === ClientePersona.tipo) {
@@ -121,11 +123,12 @@ export class ClienteController {
   @Get(':id/pedidos')
   async getPedidos(@Param('id') id: number) {
     try {
-      return await this.obtenerTodos.ejecutar(id);
+      return await this.pedidosDeCliente.ejecutar(id);
     } catch (ex) {
       if (ex instanceof HttpException) {
         throw ex;
       } else {
+        console.log(ex);
         throw new InternalServerErrorException(
           'Error al obtener los pedidos del cliente: intente mas tarde',
         );
