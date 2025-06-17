@@ -7,7 +7,6 @@ import { ClienteEmpresa } from 'src/modules/cliente/infraestructura/entities/cli
 
 @Injectable()
 export class ClienteService {
-  cliente: any;
   constructor(
     @InjectRepository(Cliente)
     private readonly clienteRepository: Repository<Cliente>,
@@ -56,5 +55,13 @@ export class ClienteService {
       where: { email: email },
     });
     return usuario;
+  }
+
+  async pedidoPorCliente(id: number) {
+    const cliente = await this.clienteRepository.findOne({
+      where: { id: id },
+      relations: ['pedidos', 'pedidos.detallesPedidos'],
+    });
+    return cliente ? cliente.pedidos : [];
   }
 }

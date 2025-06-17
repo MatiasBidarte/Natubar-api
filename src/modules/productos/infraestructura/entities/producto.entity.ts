@@ -1,7 +1,7 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { Sabor } from 'src/modules/sabores/infraestructura/entities/sabore.entity';
-//entidad productos
+import { DetallePedido } from 'src/modules/pedidos/infraestructura/entities/detalle-pedido.entity';
+
 @Entity({ name: 'productos' })
 export class Producto {
   @PrimaryColumn()
@@ -33,13 +33,22 @@ export class Producto {
   @IsBoolean()
   stock: boolean;
 
+  @Column({ nullable: true })
+  esCajaDeBarras: boolean;
+
+  @Column({ nullable: true })
+  @IsNumber()
+  cantidadDeBarras: number;
+
+  @Column({ nullable: true })
+  peso: number;
+
   @Column()
   @IsString()
   urlImagen?: string;
 
-  @ManyToMany(() => Sabor)
-  @JoinTable()
-  sabores: Sabor[];
+  @OneToMany(() => DetallePedido, (detallePedido) => detallePedido.producto)
+  detallesPedidos: DetallePedido[];
 
   constructor(
     id: number,

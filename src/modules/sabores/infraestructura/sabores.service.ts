@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Sabor } from './entities/sabore.entity';
+import { Sabor } from './entities/sabor.entity';
 import { Repository } from 'typeorm';
-import { SaborDto } from '../dominio/dto/sabor.dto';
 
 @Injectable()
 export class SaboresService {
@@ -11,14 +10,6 @@ export class SaboresService {
     private readonly saboresRepository: Repository<Sabor>,
   ) {}
 
-  async alta(saborDto: SaborDto) {
-    const { productos, ...rest } = saborDto;
-    const sabor = this.saboresRepository.create({
-      ...rest,
-      productos: productos?.map((id) => ({ id })),
-    });
-    return await this.saboresRepository.save(sabor);
-  }
   obtener(): Promise<Sabor[]> {
     return this.saboresRepository.find();
   }
