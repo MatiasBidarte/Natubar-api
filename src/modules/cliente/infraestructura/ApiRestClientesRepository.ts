@@ -11,10 +11,13 @@ import { ClienteRepository } from '../dominio/Interfaces/repositorio/ClienteRepo
 import { ClienteService } from './cliente.service';
 import { Cliente } from './entities/cliente.entity';
 import { AuthService } from 'src/auth/auth.service';
-import { CrearClienteResponseDto } from '../dominio/dto/crear-cliente.dto';
+import { CrearClienteResponseDto } from '../dominio/dto/cliente.dto';
 import { ActualizarClienteDto } from '../dominio/dto/actualizar-cliente.dto';
 import { ClientePersona } from './entities/cliente-persona.entity';
 import { ClienteEmpresa } from './entities/cliente-empresa.entity';
+import { Pedido } from 'src/modules/pedidos/infraestructura/entities/pedido.entity';
+import { PedidoDto } from 'src/modules/pedidos/dominio/dto/pedido.dto';
+import { PedidoMapper } from 'src/modules/pedidos/dominio/mappers/pedido-mapper';
 
 @Injectable()
 export class ApiRestClientesRepository implements ClienteRepository {
@@ -23,6 +26,12 @@ export class ApiRestClientesRepository implements ClienteRepository {
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
   ) {}
+
+  async pedidosPorCliente(id: number): Promise<PedidoDto[]> {
+    const pedidos = await this.context.pedidoPorCliente(id);
+    console.log(pedidos);
+    return pedidos.map((pedido: Pedido) => PedidoMapper.toDto(pedido));
+  }
 
   obtenerTodos(): Cliente[] | PromiseLike<Cliente[]> {
     return this.context.findAll();

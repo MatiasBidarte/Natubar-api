@@ -2,10 +2,12 @@ import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
 import {
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   TableInheritance,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Pedido } from 'src/modules/pedidos/infraestructura/entities/pedido.entity';
 
 @Entity({ name: 'clientes' })
 @TableInheritance({ column: { type: 'varchar', name: 'tipo' } })
@@ -44,6 +46,9 @@ export class Cliente {
   @IsString()
   @IsPhoneNumber('UY', { message: 'El teléfono debe ser un número válido' })
   telefono: string;
+
+  @OneToMany(() => Pedido, (pedido) => pedido.cliente)
+  pedidos: Pedido[];
 
   constructor(
     email: string,
