@@ -28,7 +28,6 @@
     "@nestjs/core": "11.0.1",
     "@nestjs/jwt": "11.0.0",
     "@nestjs/mapped-types": "*",
-<<<<<<< HEAD
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.0",
@@ -39,8 +38,7 @@
     "pg": "^8.16.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.24"
-=======
+    "typeorm": "^0.3.24",
     "@nestjs/passport": "11.0.5",
     "@nestjs/platform-express": "11.0.1",
     "@nestjs/typeorm": "11.0.0",
@@ -52,7 +50,6 @@
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.1",
     "typeorm": "0.3.24"
->>>>>>> 9487dc3780d7954397ec30a756ea29bb6eddbfee
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.2.0",

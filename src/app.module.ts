@@ -13,7 +13,7 @@ import { AuthModule } from 'src/auth/auth.module';
   imports: [
     ClienteModule,
     ProductosModule,
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule, ClienteModule],
       inject: [ConfigService],
@@ -25,6 +25,7 @@ import { AuthModule } from 'src/auth/auth.module';
         username: configService.get('PGUSER'), // Sin comillas extra
         password: configService.get('PGPASSWORD'), // Sin comas
         entities: [join(process.cwd(), 'dist', '**', '*.entity{.ts,.js}')],
+        synchronize: configService.get('ENV') === 'dev' ? true : false,
       }),
     }),
     SaboresModule,

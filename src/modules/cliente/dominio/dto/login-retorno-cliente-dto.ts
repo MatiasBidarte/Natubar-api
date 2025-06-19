@@ -33,10 +33,10 @@ export class LoginRetornoClienteDto {
     this.direccion = cliente.direccion;
     this.telefono = cliente.telefono;
     this.access_token = access_token;
-    this.NombreEmpresa = cliente.nombreempresa;
-    this.RUT = cliente.RUT;
-    this.NombreContacto = cliente.nombrecontacto;
-    this.nombre = cliente.nombre;
-    this.apellido = cliente.apellido;
+    //this.NombreEmpresa = cliente.nombreempresa;
+    //this.RUT = cliente.RUT;
+    //this.NombreContacto = cliente.nombrecontacto;
+    //this.nombre = cliente.nombre;
+    //this.apellido = cliente.apellido;
   }
 }
