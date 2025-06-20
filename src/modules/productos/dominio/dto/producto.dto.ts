@@ -6,7 +6,6 @@ export class ProductoDto {
   precioEmpresas: number;
   stock: boolean;
   urlImagen?: string;
-
   constructor(
     id: number,
     nombre: string,
@@ -23,17 +22,5 @@ export class ProductoDto {
     this.precioEmpresas = precioEmpresas;
     this.stock = stock;
     this.urlImagen = urlImagen;
-  }
-
-  toPrimitives() {
-    return {
-      id: this.id,
-      nombre: this.nombre,
-      descripcion: this.descripcion,
-      precioPersonas: this.precioPersonas,
-      precioEmpresas: this.precioEmpresas,
-      stock: this.stock,
-      urlImagen: this.urlImagen,
-    };
   }
 }

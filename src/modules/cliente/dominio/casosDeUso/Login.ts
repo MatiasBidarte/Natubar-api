@@ -30,8 +30,7 @@ export class LoginCliente {
     if (!esContrasenaValida) {
       throw new UnauthorizedException('Contraseña incorrecta');
     } else {
-      //HACER EL TOKEN
-      await this.jwtService.signIn(cliente.email, cliente.contrasena);
+      return await this.jwtService.signIn(cliente.email, cliente.contrasena);
     }
   }
 }

@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { DetallePedido } from 'src/modules/pedidos/infraestructura/entities/detalle-pedido.entity';
 
 @Entity({ name: 'productos' })
 export class Producto {
@@ -17,12 +18,12 @@ export class Producto {
   @IsString()
   descripcion: string;
 
-  @Column({ name: 'preciopersonas' })
+  @Column()
   @IsNotEmpty()
   @IsNumber()
   precioPersonas: number;
 
-  @Column({ name: 'precioempresas' })
+  @Column()
   @IsNotEmpty()
   @IsNumber()
   precioEmpresas: number;
@@ -32,9 +33,22 @@ export class Producto {
   @IsBoolean()
   stock: boolean;
 
-  @Column({ name: 'urlimagen' })
+  @Column({ nullable: true })
+  esCajaDeBarras: boolean;
+
+  @Column({ nullable: true })
+  @IsNumber()
+  cantidadDeBarras: number;
+
+  @Column({ nullable: true })
+  peso: number;
+
+  @Column()
   @IsString()
   urlImagen?: string;
+
+  @OneToMany(() => DetallePedido, (detallePedido) => detallePedido.producto)
+  detallesPedidos: DetallePedido[];
 
   constructor(
     id: number,

@@ -1,4 +1,4 @@
-export class CreateClienteDto {
+export class ClienteDto {
   email: string;
   contrasena: string;
   observaciones: string;
@@ -7,6 +7,7 @@ export class CreateClienteDto {
   direccion: string;
   telefono: string;
   tipo: string;
+  id?: number;
   nombre?: string;
   apellido?: string;
   nombreEmpresa?: string;
@@ -24,6 +25,7 @@ export class CreateClienteDto {
     telefono: string,
     nombre?: string,
     apellido?: string,
+    id?: number,
     nombreEmpresa?: string,
     rut?: string,
     nombreContacto?: string,
@@ -35,6 +37,7 @@ export class CreateClienteDto {
     this.ciudad = ciudad;
     this.direccion = direccion;
     this.tipo = tipo;
+    this.id = id;
     this.telefono = telefono;
     this.nombre = nombre;
     this.apellido = apellido;

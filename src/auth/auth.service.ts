@@ -9,6 +9,8 @@ import { ClienteService } from '../modules/cliente/infraestructura/cliente.servi
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Cliente } from '../modules/cliente/infraestructura/entities/cliente.entity';
+//import { jwtConstants } from './constants';
+import { LoginRetornoClienteDto } from 'src/modules/cliente/dominio/dto/login-retorno-cliente-dto';
 
 @Injectable()
 export class AuthService {
