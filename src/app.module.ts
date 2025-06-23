@@ -7,6 +7,7 @@ import { join } from 'path';
 import { ClienteModule } from 'src/modules/cliente/infraestructura/cliente.module';
 import { ProductosModule } from 'src/modules/productos/infraestructura/productos.module';
 import { SaboresModule } from './modules/sabores/infraestructura/sabores.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
