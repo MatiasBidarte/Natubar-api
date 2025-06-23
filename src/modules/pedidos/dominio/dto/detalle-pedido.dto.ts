@@ -1,13 +1,20 @@
-import { ProductoDto } from 'src/modules/productos/dominio/dto/producto.dto';
+import { SaborDto } from 'src/modules/sabores/dominio/dto/sabor.dto';
 
 export class DetallePedidoDto {
-  id: number;
   cantidad: number;
-  producto: ProductoDto;
+  id: number;
+  nombre: string;
+  descripcion: string;
+  precioPersonas: number;
+  precioEmpresas: number;
+  stock: boolean;
+  urlImagen?: string;
+  peso?: number;
+  esCajaDeBarras: boolean;
+  cantidadDeBarras?: number;
+  sabores: SaborDto[];
 
-  constructor(id: number, cantidad: number, producto: ProductoDto) {
-    this.id = id;
+  constructor(cantidad: number) {
     this.cantidad = cantidad;
-    this.producto = producto;
   }
 }
