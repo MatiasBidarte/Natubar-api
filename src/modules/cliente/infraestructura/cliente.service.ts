@@ -60,7 +60,11 @@ export class ClienteService {
   async pedidoPorCliente(id: number) {
     const cliente = await this.clienteRepository.findOne({
       where: { id: id },
-      relations: ['pedidos', 'pedidos.detallesPedidos'],
+      relations: [
+        'pedidos',
+        'pedidos.detallesPedidos',
+        'pedidos.detallesPedidos.productoSabores.sabor',
+      ],
     });
     return cliente ? cliente.pedidos : [];
   }

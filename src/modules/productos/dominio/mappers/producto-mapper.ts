@@ -10,6 +10,10 @@ export class ProductoMapper {
       producto.precioPersonas,
       producto.precioEmpresas,
       producto.stock,
+      producto.esCajaDeBarras,
+      producto.urlImagen,
+      producto.peso,
+      producto.cantidadDeBarras,
     );
   }
   static toDomain(raw: ProductoDto): Producto {

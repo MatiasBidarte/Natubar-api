@@ -29,7 +29,6 @@ export class ApiRestClientesRepository implements ClienteRepository {
 
   async pedidosPorCliente(id: number): Promise<PedidoDto[]> {
     const pedidos = await this.context.pedidoPorCliente(id);
-    console.log(pedidos);
     return pedidos.map((pedido: Pedido) => PedidoMapper.toDto(pedido));
   }
 
