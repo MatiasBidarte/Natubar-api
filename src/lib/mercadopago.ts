@@ -1,4 +1,3 @@
-
 import { MercadoPagoConfig } from 'mercadopago';
 
 const mercadopago = new MercadoPagoConfig({

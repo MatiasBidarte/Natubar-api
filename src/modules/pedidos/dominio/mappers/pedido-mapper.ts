@@ -18,4 +18,18 @@ export class PedidoMapper {
       ClienteMapper.toDto(pedido.cliente),
     );
   }
+  static toDomain(raw: PedidoDto): Pedido {
+    const pedido = new Pedido();
+    pedido.id = raw.id;
+    pedido.fechaEntrega = raw.fechaEntrega;
+    pedido.fechaEntregaEstimada = raw.fechaEntregaEstimada;
+    pedido.montoTotal = raw.montoTotal;
+    pedido.descuento = raw.descuento;
+    pedido.detallesPedidos =
+      raw.productos?.map((detalleDto) =>
+        DetallePedidoMapper.toDomain(detalleDto),
+      ) || [];
+    pedido.cliente = ClienteMapper.toDomain(raw.cliente);
+    return pedido;
+  }
 }

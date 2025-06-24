@@ -11,7 +11,7 @@ export class PedidosService {
     return [];
   }
 
-  async crearPreferenciaDesdePedido(pedido: Pedido): Promise<string> {
+  async pagarPedido(pedido: Pedido): Promise<object> {
     const preferenceClient = new Preference(mercadopago);
     const items = pedido.detallesPedidos.map((detalle) => ({
       id: detalle.producto.id.toString(),
@@ -44,6 +44,7 @@ export class PedidosService {
     };
 
     const response = await preferenceClient.create({ body: preference });
-    return response.id;
+    console.log('Preference created:', response);
+    return response;
   }
 }

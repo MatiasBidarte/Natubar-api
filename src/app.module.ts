@@ -8,14 +8,17 @@ import { ClienteModule } from 'src/modules/cliente/infraestructura/cliente.modul
 import { ProductosModule } from 'src/modules/productos/infraestructura/productos.module';
 import { SaboresModule } from './modules/sabores/infraestructura/sabores.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { PedidosModule } from './modules/pedidos/infraestructura/pedidos.module';
 
 @Module({
   imports: [
     ClienteModule,
     ProductosModule,
+    PedidosModule,
+    AuthModule,
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule, ClienteModule],
+      imports: [ConfigModule, ClienteModule, PedidosModule, ProductosModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',

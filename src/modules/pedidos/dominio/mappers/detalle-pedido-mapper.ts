@@ -10,4 +10,11 @@ export class DetallePedidoMapper {
       producto: ProductoMapper.toDto(detallePedido.producto),
     };
   }
+  static toDomain(raw: DetallePedidoDto): DetallePedido {
+    const detalle = new DetallePedido();
+    detalle.id = raw.id;
+    detalle.cantidad = raw.cantidad;
+    detalle.producto = ProductoMapper.toDomain(raw.producto);
+    return detalle;
+  }
 }
