@@ -11,6 +11,8 @@ export class ProductoMapper {
       producto.precioEmpresas,
       producto.stock,
       producto.esCajaDeBarras,
+      producto.urlImagen,
+      producto.peso,
       producto.cantidadDeBarras,
     );
   }

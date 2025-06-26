@@ -6,8 +6,9 @@ export class ProductoDto {
   precioEmpresas: number;
   stock: boolean;
   urlImagen?: string;
+  peso?: number;
   esCajaDeBarras: boolean;
-  cantidadDeBarras: number;
+  cantidadDeBarras?: number;
   constructor(
     id: number,
     nombre: string,
@@ -15,9 +16,10 @@ export class ProductoDto {
     precioPersonas: number,
     precioEmpresas: number,
     stock: boolean,
-    esCajaDeBarras: boolean,
-    cantidadDeBarras: number,
     urlImagen?: string,
+    peso?: number,
+    esCajaDeBarras: boolean,
+    cantidadDeBarras?: number,
   ) {
     this.id = id;
     this.nombre = nombre;
@@ -26,6 +28,7 @@ export class ProductoDto {
     this.precioEmpresas = precioEmpresas;
     this.stock = stock;
     this.urlImagen = urlImagen;
+    this.peso = peso;
     this.esCajaDeBarras = esCajaDeBarras;
     this.cantidadDeBarras = cantidadDeBarras;
   }

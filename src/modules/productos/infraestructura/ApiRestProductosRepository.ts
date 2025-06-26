@@ -21,6 +21,8 @@ export class ApiRestProductosRepository implements ProductosRepository {
           producto.esCajaDeBarras,
           producto.cantidadDeBarras,
           producto.urlImagen,
+          producto.peso,
+          producto.cantidadDeBarras,
         ),
     );
   }
