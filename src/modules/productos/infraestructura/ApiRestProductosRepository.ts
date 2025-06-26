@@ -19,7 +19,6 @@ export class ApiRestProductosRepository implements ProductosRepository {
           producto.precioEmpresas,
           producto.stock,
           producto.esCajaDeBarras,
-          producto.cantidadDeBarras,
           producto.urlImagen,
           producto.peso,
           producto.cantidadDeBarras,
