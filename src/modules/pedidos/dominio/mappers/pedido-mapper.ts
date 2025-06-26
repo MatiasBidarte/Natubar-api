@@ -1,14 +1,18 @@
 import { Pedido } from '../../infraestructura/entities/pedido.entity';
 import { PedidoDto } from '../dto/pedido.dto';
 
+
 export class PedidoMapper {
   static toDto(pedido: Pedido): PedidoDto {
     return new PedidoDto(
       pedido.id,
+      pedido.fechaCreacion,
       pedido.fechaEntrega,
       pedido.fechaEntregaEstimada,
       pedido.montoTotal,
       pedido.descuento,
+      pedido.estado,
+      undefined
     );
   }
   static toDomain(raw: PedidoDto): Pedido {
@@ -20,6 +24,7 @@ export class PedidoMapper {
       raw.descuento,
       undefined,
       raw.preferenceId,
+      raw.estado,
     );
     return pedido;
   }

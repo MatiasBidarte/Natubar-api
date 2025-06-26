@@ -1,33 +1,34 @@
-import { ClienteDto } from 'src/modules/cliente/dominio/dto/cliente.dto';
+import { EstadosPedido } from '../../infraestructura/entities/pedido.entity';
 import { DetallePedidoDto } from './detalle-pedido.dto';
 
 export class PedidoDto {
   id: number;
+  fechaCreacion: Date;
   fechaEntrega: Date;
   fechaEntregaEstimada: Date;
   montoTotal: number;
   descuento: number;
-  detalleProductos?: DetallePedidoDto[];
-  cliente?: ClienteDto;
-  preferenceId?: string;
+
+  estado: EstadosPedido;
+  productos: DetallePedidoDto[];
 
   constructor(
     id: number,
+    fechaCreacion: Date,
     fechaEntrega: Date,
     fechaEntregaEstimada: Date,
     montoTotal: number,
     descuento: number,
-    productos?: DetallePedidoDto[],
-    cliente?: ClienteDto,
-    preferenceId?: string,
+    estado: EstadosPedido = EstadosPedido.enPreparacion,
+    productos: DetallePedidoDto[],
   ) {
     this.id = id;
+    this.fechaCreacion = fechaCreacion;
     this.fechaEntrega = fechaEntrega;
     this.fechaEntregaEstimada = fechaEntregaEstimada;
     this.montoTotal = montoTotal;
+    this.estado = estado;
     this.descuento = descuento;
-    this.detalleProductos = productos;
-    this.cliente = cliente;
-    this.preferenceId = preferenceId || '';
+    this.productos = productos;
   }
 }
