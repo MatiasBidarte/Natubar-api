@@ -18,6 +18,8 @@ export class ApiRestProductosRepository implements ProductosRepository {
           producto.precioPersonas,
           producto.precioEmpresas,
           producto.stock,
+          producto.esCajaDeBarras,
+          producto.cantidadDeBarras,
           producto.urlImagen,
         ),
     );

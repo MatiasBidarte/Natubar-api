@@ -10,6 +10,8 @@ export class ProductoMapper {
       producto.precioPersonas,
       producto.precioEmpresas,
       producto.stock,
+      producto.esCajaDeBarras,
+      producto.cantidadDeBarras,
     );
   }
 
@@ -21,6 +23,8 @@ export class ProductoMapper {
       precioPersonas: producto.precioPersonas,
       precioEmpresas: producto.precioEmpresas,
       stock: producto.stock,
+      esCajaDeBarras: producto.esCajaDeBarras,
+      cantidadDeBarras: producto.cantidadDeBarras,
     };
   }
 }
