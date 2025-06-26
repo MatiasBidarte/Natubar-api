@@ -7,8 +7,9 @@ export class PedidoDto {
   fechaEntregaEstimada: Date;
   montoTotal: number;
   descuento: number;
-  productos: DetallePedidoDto[];
-  cliente: ClienteDto;
+  detalleProductos?: DetallePedidoDto[];
+  cliente?: ClienteDto;
+  preferenceId?: string;
 
   constructor(
     id: number,
@@ -16,15 +17,17 @@ export class PedidoDto {
     fechaEntregaEstimada: Date,
     montoTotal: number,
     descuento: number,
-    productos: DetallePedidoDto[],
-    cliente: ClienteDto,
+    productos?: DetallePedidoDto[],
+    cliente?: ClienteDto,
+    preferenceId?: string,
   ) {
     this.id = id;
     this.fechaEntrega = fechaEntrega;
     this.fechaEntregaEstimada = fechaEntregaEstimada;
     this.montoTotal = montoTotal;
     this.descuento = descuento;
-    this.productos = productos;
+    this.detalleProductos = productos;
     this.cliente = cliente;
+    this.preferenceId = preferenceId || '';
   }
 }

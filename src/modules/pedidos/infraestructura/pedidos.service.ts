@@ -1,50 +1,31 @@
-import { Preference } from 'mercadopago';
 import { Pedido } from './entities/pedido.entity';
-import mercadopago from 'src/lib/mercadopago';
-import { ClientePersona } from 'src/modules/cliente/infraestructura/entities/cliente-persona.entity';
-import { ClienteEmpresa } from 'src/modules/cliente/infraestructura/entities/cliente-empresa.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 export class PedidosService {
-  constructor() {}
+  constructor(
+    @InjectRepository(Pedido)
+    private readonly pedidoRepository: Repository<Pedido>,
+  ) {}
 
   obtenerPedidos() {
     return [];
   }
 
-  async pagarPedido(pedido: Pedido): Promise<object> {
-    const preferenceClient = new Preference(mercadopago);
-    const items = pedido.detallesPedidos.map((detalle) => ({
-      id: detalle.producto.id.toString(),
-      title: detalle.producto.nombre,
-      quantity: detalle.cantidad,
-      unit_price:
-        pedido.cliente instanceof ClientePersona
-          ? detalle.producto.precioPersonas
-          : detalle.producto.precioEmpresas,
-    }));
+  async crearPedido(pedido: Pedido): Promise<Pedido> {
+    const pedidoEntity = this.pedidoRepository.create(pedido);
+    await this.pedidoRepository.save(pedidoEntity);
+    return pedidoEntity;
+  }
 
-    const preference = {
-      purpose: 'wallet_purchase',
-      items,
-      payer: {
-        name:
-          pedido.cliente instanceof ClientePersona
-            ? pedido.cliente.nombre + ' ' + pedido.cliente.apellido
-            : pedido.cliente instanceof ClienteEmpresa
-              ? pedido.cliente.nombreEmpresa
-              : '',
-        email: pedido.cliente.email,
-      },
-      back_urls: {
-        success: 'https://tuapp.com/success',
-        failure: 'https://tuapp.com/failure',
-        pending: 'https://tuapp.com/pending',
-      },
-      auto_return: 'approved',
-    };
-
-    const response = await preferenceClient.create({ body: preference });
-    console.log('Preference created:', response);
-    return response;
+  async confirmarPedido(preferenceId: string): Promise<Pedido> {
+    const pedido = await this.pedidoRepository.findOne({
+      where: { preferenceId },
+    });
+    if (!pedido) {
+      throw new Error('Pedido no encontrado');
+    }
+    pedido.estado = 'pagado';
+    return this.pedidoRepository.save(pedido);
   }
 }

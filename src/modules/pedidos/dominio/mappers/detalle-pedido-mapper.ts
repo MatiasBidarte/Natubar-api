@@ -14,7 +14,6 @@ export class DetallePedidoMapper {
     const detalle = new DetallePedido();
     detalle.id = raw.id;
     detalle.cantidad = raw.cantidad;
-    detalle.producto = ProductoMapper.toDomain(raw.producto);
     return detalle;
   }
 }

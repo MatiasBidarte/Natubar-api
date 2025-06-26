@@ -5,20 +5,33 @@ import { PedidosController } from './pedidos.controller';
 import { AuthModule } from 'src/auth/auth.module';
 import { PedidosService } from './pedidos.service';
 import { ApiRestPedidosRepository } from './ApiRestPedidosRepository';
-import { PagarPedido } from '../dominio/casosDeUso/PagarPedido';
+import { CrearPedido } from '../dominio/casosDeUso/CrearPedido';
 import { Producto } from 'src/modules/productos/infraestructura/entities/producto.entity';
 import { Cliente } from 'src/modules/cliente/infraestructura/entities/cliente.entity';
 import { ClienteModule } from 'src/modules/cliente/infraestructura/cliente.module';
+import { ProductosModule } from 'src/modules/productos/infraestructura/productos.module';
+import { ConfirmarPedido } from '../dominio/casosDeUso/ConfirmarPedido';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Pedido, Producto, Cliente]),
     forwardRef(() => AuthModule),
     ClienteModule,
+    ProductosModule,
     PedidosModule,
   ],
   controllers: [PedidosController],
-  providers: [PedidosService, ApiRestPedidosRepository, PagarPedido],
-  exports: [PedidosService, ApiRestPedidosRepository, PagarPedido],
+  providers: [
+    PedidosService,
+    ApiRestPedidosRepository,
+    CrearPedido,
+    ConfirmarPedido,
+  ],
+  exports: [
+    PedidosService,
+    ApiRestPedidosRepository,
+    CrearPedido,
+    ConfirmarPedido,
+  ],
 })
 export class PedidosModule {}
