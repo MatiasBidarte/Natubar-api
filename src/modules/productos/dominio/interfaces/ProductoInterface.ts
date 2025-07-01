@@ -9,4 +9,6 @@ export interface ProductoInterface {
   stock: boolean;
   urlImagen?: string;
   sabores: SaborInterface[];
+  esCajaDeBarras: boolean;
+  cantidadDeBarras: number;
 }
