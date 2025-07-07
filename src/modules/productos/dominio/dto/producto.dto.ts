@@ -5,9 +5,9 @@ export class ProductoDto {
   precioPersonas: number;
   precioEmpresas: number;
   stock: boolean;
+  esCajaDeBarras: boolean;
   urlImagen?: string;
   peso?: number;
-  esCajaDeBarras: boolean;
   cantidadDeBarras?: number;
   constructor(
     id: number,
@@ -19,6 +19,7 @@ export class ProductoDto {
     esCajaDeBarras: boolean,
     urlImagen?: string,
     peso?: number,
+    
     cantidadDeBarras?: number,
   ) {
     this.id = id;
