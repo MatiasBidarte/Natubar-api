@@ -13,7 +13,7 @@ import { PedidoRepository } from '../dominio/interfaces/repositorio/PedidoReposi
 import { PedidosService } from './pedidos.service';
 import { AuthService } from 'src/auth/auth.service';
 import { PedidoDto } from '../dominio/dto/pedido.dto';
-import { Pedido } from './entities/pedido.entity';
+import { EstadosPedido, Pedido } from './entities/pedido.entity';
 import { ClienteService } from 'src/modules/cliente/infraestructura/cliente.service';
 import { Cliente } from 'src/modules/cliente/infraestructura/entities/cliente.entity';
 import { map } from 'rxjs';
@@ -35,6 +35,9 @@ export class ApiRestPedidosRepository implements PedidoRepository {
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
   ) {}
+  getByEstado(estado: EstadosPedido): Promise<Pedido[]> {
+    return this.contextPedido.getByEstado(estado);
+  }
 
   obtenerTodos(): Pedido[] | PromiseLike<Pedido[]> {
     return this.contextPedido.obtenerPedidos();
@@ -51,22 +54,15 @@ export class ApiRestPedidosRepository implements PedidoRepository {
     pedido.cliente = cliente;
     pedido.detallesPedidos = [];
 
-    if (
-      !pedidoDto.detalleProductos ||
-      pedidoDto.detalleProductos.length === 0
-    ) {
+    if (!pedidoDto.productos || pedidoDto.productos.length === 0) {
       throw new BadRequestException(
         'La lista de detalleProductos es requerida y no puede estar vacía',
       );
     }
-    for (const detalleDto of pedidoDto.detalleProductos) {
-      const producto = await this.contextProducto.findById(
-        detalleDto.producto.id,
-      );
+    for (const detalleDto of pedidoDto.productos) {
+      const producto = await this.contextProducto.findById(detalleDto.id);
       if (!producto) {
-        throw new NotFoundException(
-          `Producto ${detalleDto.producto.id} no encontrado`,
-        );
+        throw new NotFoundException(`Producto ${detalleDto.id} no encontrado`);
       }
       const detalle = DetallePedidoMapper.toDomain(detalleDto);
       detalle.producto = producto;

@@ -14,7 +14,6 @@ export enum EstadosPedido {
   entregado = 'Entregado',
   pendientePago = 'Pendiente de Pago',
 }
-
 @Entity({ name: 'pedidos' })
 export class Pedido {
   @PrimaryGeneratedColumn()
@@ -40,9 +39,6 @@ export class Pedido {
 
   @Column({ nullable: true })
   preferenceId: string;
-
-  @Column({ nullable: true })
-  estado: string;
 
   @OneToMany(() => DetallePedido, (detallePedido) => detallePedido.pedido, {
     eager: true,
@@ -70,7 +66,7 @@ export class Pedido {
     if (descuento !== undefined) this.descuento = descuento;
     if (preferenceId !== undefined) this.preferenceId = preferenceId;
     if (cliente !== undefined) this.cliente = cliente;
-    this.estado = 'pendiente';
+    this.estado = EstadosPedido.pendientePago;
   }
 
   addDetallePedido(detallePedido: DetallePedido) {

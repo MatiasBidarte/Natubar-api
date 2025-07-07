@@ -1,20 +1,20 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ApiRestPedidosRepository } from '../../infraestructura/ApiRestPedidosRepository';
 import { PedidoRepository } from '../interfaces/repositorio/PedidoRepository';
-import { PedidoDto } from '../dto/pedido.dto';
-import { Pedido } from '../../infraestructura/entities/pedido.entity';
+import {
+  EstadosPedido,
+  Pedido,
+} from '../../infraestructura/entities/pedido.entity';
 
 @Injectable()
-export class CrearPedido {
+export class GetByEstado {
   constructor(
     @Inject(forwardRef(() => ApiRestPedidosRepository))
     private readonly pedidoRepository: PedidoRepository,
   ) {}
 
-  async ejecutar(pedido: PedidoDto): Promise<{ response: Pedido }> {
-    const pedidoCreado = (await this.pedidoRepository.crearPedido(
-      pedido,
-    )) as Pedido;
-    return { response: pedidoCreado };
+  async ejecutar(estado: EstadosPedido): Promise<Pedido[]> {
+    const pedidoCreado = await this.pedidoRepository.getByEstado(estado);
+    return pedidoCreado;
   }
 }

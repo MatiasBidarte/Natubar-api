@@ -11,6 +11,7 @@ import { Cliente } from 'src/modules/cliente/infraestructura/entities/cliente.en
 import { ClienteModule } from 'src/modules/cliente/infraestructura/cliente.module';
 import { ProductosModule } from 'src/modules/productos/infraestructura/productos.module';
 import { ConfirmarPedido } from '../dominio/casosDeUso/ConfirmarPedido';
+import { GetByEstado } from '../dominio/casosDeUso/GetByEstado';
 
 @Module({
   imports: [
@@ -26,12 +27,14 @@ import { ConfirmarPedido } from '../dominio/casosDeUso/ConfirmarPedido';
     ApiRestPedidosRepository,
     CrearPedido,
     ConfirmarPedido,
+    GetByEstado,
   ],
   exports: [
     PedidosService,
     ApiRestPedidosRepository,
     CrearPedido,
     ConfirmarPedido,
+    GetByEstado,
   ],
 })
 export class PedidosModule {}

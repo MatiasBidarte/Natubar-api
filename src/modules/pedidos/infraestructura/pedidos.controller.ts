@@ -1,25 +1,68 @@
 import {
   Body,
   Controller,
+  Get,
   InternalServerErrorException,
   Post,
 } from '@nestjs/common';
-import { PedidoDto } from '../dominio/dto/pedido.dto';
+import { EstadoDto, PedidoDto } from '../dominio/dto/pedido.dto';
 import { CrearPedido } from '../dominio/casosDeUso/CrearPedido';
-import { ClienteDto } from 'src/modules/cliente/dominio/dto/cliente.dto';
-import mercadopago from 'src/lib/mercadopago';
 import { ConfirmarPedido } from '../dominio/casosDeUso/ConfirmarPedido';
 import axios from 'axios';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
+import { EstadosPedido, Pedido } from './entities/pedido.entity';
+import { GetByEstado } from '../dominio/casosDeUso/GetByEstado';
+import { ClienteDto } from 'src/modules/cliente/dominio/dto/cliente.dto';
+
+export class WebhookDto {
+  topic: 'payment' | 'merchant_order';
+  data?: {
+    id?: string;
+  };
+  resource?: string;
+}
+interface MercadoPagoOrderResponse {
+  payments: Array<{
+    id: string;
+    status: string;
+    [key: string]: any; // si querés flexibilidad
+  }>;
+  // otros campos si los necesitás
+}
+export interface MercadoPagoPayment {
+  id: string;
+  status: EstadosPedido;
+  preference_id: string;
+  payer?: {
+    email?: string;
+    identification?: {
+      type?: string;
+      number?: string;
+    };
+  };
+  transaction_amount?: number;
+}
 @Controller('pedidos')
 export class PedidosController {
   constructor(
     private readonly crear: CrearPedido,
     private readonly confirmar: ConfirmarPedido,
+    private readonly getByEstado: GetByEstado,
   ) {}
+  @Get('PedidosPorEstado')
+  async getPedidos(@Body() body: EstadoDto): Promise<Pedido[]> {
+    const estadoRaw: string = body.estado;
+    if (estadoRaw == null) {
+      return [];
+    }
+    const estado = estadoRaw as EstadosPedido;
+    console.log(estado);
+    const pedidos = await this.getByEstado.ejecutar(estado);
+    return pedidos;
+  }
 
   @Post('crear-preferencia')
-  async crearPreferencia(@Body() body) {
+  async crearPreferencia(@Body() body: PedidoDto) {
     const accessToken = process.env.MP_ACCESS_TOKEN;
     if (!accessToken) {
       throw new InternalServerErrorException(
@@ -29,40 +72,41 @@ export class PedidosController {
     const client = new MercadoPagoConfig({
       accessToken,
     });
+
     const pedidoDePrueba: PedidoDto = {
       id: 999,
+      fechaCreacion: new Date(),
       fechaEntrega: new Date(),
       fechaEntregaEstimada: new Date(Date.now() + 86400000),
       montoTotal: 1000,
       descuento: 0,
-      detalleProductos: [
+      estado: EstadosPedido.pendientePago,
+      productos: [
         {
           id: 1,
           cantidad: 2,
-          producto: {
-            id: 1,
-            nombre: 'Barra de Cereal Energética',
-            descripcion:
-              'Una mezcla perfecta de avena, miel y almendras para recargar tu energía.',
-            precioEmpresas: 300,
-            precioPersonas: 400,
-            stock: true,
-          },
+          nombre: 'Barra de Cereal Energética',
+          descripcion:
+            'Una mezcla perfecta de avena, miel y almendras para recargar tu energía.',
+          precioEmpresas: 300,
+          precioPersonas: 400,
+          stock: true,
+          esCajaDeBarras: false,
+          sabores: [],
         },
         {
-          id: 2,
           cantidad: 1,
-          producto: {
-            id: 2,
-            nombre: 'Barra Proteica Choco-Nuez',
-            descripcion:
-              'Deliciosa barra alta en proteínas con cacao y nueces.',
-            precioEmpresas: 500,
-            precioPersonas: 600,
-            stock: true,
-          },
+          id: 2,
+          nombre: 'Barra Proteica Choco-Nuez',
+          descripcion: 'Deliciosa barra alta en proteínas con cacao y nueces.',
+          precioEmpresas: 500,
+          precioPersonas: 600,
+          stock: true,
+          esCajaDeBarras: false,
+          sabores: [],
         },
       ],
+
       cliente: {
         id: 1,
         email: 'prueba1@gmail.com',
@@ -74,67 +118,75 @@ export class PedidosController {
         telefono: '123456789',
       } as ClienteDto,
     };
+
+    body = pedidoDePrueba;
     const preferenceClient = new Preference(client);
 
-    const items = (pedidoDePrueba.detalleProductos ?? []).map((detalle) => ({
-      id: detalle.producto.id.toString(),
-      title: detalle.producto.nombre,
+    const items = (body.productos ?? []).map((detalle) => ({
+      id: detalle.id.toString(),
+      title: detalle.nombre,
       quantity: detalle.cantidad,
-      unit_price: detalle.producto.precioPersonas,
+      unit_price:
+        body.cliente.tipo === 'Persona'
+          ? detalle.precioPersonas
+          : detalle.precioEmpresas,
+
       currency_id: 'UYU',
     }));
 
     const preference = await preferenceClient.create({
+      //cambiar por la url
       body: {
         items,
         notification_url:
           'https://7644-2800-a4-1f3e-7200-a4f5-b98-9ff-36b3.ngrok-free.app/pedidos/webhook-mercadopago',
       },
     });
-    pedidoDePrueba.preferenceId = preference.id;
-    await this.crear.ejecutar(pedidoDePrueba);
-    console.log('Preferencia creada:', preference);
+    body.preferenceId = preference.id || '';
+    await this.crear.ejecutar(body);
     return { preferenceId: preference.id };
   }
 
   @Post('webhook-mercadopago')
-  async mercadopagoWebhook(@Body() body: any) {
-    console.log('Webhook de MercadoPago recibido:', body);
+  async mercadopagoWebhook(@Body() body: WebhookDto) {
+    let paymentId: string | null = null;
+
     if (body.topic === 'payment' && body.data?.id) {
-      const paymentId = body.data.id;
-      // ...tu lógica actual...
+      paymentId = body.data.id;
     } else if (body.topic === 'merchant_order' && body.resource) {
-      // Obtener la orden y buscar los pagos asociados
       const accessToken = process.env.MP_ACCESS_TOKEN;
-      const orderResponse = await axios.get(body.resource, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      const payments = orderResponse.data.payments;
-      // Puedes iterar sobre los pagos y procesarlos si lo necesitas
-      console.log('Pagos asociados a la orden:', payments);
-      // Obtener el primer paymentId si existe
-      const paymentId = payments && payments.length > 0 ? payments[0].id : null;
-      if (!paymentId) {
-        console.log('No se encontró paymentId en los pagos asociados.');
-        return { received: false, error: 'No paymentId found' };
-      }
-      // 2. Consultar la API de Mercado Pago
-      const paymentResponse = await axios.get(
-        `https://api.mercadopago.com/v1/payments/${paymentId}`,
+      const orderResponse = await axios.get<MercadoPagoOrderResponse>(
+        body.resource,
         {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+          headers: { Authorization: `Bearer ${accessToken}` },
         },
       );
-      const payment = paymentResponse.data;
-
-      if (payment.status === 'approved') {
-        const preferenceId = payment.preference_id;
-
-        await this.confirmar.ejecutar(preferenceId);
-      }
-      return { received: true };
+      const payments = orderResponse.data.payments;
+      paymentId = payments?.[0]?.id ?? null;
     }
+
+    if (!paymentId) {
+      console.log('No se encontró paymentId.');
+      return { received: false, error: 'No paymentId found' };
+    }
+
+    const accessToken = process.env.MP_ACCESS_TOKEN;
+    const paymentResponse = await axios.get<MercadoPagoPayment>(
+      `https://api.mercadopago.com/v1/payments/${paymentId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+
+    const payment = paymentResponse.data;
+
+    if (payment.status === EstadosPedido.enPreparacion) {
+      const preferenceId = payment.preference_id;
+      await this.confirmar.ejecutar(preferenceId);
+    }
+
+    return { received: true };
   }
 }

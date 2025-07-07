@@ -1,5 +1,12 @@
+import { IsEnum } from 'class-validator';
 import { EstadosPedido } from '../../infraestructura/entities/pedido.entity';
 import { DetallePedidoDto } from './detalle-pedido.dto';
+import { ClienteDto } from 'src/modules/cliente/dominio/dto/cliente.dto';
+
+export class EstadoDto {
+  @IsEnum(EstadosPedido)
+  estado: EstadosPedido;
+}
 
 export class PedidoDto {
   id: number;
@@ -8,10 +15,10 @@ export class PedidoDto {
   fechaEntregaEstimada: Date;
   montoTotal: number;
   descuento: number;
-
+  preferenceId?: string;
   estado: EstadosPedido;
   productos: DetallePedidoDto[];
-
+  cliente: ClienteDto;
   constructor(
     id: number,
     fechaCreacion: Date,
