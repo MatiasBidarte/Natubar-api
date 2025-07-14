@@ -61,6 +61,11 @@ export class PedidosController {
     return pedidos;
   }
 
+  @Post()
+  async crearPedido(@Body() body: PedidoDto): Promise<{ id: number }> {
+    return await this.crear.ejecutar(body);
+  }
+
   @Post('crear-preferencia')
   async crearPreferencia(@Body() body: PedidoDto) {
     const accessToken = process.env.MP_ACCESS_TOKEN;
@@ -135,21 +140,23 @@ export class PedidosController {
     }));
 
     const preference = await preferenceClient.create({
-      //cambiar por la url
       body: {
         items,
         notification_url:
-          'https://7644-2800-a4-1f3e-7200-a4f5-b98-9ff-36b3.ngrok-free.app/pedidos/webhook-mercadopago',
+          'https://66331d98a48e.ngrok-free.app/pedidos/webhook-mercadopago',
+        back_urls: {
+          success: 'https://natubar.vercel.app',
+        },
       },
     });
     body.preferenceId = preference.id || '';
-    await this.crear.ejecutar(body);
     return { preferenceId: preference.id };
   }
 
   @Post('webhook-mercadopago')
   async mercadopagoWebhook(@Body() body: WebhookDto) {
     let paymentId: string | null = null;
+    console.log('body en webhook', body);
 
     if (body.topic === 'payment' && body.data?.id) {
       paymentId = body.data.id;

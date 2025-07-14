@@ -11,10 +11,10 @@ export class CrearPedido {
     private readonly pedidoRepository: PedidoRepository,
   ) {}
 
-  async ejecutar(pedido: PedidoDto): Promise<{ response: Pedido }> {
+  async ejecutar(pedido: PedidoDto): Promise<{ id: number }> {
     const pedidoCreado = (await this.pedidoRepository.crearPedido(
       pedido,
     )) as Pedido;
-    return { response: pedidoCreado };
+    return { id: pedidoCreado.id };
   }
 }
