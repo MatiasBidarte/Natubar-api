@@ -19,7 +19,6 @@ export class ProductoDto {
     esCajaDeBarras: boolean,
     urlImagen?: string,
     peso?: number,
-    
     cantidadDeBarras?: number,
   ) {
     this.id = id;

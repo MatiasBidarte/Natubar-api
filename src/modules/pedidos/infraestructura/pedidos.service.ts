@@ -1,11 +1,19 @@
 import { EstadosPedido, Pedido } from './entities/pedido.entity';
+import { DetallePedido } from './entities/detalle-pedido.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ProductoSabor } from 'src/modules/productos/infraestructura/entities/producto-sabor.entity';
 
 export class PedidosService {
   constructor(
     @InjectRepository(Pedido)
     private readonly pedidoRepository: Repository<Pedido>,
+
+    @InjectRepository(DetallePedido)
+    private detallePedidoRepository: Repository<DetallePedido>,
+
+    @InjectRepository(ProductoSabor)
+    private productoSaborRepository: Repository<ProductoSabor>,
   ) {}
 
   obtenerPedidos() {
@@ -32,5 +40,15 @@ export class PedidosService {
     }
     pedido.estado = EstadosPedido.enPreparacion;
     return this.pedidoRepository.save(pedido);
+  }
+
+  async guardarDetallePedido(detalle: DetallePedido): Promise<DetallePedido> {
+    return this.detallePedidoRepository.save(detalle);
+  }
+
+  async guardarProductoSabor(
+    productoSabor: ProductoSabor,
+  ): Promise<ProductoSabor> {
+    return this.productoSaborRepository.save(productoSabor);
   }
 }

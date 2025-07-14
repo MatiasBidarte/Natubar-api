@@ -12,6 +12,9 @@ import { Cliente } from '../modules/cliente/infraestructura/entities/cliente.ent
 //import { jwtConstants } from './constants';
 import { LoginRetornoClienteDto } from 'src/modules/cliente/dominio/dto/login-retorno-cliente-dto';
 
+import { ClientePersona } from 'src/modules/cliente/infraestructura/entities/cliente-persona.entity';
+import { ClienteEmpresa } from 'src/modules/cliente/infraestructura/entities/cliente-empresa.entity';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -25,6 +28,7 @@ export class AuthService {
     contra: string,
   ): Promise<{ access_token: string }> {
     const user = await this.ClienteService.findOne(email);
+    console.log(user);
     if (user == null) {
       throw new UnauthorizedException();
     }
@@ -35,7 +39,10 @@ export class AuthService {
       throw new UnauthorizedException('Contraseña incorrecta');
     }
     const { contrasena, ...userWithoutPassword } = user;
-    const payload = { ...userWithoutPassword };
+    const payload = {
+      ...userWithoutPassword,
+      tipo: user instanceof ClientePersona ? 'PERSONA' : 'EMPRESA',
+    };
     const token = this.jwtService.sign(payload);
     return {
       access_token: token,
@@ -45,7 +52,10 @@ export class AuthService {
   // Nuevo método para generar token sin verificar contraseña
   generateTokenForUser(cliente: Partial<Cliente>): { access_token: string } {
     const { contrasena, ...userWithoutPassword } = cliente;
-    const payload = { ...userWithoutPassword };
+    const payload = {
+      ...userWithoutPassword,
+      tipo: cliente instanceof ClientePersona ? 'PERSONA' : 'EMPRESA',
+    };
     const token = this.jwtService.sign(payload);
     return {
       access_token: token,
