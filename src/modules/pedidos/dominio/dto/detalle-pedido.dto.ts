@@ -1,3 +1,4 @@
+import { ProductoDto } from 'src/modules/productos/dominio/dto/producto.dto';
 import { SaborDto } from 'src/modules/sabores/dominio/dto/sabor.dto';
 
 export class DetallePedidoDto {
@@ -12,6 +13,7 @@ export class DetallePedidoDto {
   peso?: number;
   esCajaDeBarras: boolean;
   cantidadDeBarras?: number;
+  producto?: ProductoDto;
   sabores: SaborDto[];
 
   constructor(cantidad: number) {

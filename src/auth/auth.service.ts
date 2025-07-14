@@ -25,6 +25,7 @@ export class AuthService {
     contra: string,
   ): Promise<{ access_token: string }> {
     const user = await this.ClienteService.findOne(email);
+    console.log(user);
     if (user == null) {
       throw new UnauthorizedException();
     }
