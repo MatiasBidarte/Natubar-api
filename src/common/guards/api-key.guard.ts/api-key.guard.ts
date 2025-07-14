@@ -14,9 +14,12 @@ export class ApiKeyGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
+    console.log('Request URL:', request.url);
+    if (request.url.includes('webhook-mercadopago')) {
+      return true;
+    }
     const apiKeyHeader = request.headers['x-api-key'];
     const validApiKey = this.configService.get<string>('API_KEY');
-
     if (!apiKeyHeader) {
       throw new UnauthorizedException('API Key is missing');
     }

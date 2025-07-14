@@ -12,4 +12,9 @@ export class ProductosService {
   obtener(): Promise<Producto[]> {
     return this.productoRepository.find();
   }
+  async findById(id: number): Promise<Producto | null> {
+    return await this.productoRepository.findOne({
+      where: { id: id },
+    });
+  }
 }

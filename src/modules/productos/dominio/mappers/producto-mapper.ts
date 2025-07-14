@@ -16,6 +16,18 @@ export class ProductoMapper {
       producto.cantidadDeBarras,
     );
   }
+  static toDomain(raw: ProductoDto): Producto {
+    const producto = new Producto(
+      raw.id,
+      raw.nombre,
+      raw.descripcion,
+      raw.precioPersonas,
+      raw.precioEmpresas,
+      raw.stock,
+      raw.urlImagen ?? '',
+    );
+    return producto;
+  }
 
   static toPrimitives(producto: ProductoDto): object {
     return {

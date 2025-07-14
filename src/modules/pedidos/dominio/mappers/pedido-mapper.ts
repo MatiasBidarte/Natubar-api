@@ -1,7 +1,5 @@
 import { Pedido } from '../../infraestructura/entities/pedido.entity';
 import { PedidoDto } from '../dto/pedido.dto';
-import { DetallePedidoMapper } from './detalle-pedido-mapper';
-import { DetallePedido } from '../../infraestructura/entities/detalle-pedido.entity';
 
 export class PedidoMapper {
   static toDto(pedido: Pedido): PedidoDto {
@@ -13,9 +11,19 @@ export class PedidoMapper {
       pedido.montoTotal,
       pedido.descuento,
       pedido.estado,
-      pedido.detallesPedidos.map((detalle: DetallePedido) =>
-        DetallePedidoMapper.toDto(detalle),
-      ),
+      [],
     );
+  }
+  static toDomain(raw: PedidoDto): Pedido {
+    const pedido = new Pedido(
+      raw.id,
+      raw.fechaEntrega,
+      raw.fechaEntregaEstimada,
+      raw.montoTotal,
+      raw.descuento,
+      undefined,
+      raw.preferenceId,
+    );
+    return pedido;
   }
 }
