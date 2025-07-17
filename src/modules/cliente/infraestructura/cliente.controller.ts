@@ -128,7 +128,6 @@ export class ClienteController {
       if (ex instanceof HttpException) {
         throw ex;
       } else {
-        console.log(ex);
         throw new InternalServerErrorException(
           'Error al obtener los pedidos del cliente: intente mas tarde',
         );

@@ -23,6 +23,11 @@ export class PedidosService {
   getByEstado(estado: EstadosPedido): Promise<Pedido[]> {
     return this.pedidoRepository.find({
       where: { estado },
+      relations: [
+        'productos',
+        'productos.productoSabores',
+        'productos.productoSabores.sabor',
+      ],
     });
   }
   async crearPedido(pedido: Pedido): Promise<Pedido> {
@@ -40,6 +45,17 @@ export class PedidosService {
     }
     pedido.estadoPago = EstadosPago.pagado;
     return this.pedidoRepository.save(pedido);
+  }
+
+  async cambiarEstado(id: number, estado: EstadosPedido): Promise<Pedido> {
+    const pedido = await this.pedidoRepository.findOne({
+      where: { id },
+    });
+    if (!pedido) {
+      throw new Error('Pedido no encontrado');
+    }
+    pedido.estado = estado;
+    return await this.pedidoRepository.save(pedido);
   }
 
   async guardarDetallePedido(detalle: DetallePedido): Promise<DetallePedido> {

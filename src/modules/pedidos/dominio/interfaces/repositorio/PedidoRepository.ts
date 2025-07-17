@@ -9,4 +9,5 @@ export interface PedidoRepository {
   crearPedido(pedido: PedidoDto);
   confirmarPedido(pedidoId: string): Promise<Pedido>;
   getByEstado(estado: EstadosPedido): Promise<Pedido[]>;
+  changeEstado(id: number, estado: EstadosPedido): Promise<Pedido>;
 }

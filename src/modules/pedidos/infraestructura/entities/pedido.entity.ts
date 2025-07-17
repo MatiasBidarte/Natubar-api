@@ -53,7 +53,7 @@ export class Pedido {
     eager: true,
     cascade: true,
   })
-  detallesPedidos: DetallePedido[];
+  productos: DetallePedido[];
 
   @ManyToOne(() => Cliente, (cliente) => cliente.pedidos, { eager: true })
   cliente: Cliente;
@@ -80,9 +80,9 @@ export class Pedido {
   }
 
   addDetallePedido(detallePedido: DetallePedido) {
-    if (!this.detallesPedidos) {
-      this.detallesPedidos = [];
+    if (!this.productos) {
+      this.productos = [];
     }
-    this.detallesPedidos.push(detallePedido);
+    this.productos.push(detallePedido);
   }
 }

@@ -14,10 +14,10 @@ export class DetallePedido {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Pedido, (pedido) => pedido.detallesPedidos)
+  @ManyToOne(() => Pedido, (pedido) => pedido.productos)
   pedido: Pedido;
 
-  @ManyToOne(() => Producto, (producto) => producto.detallesPedidos, {
+  @ManyToOne(() => Producto, (producto) => producto.productos, {
     eager: true,
   })
   producto: Producto;
@@ -27,6 +27,7 @@ export class DetallePedido {
     (productoSabor) => productoSabor.detallePedido,
     {
       eager: true,
+      cascade: true,
     },
   )
   productoSabores: ProductoSabor[];

@@ -65,7 +65,7 @@ describe('ApiRestClientesRepository', () => {
     montoTotal: 1500,
     estado: 'En Preparación',
     descuento: 0,
-    detallesPedidos: [],
+    productos: [],
     cliente: mockClientePersona,
   };
 

@@ -3,9 +3,10 @@ import {
   Controller,
   Get,
   InternalServerErrorException,
+  Param,
   Post,
 } from '@nestjs/common';
-import { EstadoDto, PedidoDto } from '../dominio/dto/pedido.dto';
+import { PedidoDto } from '../dominio/dto/pedido.dto';
 import { CrearPedido } from '../dominio/casosDeUso/CrearPedido';
 import { ConfirmarPedido } from '../dominio/casosDeUso/ConfirmarPedido';
 import axios from 'axios';
@@ -13,6 +14,9 @@ import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { EstadosPedido, Pedido } from './entities/pedido.entity';
 import { GetByEstado } from '../dominio/casosDeUso/GetByEstado';
 import { ICrearPreferencia } from './interfaces/ICrearPreferencia';
+import { ClienteDto } from 'src/modules/cliente/dominio/dto/cliente.dto';
+import { Console } from 'console';
+import { ChangeEstado } from '../dominio/casosDeUso/ChangeEstado';
 
 export class WebhookDto {
   topic: 'payment' | 'merchant_order';
@@ -49,15 +53,15 @@ export class PedidosController {
     private readonly crear: CrearPedido,
     private readonly confirmar: ConfirmarPedido,
     private readonly getByEstado: GetByEstado,
+    private readonly changeEstado: ChangeEstado,
   ) {}
-  @Get('PedidosPorEstado')
-  async getPedidos(@Body() body: EstadoDto): Promise<Pedido[]> {
-    const estadoRaw: string = body.estado;
+  @Get('PedidosPorEstado/:estadoRaw')
+  async getPedidos(@Param('estadoRaw') estadoRaw: string): Promise<Pedido[]> {
     if (estadoRaw == null) {
       return [];
     }
     const estado = estadoRaw as EstadosPedido;
-    const pedidos = await this.getByEstado.ejecutar(estado);
+    const pedidos: Pedido[] = await this.getByEstado.ejecutar(estado);
     return pedidos;
   }
 
@@ -104,7 +108,6 @@ export class PedidosController {
   @Post('webhook-mercadopago')
   async mercadopagoWebhook(@Body() body: WebhookDto) {
     let paymentId: string | null = null;
-
     if (body.topic === 'payment' && body.data?.id) {
       paymentId = body.data.id;
     } else if (body.topic === 'merchant_order' && body.resource) {
@@ -120,7 +123,6 @@ export class PedidosController {
     }
 
     if (!paymentId) {
-      console.log('No se encontró paymentId.');
       return { received: false, error: 'No paymentId found' };
     }
 
@@ -135,12 +137,17 @@ export class PedidosController {
     );
 
     const payment = paymentResponse.data;
-
     if (payment.status === 'approved') {
       const pedidoId = payment.external_reference;
       await this.confirmar.ejecutar(pedidoId ?? '');
     }
-
     return { received: true };
+  }
+
+  @Post('cambiarEstado')
+  async cambiarEstado(@Body() estadoRaw: string, id: number) {
+    const estado = estadoRaw as EstadosPedido;
+    const pedido: Pedido = await this.changeEstado.ejecutar(id, estado);
+    return pedido;
   }
 }

@@ -51,7 +51,6 @@ export class ApiRestClientesRepository implements ClienteRepository {
       if (error instanceof HttpException) {
         throw error;
       } else {
-        console.log(error);
         throw new InternalServerErrorException(
           'Error desconocido al crear el cliente.',
         );
@@ -130,7 +129,6 @@ export class ApiRestClientesRepository implements ClienteRepository {
       if (error instanceof HttpException) {
         throw error;
       } else {
-        console.log(error);
         throw new InternalServerErrorException(
           'Error desconocido al actualizar el cliente.',
         );
