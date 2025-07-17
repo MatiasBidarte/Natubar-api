@@ -11,9 +11,9 @@ export class ConfirmarPedido {
     private readonly pedidoRepository: PedidoRepository,
   ) {}
 
-  async ejecutar(preferenceId: string): Promise<{ response: object }> {
+  async ejecutar(pedidoId: string): Promise<{ response: object }> {
     const pedidoConfirmado: Pedido =
-      await this.pedidoRepository.confirmarPedido(preferenceId);
+      await this.pedidoRepository.confirmarPedido(pedidoId);
     return { response: pedidoConfirmado };
   }
 }

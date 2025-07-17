@@ -109,8 +109,8 @@ export class ApiRestPedidosRepository implements PedidoRepository {
     return { id: pedidoGuardado.id };
   }
 
-  confirmarPedido(preferenceId: string): Promise<Pedido> {
-    return this.contextPedido.confirmarPedido(preferenceId);
+  confirmarPedido(pedidoId: string): Promise<Pedido> {
+    return this.contextPedido.confirmarPedido(pedidoId);
   }
   async changeEstado(id: number, estado: EstadosPedido): Promise<Pedido> {
     const pedido: Pedido = await this.contextPedido.cambiarEstado(id, estado);
