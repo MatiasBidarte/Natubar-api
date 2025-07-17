@@ -47,7 +47,7 @@ describe('ClienteService', () => {
     montoTotal: 1500,
     estado: 'En Preparación',
     descuento: 0,
-    detallesPedidos: [],
+    productos: [],
     cliente: mockClientePersona,
   } as unknown as Pedido;
 
@@ -225,8 +225,8 @@ describe('ClienteService', () => {
         where: { id: 1 },
         relations: [
           'pedidos',
-          'pedidos.detallesPedidos',
-          'pedidos.detallesPedidos.productoSabores.sabor',
+          'pedidos.productos',
+          'pedidos.productos.productoSabores.sabor',
         ],
       });
     });

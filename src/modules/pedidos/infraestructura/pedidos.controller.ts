@@ -3,9 +3,10 @@ import {
   Controller,
   Get,
   InternalServerErrorException,
+  Param,
   Post,
 } from '@nestjs/common';
-import { EstadoDto, PedidoDto } from '../dominio/dto/pedido.dto';
+import { PedidoDto } from '../dominio/dto/pedido.dto';
 import { CrearPedido } from '../dominio/casosDeUso/CrearPedido';
 import { ConfirmarPedido } from '../dominio/casosDeUso/ConfirmarPedido';
 import axios from 'axios';
@@ -13,6 +14,8 @@ import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { EstadosPedido, Pedido } from './entities/pedido.entity';
 import { GetByEstado } from '../dominio/casosDeUso/GetByEstado';
 import { ClienteDto } from 'src/modules/cliente/dominio/dto/cliente.dto';
+import { Console } from 'console';
+import { ChangeEstado } from '../dominio/casosDeUso/ChangeEstado';
 
 export class WebhookDto {
   topic: 'payment' | 'merchant_order';
@@ -48,109 +51,125 @@ export class PedidosController {
     private readonly crear: CrearPedido,
     private readonly confirmar: ConfirmarPedido,
     private readonly getByEstado: GetByEstado,
+    private readonly changeEstado: ChangeEstado,
   ) {}
-  @Get('PedidosPorEstado')
-  async getPedidos(@Body() body: EstadoDto): Promise<Pedido[]> {
-    const estadoRaw: string = body.estado;
+  @Get('PedidosPorEstado/:estadoRaw')
+  async getPedidos(@Param('estadoRaw') estadoRaw: string): Promise<Pedido[]> {
     if (estadoRaw == null) {
       return [];
     }
     const estado = estadoRaw as EstadosPedido;
-    console.log(estado);
-    const pedidos = await this.getByEstado.ejecutar(estado);
+    const pedidos: Pedido[] = await this.getByEstado.ejecutar(estado);
     return pedidos;
   }
 
   @Post('crear-preferencia')
   async crearPreferencia(@Body() body: PedidoDto) {
-    const accessToken = process.env.MP_ACCESS_TOKEN;
-    if (!accessToken) {
-      throw new InternalServerErrorException(
-        'MercadoPago access token is not defined',
-      );
-    }
-    const client = new MercadoPagoConfig({
-      accessToken,
-    });
+    try {
+      const accessToken = process.env.MP_ACCESS_TOKEN;
+      if (!accessToken) {
+        throw new InternalServerErrorException(
+          'MercadoPago access token is not defined',
+        );
+      }
+      const client = new MercadoPagoConfig({
+        accessToken,
+      });
 
-    const pedidoDePrueba: PedidoDto = {
-      id: 999,
-      fechaCreacion: new Date(),
-      fechaEntrega: new Date(),
-      fechaEntregaEstimada: new Date(Date.now() + 86400000),
-      montoTotal: 1000,
-      descuento: 0,
-      estado: EstadosPedido.pendientePago,
-      productos: [
-        {
+      const pedidoDePrueba: PedidoDto = {
+        id: 999,
+        fechaCreacion: new Date(),
+        fechaEntrega: new Date(),
+        fechaEntregaEstimada: new Date(Date.now() + 86400000),
+        montoTotal: 1000,
+        descuento: 0,
+        estado: EstadosPedido.pendientePago,
+        productos: [
+          {
+            id: 1,
+            cantidad: 2,
+            nombre: 'Barra de Cereal Energética',
+            descripcion:
+              'Una mezcla perfecta de avena, miel y almendras para recargar tu energía.',
+            precioEmpresas: 300,
+            precioPersonas: 400,
+            stock: true,
+            esCajaDeBarras: false,
+            sabores: [],
+          },
+          {
+            cantidad: 1,
+            id: 2,
+            nombre: 'Barra Proteica Choco-Nuez',
+            descripcion:
+              'Deliciosa barra alta en proteínas con cacao y nueces.',
+            precioEmpresas: 500,
+            precioPersonas: 600,
+            stock: true,
+            esCajaDeBarras: true,
+            sabores: [
+              {
+                id: 1,
+                nombre: 'Chocolate',
+                cantidad: 6,
+              },
+              {
+                id: 2,
+                nombre: 'Frutos Secos',
+                cantidad: 6,
+              },
+            ],
+          },
+        ],
+
+        cliente: {
           id: 1,
-          cantidad: 2,
-          nombre: 'Barra de Cereal Energética',
-          descripcion:
-            'Una mezcla perfecta de avena, miel y almendras para recargar tu energía.',
-          precioEmpresas: 300,
-          precioPersonas: 400,
-          stock: true,
-          esCajaDeBarras: false,
-          sabores: [],
+          email: 'prueba1@gmail.com',
+          contrasena: 'Montevideo111!',
+          observaciones: 'AAAA',
+          departamento: 'Montevideo',
+          ciudad: 'Montevideo',
+          direccion: 'Calle Falsa 123',
+          telefono: '123456789',
+        } as ClienteDto,
+      };
+      body = pedidoDePrueba;
+      const preferenceClient = new Preference(client);
+      const items = (body.productos ?? []).map((detalle) => ({
+        id: detalle.id.toString(),
+        title: detalle.nombre,
+        quantity: detalle.cantidad,
+        unit_price:
+          body.cliente.tipo === 'Persona'
+            ? detalle.precioPersonas
+            : detalle.precioEmpresas,
+
+        currency_id: 'UYU',
+      }));
+
+      const preference = await preferenceClient.create({
+        //cambiar por la url
+        body: {
+          items,
+          notification_url:
+            'https://fc461ef1ab52.ngrok-free.app/pedidos/webhook-mercadopago',
+          back_urls: {
+            success: 'https://natubar.vercel.app/',
+          },
+          auto_return: 'approved',
         },
-        {
-          cantidad: 1,
-          id: 2,
-          nombre: 'Barra Proteica Choco-Nuez',
-          descripcion: 'Deliciosa barra alta en proteínas con cacao y nueces.',
-          precioEmpresas: 500,
-          precioPersonas: 600,
-          stock: true,
-          esCajaDeBarras: false,
-          sabores: [],
-        },
-      ],
-
-      cliente: {
-        id: 1,
-        email: 'prueba1@gmail.com',
-        contrasena: 'Montevideo111!',
-        observaciones: 'AAAA',
-        departamento: 'Montevideo',
-        ciudad: 'Montevideo',
-        direccion: 'Calle Falsa 123',
-        telefono: '123456789',
-      } as ClienteDto,
-    };
-
-    body = pedidoDePrueba;
-    const preferenceClient = new Preference(client);
-
-    const items = (body.productos ?? []).map((detalle) => ({
-      id: detalle.id.toString(),
-      title: detalle.nombre,
-      quantity: detalle.cantidad,
-      unit_price:
-        body.cliente.tipo === 'Persona'
-          ? detalle.precioPersonas
-          : detalle.precioEmpresas,
-
-      currency_id: 'UYU',
-    }));
-
-    const preference = await preferenceClient.create({
-      //cambiar por la url
-      body: {
-        items,
-        notification_url:
-          'https://7644-2800-a4-1f3e-7200-a4f5-b98-9ff-36b3.ngrok-free.app/pedidos/webhook-mercadopago',
-      },
-    });
-    body.preferenceId = preference.id || '';
-    await this.crear.ejecutar(body);
-    return { preferenceId: preference.id };
+      });
+      body.preferenceId = preference.id || '';
+      await this.crear.ejecutar(body);
+      return { preferenceId: preference.id };
+    } catch (error: any) {
+      console.log(error);
+    }
   }
 
   @Post('webhook-mercadopago')
   async mercadopagoWebhook(@Body() body: WebhookDto) {
     let paymentId: string | null = null;
-
     if (body.topic === 'payment' && body.data?.id) {
       paymentId = body.data.id;
     } else if (body.topic === 'merchant_order' && body.resource) {
@@ -166,7 +185,6 @@ export class PedidosController {
     }
 
     if (!paymentId) {
-      console.log('No se encontró paymentId.');
       return { received: false, error: 'No paymentId found' };
     }
 
@@ -181,12 +199,18 @@ export class PedidosController {
     );
 
     const payment = paymentResponse.data;
-
     if (payment.status === EstadosPedido.enPreparacion) {
       const preferenceId = payment.preference_id;
       await this.confirmar.ejecutar(preferenceId);
     }
 
     return { received: true };
+  }
+
+  @Post('cambiarEstado')
+  async cambiarEstado(@Body() estadoRaw: string, id: number) {
+    const estado = estadoRaw as EstadosPedido;
+    const pedido: Pedido = await this.changeEstado.ejecutar(id, estado);
+    return pedido;
   }
 }

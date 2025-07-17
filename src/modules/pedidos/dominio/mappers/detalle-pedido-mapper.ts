@@ -17,6 +17,7 @@ export class DetallePedidoMapper {
     const detalle = new DetallePedido();
     detalle.id = raw.id;
     detalle.cantidad = raw.cantidad;
+    detalle.productoSabores = [];
     return detalle;
   }
 }
