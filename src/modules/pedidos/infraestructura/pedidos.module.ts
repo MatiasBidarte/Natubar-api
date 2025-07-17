@@ -14,10 +14,18 @@ import { ConfirmarPedido } from '../dominio/casosDeUso/ConfirmarPedido';
 import { GetByEstado } from '../dominio/casosDeUso/GetByEstado';
 import { SaboresModule } from 'src/modules/sabores/infraestructura/sabores.module';
 import { ChangeEstado } from '../dominio/casosDeUso/ChangeEstado';
+import { DetallePedido } from './entities/detalle-pedido.entity';
+import { ProductoSabor } from 'src/modules/productos/infraestructura/entities/producto-sabor.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Pedido, Producto, Cliente]),
+    TypeOrmModule.forFeature([
+      Pedido,
+      Producto,
+      Cliente,
+      DetallePedido,
+      ProductoSabor,
+    ]),
     forwardRef(() => AuthModule),
     ClienteModule,
     ProductosModule,

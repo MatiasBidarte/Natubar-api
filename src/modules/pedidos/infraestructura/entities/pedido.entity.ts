@@ -14,6 +14,12 @@ export enum EstadosPedido {
   entregado = 'Entregado',
   pendientePago = 'Pendiente de Pago',
 }
+
+export enum EstadosPago {
+  pendiente = 'Pendiente',
+  pagado = 'Pagado',
+  cancelado = 'Cancelado',
+}
 @Entity({ name: 'pedidos' })
 export class Pedido {
   @PrimaryGeneratedColumn()
@@ -34,7 +40,10 @@ export class Pedido {
   @Column()
   estado: EstadosPedido;
 
-  @Column()
+  @Column({ nullable: true })
+  estadoPago: EstadosPago;
+
+  @Column({ nullable: true })
   descuento: number;
 
   @Column({ nullable: true })
@@ -67,6 +76,7 @@ export class Pedido {
     if (preferenceId !== undefined) this.preferenceId = preferenceId;
     if (cliente !== undefined) this.cliente = cliente;
     this.estado = EstadosPedido.pendientePago;
+    this.estadoPago = EstadosPago.pendiente;
   }
 
   addDetallePedido(detallePedido: DetallePedido) {

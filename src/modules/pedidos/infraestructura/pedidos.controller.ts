@@ -63,6 +63,11 @@ export class PedidosController {
     return pedidos;
   }
 
+  @Post()
+  async crearPedido(@Body() body: PedidoDto): Promise<{ id: number }> {
+    return await this.crear.ejecutar(body);
+  }
+
   @Post('crear-preferencia')
   async crearPreferencia(@Body() body: PedidoDto) {
     try {
