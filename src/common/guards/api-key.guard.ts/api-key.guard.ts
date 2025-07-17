@@ -14,7 +14,6 @@ export class ApiKeyGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
-    console.log('Request URL:', request.url);
     if (request.url.includes('webhook-mercadopago')) {
       return true;
     }

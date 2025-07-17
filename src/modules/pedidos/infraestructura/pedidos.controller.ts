@@ -12,7 +12,7 @@ import axios from 'axios';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { EstadosPedido, Pedido } from './entities/pedido.entity';
 import { GetByEstado } from '../dominio/casosDeUso/GetByEstado';
-import { ClienteDto } from 'src/modules/cliente/dominio/dto/cliente.dto';
+import { ICrearPreferencia } from './interfaces/ICrearPreferencia';
 
 export class WebhookDto {
   topic: 'payment' | 'merchant_order';
@@ -31,7 +31,7 @@ interface MercadoPagoOrderResponse {
 }
 export interface MercadoPagoPayment {
   id: string;
-  status: EstadosPedido;
+  status: string;
   preference_id: string;
   payer?: {
     email?: string;
@@ -41,6 +41,7 @@ export interface MercadoPagoPayment {
     };
   };
   transaction_amount?: number;
+  external_reference?: string;
 }
 @Controller('pedidos')
 export class PedidosController {
@@ -56,7 +57,6 @@ export class PedidosController {
       return [];
     }
     const estado = estadoRaw as EstadosPedido;
-    console.log(estado);
     const pedidos = await this.getByEstado.ejecutar(estado);
     return pedidos;
   }
@@ -67,7 +67,7 @@ export class PedidosController {
   }
 
   @Post('crear-preferencia')
-  async crearPreferencia(@Body() body: PedidoDto) {
+  async crearPreferencia(@Body() body: ICrearPreferencia) {
     const accessToken = process.env.MP_ACCESS_TOKEN;
     if (!accessToken) {
       throw new InternalServerErrorException(
@@ -78,64 +78,9 @@ export class PedidosController {
       accessToken,
     });
 
-    const pedidoDePrueba: PedidoDto = {
-      id: 999,
-      fechaCreacion: new Date(),
-      fechaEntrega: new Date(),
-      fechaEntregaEstimada: new Date(Date.now() + 86400000),
-      montoTotal: 1000,
-      descuento: 0,
-      estado: EstadosPedido.pendientePago,
-      productos: [
-        {
-          id: 1,
-          cantidad: 2,
-          nombre: 'Barra de Cereal Energética',
-          descripcion:
-            'Una mezcla perfecta de avena, miel y almendras para recargar tu energía.',
-          precioEmpresas: 300,
-          precioPersonas: 400,
-          stock: true,
-          esCajaDeBarras: false,
-          sabores: [],
-        },
-        {
-          cantidad: 1,
-          id: 2,
-          nombre: 'Barra Proteica Choco-Nuez',
-          descripcion: 'Deliciosa barra alta en proteínas con cacao y nueces.',
-          precioEmpresas: 500,
-          precioPersonas: 600,
-          stock: true,
-          esCajaDeBarras: false,
-          sabores: [],
-        },
-      ],
-
-      cliente: {
-        id: 1,
-        email: 'prueba1@gmail.com',
-        contrasena: 'Montevideo111!',
-        observaciones: 'AAAA',
-        departamento: 'Montevideo',
-        ciudad: 'Montevideo',
-        direccion: 'Calle Falsa 123',
-        telefono: '123456789',
-      } as ClienteDto,
-    };
-
-    body = pedidoDePrueba;
     const preferenceClient = new Preference(client);
-
-    const items = (body.productos ?? []).map((detalle) => ({
-      id: detalle.id.toString(),
-      title: detalle.nombre,
-      quantity: detalle.cantidad,
-      unit_price:
-        body.cliente.tipo === 'Persona'
-          ? detalle.precioPersonas
-          : detalle.precioEmpresas,
-
+    const items = (body.productos ?? []).map((producto) => ({
+      ...producto,
       currency_id: 'UYU',
     }));
 
@@ -143,20 +88,22 @@ export class PedidosController {
       body: {
         items,
         notification_url:
-          'https://66331d98a48e.ngrok-free.app/pedidos/webhook-mercadopago',
+          'https://natubar-api-production.up.railway.app/pedidos/webhook-mercadopago',
         back_urls: {
           success: 'https://natubar.vercel.app',
         },
+        shipments: {
+          cost: body.envio,
+        },
+        external_reference: body.pedidoId.toString(),
       },
     });
-    body.preferenceId = preference.id || '';
     return { preferenceId: preference.id };
   }
 
   @Post('webhook-mercadopago')
   async mercadopagoWebhook(@Body() body: WebhookDto) {
     let paymentId: string | null = null;
-    console.log('body en webhook', body);
 
     if (body.topic === 'payment' && body.data?.id) {
       paymentId = body.data.id;
@@ -189,9 +136,9 @@ export class PedidosController {
 
     const payment = paymentResponse.data;
 
-    if (payment.status === EstadosPedido.enPreparacion) {
-      const preferenceId = payment.preference_id;
-      await this.confirmar.ejecutar(preferenceId);
+    if (payment.status === 'approved') {
+      const pedidoId = payment.external_reference;
+      await this.confirmar.ejecutar(pedidoId ?? '');
     }
 
     return { received: true };
