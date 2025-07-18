@@ -16,9 +16,9 @@ export enum EstadosPedido {
 }
 
 export enum EstadosPago {
-  pendiente = 'Pendiente',
+  pendiente = 'Pendiente pago',
   pagado = 'Pagado',
-  cancelado = 'Cancelado',
+  cancelado = 'Pago rechazado',
 }
 @Entity({ name: 'pedidos' })
 export class Pedido {

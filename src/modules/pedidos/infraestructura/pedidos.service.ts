@@ -28,6 +28,9 @@ export class PedidosService {
         'productos.productoSabores',
         'productos.productoSabores.sabor',
       ],
+      order: {
+        fechaCreacion: 'DESC',
+      },
     });
   }
   async crearPedido(pedido: Pedido): Promise<Pedido> {

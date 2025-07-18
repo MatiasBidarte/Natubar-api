@@ -14,8 +14,6 @@ import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { EstadosPedido, Pedido } from './entities/pedido.entity';
 import { GetByEstado } from '../dominio/casosDeUso/GetByEstado';
 import { ICrearPreferencia } from './interfaces/ICrearPreferencia';
-import { ClienteDto } from 'src/modules/cliente/dominio/dto/cliente.dto';
-import { Console } from 'console';
 import { ChangeEstado } from '../dominio/casosDeUso/ChangeEstado';
 
 export class WebhookDto {
@@ -94,7 +92,7 @@ export class PedidosController {
         notification_url:
           'https://natubar-api-production.up.railway.app/pedidos/webhook-mercadopago',
         back_urls: {
-          success: 'https://natubar.vercel.app',
+          success: 'https://natubar.vercel.app/compras',
         },
         shipments: {
           cost: body.envio,
