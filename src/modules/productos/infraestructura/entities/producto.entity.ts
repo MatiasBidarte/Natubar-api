@@ -48,7 +48,7 @@ export class Producto {
   urlImagen?: string;
 
   @OneToMany(() => DetallePedido, (detallePedido) => detallePedido.producto)
-  detallesPedidos: DetallePedido[];
+  productos: DetallePedido[];
 
   constructor(
     id: number,

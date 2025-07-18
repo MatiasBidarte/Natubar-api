@@ -15,4 +15,9 @@ export class ProductoSabor {
 
   @ManyToOne(() => Sabor, (sabor) => sabor.productoSabores)
   sabor: Sabor;
+
+  constructor(s: Sabor, c: number) {
+    this.cantidad = c;
+    this.sabor = s;
+  }
 }

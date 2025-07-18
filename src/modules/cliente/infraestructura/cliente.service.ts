@@ -67,8 +67,8 @@ export class ClienteService {
       where: { id: id },
       relations: [
         'pedidos',
-        'pedidos.detallesPedidos',
-        'pedidos.detallesPedidos.productoSabores.sabor',
+        'pedidos.productos',
+        'pedidos.productos.productoSabores.sabor',
       ],
     });
     return cliente ? cliente.pedidos : [];

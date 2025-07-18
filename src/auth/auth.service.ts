@@ -42,7 +42,6 @@ export class AuthService {
       ...userWithoutPassword,
       tipo: user instanceof ClientePersona ? 'PERSONA' : 'EMPRESA',
     };
-    console.log(user instanceof ClientePersona ? 'PERSONA' : 'EMPRESA');
     const token = this.jwtService.sign(payload);
     return {
       access_token: token,

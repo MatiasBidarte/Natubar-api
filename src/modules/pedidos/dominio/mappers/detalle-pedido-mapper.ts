@@ -13,4 +13,12 @@ export class DetallePedidoMapper {
       ),
     };
   }
+  static toDomain(raw: DetallePedidoDto): DetallePedido {
+    const detalle = new DetallePedido();
+    detalle.id = raw.id;
+    detalle.cantidad = raw.cantidad;
+
+    detalle.productoSabores = [];
+    return detalle;
+  }
 }

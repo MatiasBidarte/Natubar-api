@@ -1,5 +1,5 @@
-import { SaborDto } from '../dto/sabor.dto';
+import { Sabor } from '../../infraestructura/entities/sabor.entity';
 
 export interface SaboresRepository {
-  obtenerTodos(): Promise<SaborDto[]>;
+  obtenerTodos(): Promise<Sabor[]>;
 }

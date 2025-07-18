@@ -15,6 +15,11 @@ export enum EstadosPedido {
   pendientePago = 'Pendiente de Pago',
 }
 
+export enum EstadosPago {
+  pendiente = 'Pendiente pago',
+  pagado = 'Pagado',
+  cancelado = 'Pago rechazado',
+}
 @Entity({ name: 'pedidos' })
 export class Pedido {
   @PrimaryGeneratedColumn()
@@ -35,14 +40,49 @@ export class Pedido {
   @Column()
   estado: EstadosPedido;
 
-  @Column()
+  @Column({ nullable: true })
+  estadoPago: EstadosPago;
+
+  @Column({ nullable: true })
   descuento: number;
+
+  @Column({ nullable: true })
+  preferenceId: string;
 
   @OneToMany(() => DetallePedido, (detallePedido) => detallePedido.pedido, {
     eager: true,
+    cascade: true,
   })
-  detallesPedidos: DetallePedido[];
+  productos: DetallePedido[];
 
   @ManyToOne(() => Cliente, (cliente) => cliente.pedidos, { eager: true })
   cliente: Cliente;
+
+  constructor(
+    id?: number,
+    fechaEntrega?: Date,
+    fechaEntregaEstimada?: Date,
+    montoTotal?: number,
+    descuento?: number,
+    cliente?: Cliente,
+    preferenceId?: string,
+  ) {
+    if (id !== undefined) this.id = id;
+    if (fechaEntrega !== undefined) this.fechaEntrega = fechaEntrega;
+    if (fechaEntregaEstimada !== undefined)
+      this.fechaEntregaEstimada = fechaEntregaEstimada;
+    if (montoTotal !== undefined) this.montoTotal = montoTotal;
+    if (descuento !== undefined) this.descuento = descuento;
+    if (preferenceId !== undefined) this.preferenceId = preferenceId;
+    if (cliente !== undefined) this.cliente = cliente;
+    this.estado = EstadosPedido.pendientePago;
+    this.estadoPago = EstadosPago.pendiente;
+  }
+
+  addDetallePedido(detallePedido: DetallePedido) {
+    if (!this.productos) {
+      this.productos = [];
+    }
+    this.productos.push(detallePedido);
+  }
 }

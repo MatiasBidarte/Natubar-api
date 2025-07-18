@@ -1,7 +1,10 @@
-import { Pedido } from '../../infraestructura/entities/pedido.entity';
+import { obtenerProximoMartesoJueves } from 'src/utils/obtenerProximoMartesOJueves';
+import {
+  EstadosPedido,
+  Pedido,
+} from '../../infraestructura/entities/pedido.entity';
 import { PedidoDto } from '../dto/pedido.dto';
-import { DetallePedidoMapper } from './detalle-pedido-mapper';
-import { DetallePedido } from '../../infraestructura/entities/detalle-pedido.entity';
+import { Cliente } from 'src/modules/cliente/infraestructura/entities/cliente.entity';
 
 export class PedidoMapper {
   static toDto(pedido: Pedido): PedidoDto {
@@ -12,10 +15,32 @@ export class PedidoMapper {
       pedido.fechaEntregaEstimada,
       pedido.montoTotal,
       pedido.descuento,
-      pedido.estado,
-      pedido.detallesPedidos.map((detalle: DetallePedido) =>
-        DetallePedidoMapper.toDto(detalle),
-      ),
     );
+  }
+  static toInfra(raw: PedidoDto): Pedido {
+    const pedido = new Pedido(
+      raw.id,
+      raw.fechaEntrega,
+      raw.fechaEntregaEstimada,
+      raw.montoTotal,
+      raw.descuento,
+      undefined,
+      raw.preferenceId,
+    );
+    return pedido;
+  }
+
+  static createFromDto(raw: PedidoDto, cliente: Cliente): Pedido {
+    const fechaEntregaEstimada = obtenerProximoMartesoJueves();
+    const pedido = new Pedido(
+      undefined,
+      undefined,
+      fechaEntregaEstimada,
+      raw.montoTotal,
+      undefined,
+      cliente,
+    );
+    pedido.estado = EstadosPedido.enPreparacion;
+    return pedido;
   }
 }
