@@ -28,6 +28,9 @@ export class PedidosService {
         'productos.productoSabores',
         'productos.productoSabores.sabor',
       ],
+      order: {
+        fechaCreacion: 'DESC',
+      },
     });
   }
   async crearPedido(pedido: Pedido): Promise<Pedido> {
@@ -36,14 +39,14 @@ export class PedidosService {
     return pedidoEntity;
   }
 
-  async confirmarPedido(preferenceId: string): Promise<Pedido> {
-    const pedido = await this.pedidoRepository.findOne({
-      where: { preferenceId },
+  async confirmarPedido(pedidoId: string): Promise<Pedido> {
+    const pedido = await this.pedidoRepository.findOneBy({
+      id: Number(pedidoId),
     });
     if (!pedido) {
       throw new Error('Pedido no encontrado');
     }
-    pedido.estado = EstadosPedido.enPreparacion;
+    pedido.estadoPago = EstadosPago.pagado;
     return this.pedidoRepository.save(pedido);
   }
 
