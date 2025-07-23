@@ -1,4 +1,4 @@
-import { EstadosPedido, Pedido } from './entities/pedido.entity';
+import { EstadosPago, EstadosPedido, Pedido } from './entities/pedido.entity';
 import { DetallePedido } from './entities/detalle-pedido.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -55,6 +55,17 @@ export class PedidosService {
       throw new Error('Pedido no encontrado');
     }
     pedido.estado = estado;
+    return await this.pedidoRepository.save(pedido);
+  }
+
+  async cambiarEstadoPago(id: number, estado: EstadosPago): Promise<Pedido> {
+    const pedido = await this.pedidoRepository.findOne({
+      where: { id },
+    });
+    if (!pedido) {
+      throw new Error('Pedido no encontrado');
+    }
+    pedido.estadoPago = estado;
     return await this.pedidoRepository.save(pedido);
   }
 

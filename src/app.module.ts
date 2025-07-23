@@ -9,6 +9,7 @@ import { ProductosModule } from 'src/modules/productos/infraestructura/productos
 import { SaboresModule } from './modules/sabores/infraestructura/sabores.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { PedidosModule } from './modules/pedidos/infraestructura/pedidos.module';
+import { NotificacionModule } from './modules/notificacion/notificacion.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { PedidosModule } from './modules/pedidos/infraestructura/pedidos.module'
       }),
     }),
     SaboresModule,
+    NotificacionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,4 +1,5 @@
 import {
+  EstadosPago,
   EstadosPedido,
   Pedido,
 } from 'src/modules/pedidos/infraestructura/entities/pedido.entity';
@@ -10,4 +11,5 @@ export interface PedidoRepository {
   confirmarPedido(preferenceId: string): Promise<Pedido>;
   getByEstado(estado: EstadosPedido): Promise<Pedido[]>;
   changeEstado(id: number, estado: EstadosPedido): Promise<Pedido>;
+  changeEstadoPago(id: number, estado: EstadosPago): Promise<Pedido>;
 }

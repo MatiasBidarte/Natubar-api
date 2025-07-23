@@ -8,7 +8,7 @@ import {
 import { PedidoRepository } from '../dominio/interfaces/repositorio/PedidoRepository';
 import { PedidosService } from './pedidos.service';
 import { PedidoDto } from '../dominio/dto/pedido.dto';
-import { EstadosPedido, Pedido } from './entities/pedido.entity';
+import { EstadosPago, EstadosPedido, Pedido } from './entities/pedido.entity';
 import { ClienteService } from 'src/modules/cliente/infraestructura/cliente.service';
 import { ProductosService } from 'src/modules/productos/infraestructura/productos.service';
 import { PedidoMapper } from '../dominio/mappers/pedido-mapper';
@@ -114,6 +114,13 @@ export class ApiRestPedidosRepository implements PedidoRepository {
   }
   async changeEstado(id: number, estado: EstadosPedido): Promise<Pedido> {
     const pedido: Pedido = await this.contextPedido.cambiarEstado(id, estado);
+    return pedido;
+  }
+  async changeEstadoPago(id: number, estado: EstadosPago): Promise<Pedido> {
+    const pedido: Pedido = await this.contextPedido.cambiarEstadoPago(
+      id,
+      estado,
+    );
     return pedido;
   }
 }
