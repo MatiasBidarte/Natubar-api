@@ -9,7 +9,7 @@ import { ProductosModule } from 'src/modules/productos/infraestructura/productos
 import { SaboresModule } from './modules/sabores/infraestructura/sabores.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { PedidosModule } from './modules/pedidos/infraestructura/pedidos.module';
-import { NotificacionModule } from './modules/notificacion/notificacion.module';
+import { NotificacionModule } from './modules/notificacion/infraestructura/notificacion.module'; 
 
 @Module({
   imports: [

@@ -10,23 +10,36 @@ export class ApiRestNotificacionesRepository
   constructor(private readonly service: NotificacionService) {}
 
   async MandarNotificacion(
-    notificacion: SuscripcionNotificacion,
+    clienteId: number,
+    cabezal: string,
+    mensaje: string,
   ): Promise<void> {
-    // Delegates sending notification to the service and returns the result
-    await this.service.MandarNotificacion(notificacion);
+    const suscripciones = await this.service.buscarSuscripciones(clienteId);
+    for (const suscripcion of suscripciones) {
+      await this.service.MandarNotificacion({
+        playerId: suscripcion.playerId,
+        clienteId,
+        cabezal,
+        mensaje,
+        dispositivo: suscripcion.dispositivo,
+      });
+    }
   }
 
   async SuscribirDispositivo(
     notificacion: SuscripcionNotificacion,
   ): Promise<void> {
-    // Delegates device subscription to the service
     await this.service.SuscribirDispositivo(notificacion);
   }
 
   async DesuscribirDispositivo(
     notificacion: SuscripcionNotificacion,
   ): Promise<void> {
-    // Delegates device unsubscription to the service
     await this.service.DesuscribirDispositivo(notificacion);
+  }
+  async BuscarSuscripcionesDeCliente(
+    clienteId: number,
+  ): Promise<SuscripcionNotificacion[]> {
+    return await this.service.buscarSuscripciones(clienteId);
   }
 }

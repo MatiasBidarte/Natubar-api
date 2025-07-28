@@ -1,34 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { NotificacionService } from './notificacion.service';
-import { CreateNotificacionDto } from './dto/create-notificacion.dto';
-import { UpdateNotificacionDto } from './dto/update-notificacion.dto';
+import { Controller } from '@nestjs/common';
+import { SuscripcionNotificacion } from './entities/suscripcionNotificacion.entity';
+import { SuscribirDispositivo } from '../dominio/casosDeUso/SuscribirDispositivo';
+import { DesuscribirDispositivo } from '../dominio/casosDeUso/DesuscribirDispositivo';
 
 @Controller('notificacion')
 export class NotificacionController {
-  constructor(private readonly notificacionService: NotificacionService) {}
+  constructor(
+    private readonly suscribir: SuscribirDispositivo,
+    private readonly desuscribir: DesuscribirDispositivo,
+  ) {}
 
-  @Post()
-  create(@Body() createNotificacionDto: CreateNotificacionDto) {
-    return this.notificacionService.create(createNotificacionDto);
+  public async suscribirDispositivo(
+    notificacion: SuscripcionNotificacion,
+  ): Promise<void> {
+    return await this.suscribir.ejecutar(notificacion);
   }
 
-  @Get()
-  findAll() {
-    return this.notificacionService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.notificacionService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNotificacionDto: UpdateNotificacionDto) {
-    return this.notificacionService.update(+id, updateNotificacionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.notificacionService.remove(+id);
+  public async desuscribirDispositivo(
+    notificacion: SuscripcionNotificacion,
+  ): Promise<void> {
+    return await this.suscribir.ejecutar(notificacion);
   }
 }

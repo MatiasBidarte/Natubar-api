@@ -1,6 +1,6 @@
 import { Cliente } from 'src/modules/cliente/infraestructura/entities/cliente.entity';
 
-export class SuscripcionNotificacion {
+export class NotificacionPushDto {
   playerId: string;
   clienteId: number;
   cliente?: Cliente;

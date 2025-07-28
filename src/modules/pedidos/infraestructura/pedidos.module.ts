@@ -17,6 +17,7 @@ import { ChangeEstado } from '../dominio/casosDeUso/ChangeEstado';
 import { DetallePedido } from './entities/detalle-pedido.entity';
 import { ProductoSabor } from 'src/modules/productos/infraestructura/entities/producto-sabor.entity';
 import { ChangeEstadoPago } from '../dominio/casosDeUso/ChangeEstadoPago';
+import { NotificacionModule } from 'src/modules/notificacion/infraestructura/notificacion.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ChangeEstadoPago } from '../dominio/casosDeUso/ChangeEstadoPago';
     ProductosModule,
     PedidosModule,
     SaboresModule,
+    NotificacionModule,
   ],
   controllers: [PedidosController],
   providers: [
