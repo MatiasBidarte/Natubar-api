@@ -9,6 +9,9 @@ import { AuthModule } from 'src/auth/auth.module';
 import { ApiRestNotificacionesRepository } from './ApiRestNotificacionesRepository';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { OneSignalModule } from 'nestjs-onesignal';
+import { SuscribirDispositivo } from '../dominio/casosDeUso/SuscribirDispositivo';
+import { DesuscribirDispositivo } from '../dominio/casosDeUso/DesuscribirDispositivo';
+import { MandarNotificacion } from '../dominio/casosDeUso/MandarNotificacion';
 
 @Module({
   imports: [
@@ -27,7 +30,19 @@ import { OneSignalModule } from 'nestjs-onesignal';
     }),
   ],
   controllers: [NotificacionController],
-  providers: [NotificacionService, ApiRestNotificacionesRepository],
-  exports: [NotificacionService, ApiRestNotificacionesRepository],
+  providers: [
+    NotificacionService,
+    ApiRestNotificacionesRepository,
+    SuscribirDispositivo,
+    DesuscribirDispositivo,
+    MandarNotificacion,
+  ],
+  exports: [
+    NotificacionService,
+    ApiRestNotificacionesRepository,
+    SuscribirDispositivo,
+    DesuscribirDispositivo,
+    MandarNotificacion,
+  ],
 })
 export class NotificacionModule {}
