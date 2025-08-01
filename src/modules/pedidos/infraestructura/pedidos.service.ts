@@ -61,6 +61,17 @@ export class PedidosService {
     return await this.pedidoRepository.save(pedido);
   }
 
+  async cambiarEstadoPago(id: number, estado: EstadosPago): Promise<Pedido> {
+    const pedido = await this.pedidoRepository.findOne({
+      where: { id },
+    });
+    if (!pedido) {
+      throw new Error('Pedido no encontrado');
+    }
+    pedido.estadoPago = estado;
+    return await this.pedidoRepository.save(pedido);
+  }
+
   async guardarDetallePedido(detalle: DetallePedido): Promise<DetallePedido> {
     return this.detallePedidoRepository.save(detalle);
   }
