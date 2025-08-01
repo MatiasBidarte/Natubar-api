@@ -14,6 +14,7 @@ import { LoginClienteDto } from '../dominio/dto/login-cliente.dto';
 import { validate } from 'class-validator';
 import { ClientePersona } from 'src/modules/cliente/infraestructura/entities/cliente-persona.entity';
 import { ClienteEmpresa } from 'src/modules/cliente/infraestructura/entities/cliente-empresa.entity';
+import { ClienteAdministrador } from 'src/modules/cliente/infraestructura/entities/cliente-administrador.entity';
 import { AltaCliente } from '../dominio/casosDeUso/AltaCliente';
 import { LoginCliente } from '../dominio/casosDeUso/Login';
 import { ObtenerTodosCliente } from '../dominio/casosDeUso/ObtenerTodosCliente';
@@ -33,7 +34,7 @@ export class ClienteController {
   @Post()
   async add(@Body() clienteDto: ClienteDto) {
     try {
-      let cliente: ClientePersona | ClienteEmpresa;
+      let cliente: ClientePersona | ClienteEmpresa | ClienteAdministrador;
       if (clienteDto.tipo === ClientePersona.tipo) {
         cliente = new ClientePersona(
           clienteDto.email,
@@ -46,7 +47,7 @@ export class ClienteController {
           clienteDto.nombre!,
           clienteDto.apellido!,
         );
-      } else {
+      } else if (clienteDto.tipo === ClienteEmpresa.tipo) {
         cliente = new ClienteEmpresa(
           clienteDto.email,
           clienteDto.contrasena,
@@ -58,6 +59,16 @@ export class ClienteController {
           clienteDto.nombreContacto!,
           clienteDto.rut!,
           clienteDto.nombreEmpresa!,
+        );
+      } else {
+        cliente = new ClienteAdministrador(
+          clienteDto.email,
+          clienteDto.contrasena,
+          clienteDto.observaciones,
+          clienteDto.departamento,
+          clienteDto.ciudad,
+          clienteDto.direccion,
+          clienteDto.telefono,
         );
       }
       const errores = await validate(cliente as object);

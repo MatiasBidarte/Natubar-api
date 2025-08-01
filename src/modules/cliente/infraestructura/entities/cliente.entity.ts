@@ -33,9 +33,10 @@ export class Cliente {
   @IsNotEmpty()
   departamento: string;
 
+
   @Column({ name: 'tipo', update: false })
   tipo: string;
-
+  
   @Column()
   @IsNotEmpty()
   ciudad: string;

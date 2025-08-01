@@ -40,7 +40,12 @@ export class AuthService {
     const { contrasena, ...userWithoutPassword } = user;
     const payload = {
       ...userWithoutPassword,
-      tipo: user instanceof ClientePersona ? 'PERSONA' : 'EMPRESA',
+      tipo:
+        user instanceof ClientePersona
+          ? 'PERSONA'
+          : user instanceof ClienteEmpresa
+            ? 'EMPRESA'
+            : 'ADMINISTRADOR',
     };
     const token = this.jwtService.sign(payload);
     return {
@@ -53,7 +58,12 @@ export class AuthService {
     const { contrasena, ...userWithoutPassword } = cliente;
     const payload = {
       ...userWithoutPassword,
-      tipo: cliente instanceof ClientePersona ? 'PERSONA' : 'EMPRESA',
+      tipo:
+        cliente instanceof ClientePersona
+          ? 'PERSONA'
+          : ClienteEmpresa
+            ? 'EMPRESA'
+            : 'ADMINISTRADOR',
     };
     const token = this.jwtService.sign(payload);
     return {

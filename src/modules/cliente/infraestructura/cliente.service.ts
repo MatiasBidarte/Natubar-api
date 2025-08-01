@@ -4,6 +4,7 @@ import { Cliente } from './entities/cliente.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ClientePersona } from 'src/modules/cliente/infraestructura/entities/cliente-persona.entity';
 import { ClienteEmpresa } from 'src/modules/cliente/infraestructura/entities/cliente-empresa.entity';
+import { ClienteAdministrador } from 'src/modules/cliente/infraestructura/entities/cliente-administrador.entity';
 
 @Injectable()
 export class ClienteService {
@@ -18,6 +19,9 @@ export class ClienteService {
         return await this.clienteRepository.save(cliente);
       }
       if (cliente instanceof ClienteEmpresa) {
+        return await this.clienteRepository.save(cliente);
+      }
+      if (cliente instanceof ClienteAdministrador) {
         return await this.clienteRepository.save(cliente);
       }
     } catch (error) {
@@ -35,8 +39,9 @@ export class ClienteService {
     }
   }
 
-  async findAll() {
-    return await this.clienteRepository.find();
+  async findAll(): Promise<Cliente[]> {
+    const clientes = await this.clienteRepository.find();
+    return clientes.filter((c) => !(c instanceof ClienteAdministrador));
   }
 
   async findByEmail(email: string): Promise<boolean> {
