@@ -17,7 +17,11 @@ export class PedidosService {
   ) {}
 
   obtenerPedidos() {
-    return [];
+    return this.pedidoRepository.find({
+      order: {
+        fechaCreacion: 'DESC',
+      },
+    });
   }
 
   getByEstado(estado: EstadosPedido): Promise<Pedido[]> {
