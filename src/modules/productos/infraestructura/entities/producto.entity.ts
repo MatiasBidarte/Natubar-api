@@ -44,6 +44,9 @@ export class Producto {
   peso: number;
 
   @Column()
+  costoProduccion: number;
+
+  @Column()
   @IsString()
   urlImagen?: string;
 
