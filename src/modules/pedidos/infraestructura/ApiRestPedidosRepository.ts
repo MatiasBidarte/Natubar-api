@@ -8,7 +8,7 @@ import {
 import { PedidoRepository } from '../dominio/interfaces/repositorio/PedidoRepository';
 import { PedidosService } from './pedidos.service';
 import { PedidoDto } from '../dominio/dto/pedido.dto';
-import { EstadosPedido, Pedido } from './entities/pedido.entity';
+import { EstadosPago, EstadosPedido, Pedido } from './entities/pedido.entity';
 import { ClienteService } from 'src/modules/cliente/infraestructura/cliente.service';
 import { ProductosService } from 'src/modules/productos/infraestructura/productos.service';
 import { PedidoMapper } from '../dominio/mappers/pedido-mapper';
@@ -17,6 +17,8 @@ import { ProductoSabor } from 'src/modules/productos/infraestructura/entities/pr
 import { AuthService } from 'src/auth/auth.service';
 import { SaboresRepository } from 'src/modules/sabores/dominio/interfaces/SaboresRepository';
 import { ApiRestSaboresRepository } from 'src/modules/sabores/infraestructura/ApiRestSaboresRepository';
+import { ApiRestNotificacionesRepository } from 'src/modules/notificacion/infraestructura/ApiRestNotificacionesRepository';
+import { construirMensajeEstado } from 'src/modules/notificacion/dominio/utils/construirMensajeEstado';
 
 @Injectable()
 export class ApiRestPedidosRepository implements PedidoRepository {
@@ -32,6 +34,8 @@ export class ApiRestPedidosRepository implements PedidoRepository {
     private readonly saboresRepository: SaboresRepository,
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
+    @Inject(forwardRef(() => ApiRestNotificacionesRepository))
+    private readonly notificacionesRepository: ApiRestNotificacionesRepository,
   ) {}
   getByEstado(estado: EstadosPedido): Promise<Pedido[]> {
     return this.contextPedido.getByEstado(estado);
@@ -105,6 +109,22 @@ export class ApiRestPedidosRepository implements PedidoRepository {
   }
   async changeEstado(id: number, estado: EstadosPedido): Promise<Pedido> {
     const pedido: Pedido = await this.contextPedido.cambiarEstado(id, estado);
+    await this.notificacionesRepository.MandarNotificacion(
+      pedido.cliente.id,
+      'Hay novedades sobre tu pedido',
+      construirMensajeEstado(estado),
+    );
+    if (!pedido) {
+      throw new NotFoundException(`Pedido con ID ${id} no encontrado`);
+    }
+    return pedido;
+  }
+
+  async changeEstadoPago(id: number, estado: EstadosPago): Promise<Pedido> {
+    const pedido: Pedido = await this.contextPedido.cambiarEstadoPago(
+      id,
+      estado,
+    );
     return pedido;
   }
 }

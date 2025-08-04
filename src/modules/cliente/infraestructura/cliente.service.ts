@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Cliente } from './entities/cliente.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ClienteAdministrador } from './entities/cliente-administrador.entity';
 
 @Injectable()
 export class ClienteService {
@@ -28,8 +29,9 @@ export class ClienteService {
     }
   }
 
-  async findAll() {
-    return await this.clienteRepository.find();
+  async findAll(): Promise<Cliente[]> {
+    const clientes = await this.clienteRepository.find();
+    return clientes.filter((c) => !(c instanceof ClienteAdministrador));
   }
 
   async findByEmail(email: string): Promise<boolean> {
