@@ -57,55 +57,46 @@ export class ApiRestPedidosRepository implements PedidoRepository {
         'La lista de detalleProductos es requerida y no puede estar vacía',
       );
     }
+
     const pedidoGuardado = await this.contextPedido.crearPedido(pedido);
     const sabores = await this.saboresRepository.obtenerTodos();
+
     for (const detalleDto of pedidoDto.productos) {
       const producto = await this.contextProducto.findById(
         detalleDto.producto?.id ?? 0,
       );
       if (!producto) {
-        throw new NotFoundException(`Producto ${detalleDto.id} no encontrado`);
-      }
-      const detalle = DetallePedidoMapper.toDomain(detalleDto);
-      const saborBD = await this.saboresRepository.obtenerTodos();
-      for (const saborDto of detalleDto.sabores) {
-        const saborEncontrado = saborBD.find((s) => s.id === saborDto.id);
-        if (!saborEncontrado) {
-          throw new NotFoundException(`Sabor ${saborDto.id} no encontrado`);
-        }
-        const productoSabor = new ProductoSabor(
-          saborEncontrado,
-          saborDto.cantidad || 0,
+        throw new NotFoundException(
+          `Producto ${detalleDto.producto?.id ?? 0} no encontrado`,
         );
-        detalle.productoSabores.push(productoSabor);
       }
+
+      const detalle = DetallePedidoMapper.toDomain(detalleDto);
       detalle.producto = producto;
       detalle.pedido = pedidoGuardado;
+      detalle.productoSabores = [];
 
       const detalleGuardado =
         await this.contextPedido.guardarDetallePedido(detalle);
+
       for (const productoSabor of detalleDto.sabores) {
         const saborEncontrado = sabores.find(
           (s) => s.id === productoSabor.sabor?.id,
         );
-
         if (!saborEncontrado) {
-          throw new Error(
+          throw new NotFoundException(
             `Sabor con ID ${productoSabor.sabor?.id} no encontrado`,
           );
         }
-
         const nuevoProductoSabor = new ProductoSabor(
           saborEncontrado,
           productoSabor.cantidad ?? 1,
         );
-
         nuevoProductoSabor.detallePedido = detalleGuardado;
-
         await this.contextPedido.guardarProductoSabor(nuevoProductoSabor);
-        // Ahora podés guardar o hacer lo que necesites con nuevoProductoSabor
       }
     }
+
     return { id: pedidoGuardado.id };
   }
 

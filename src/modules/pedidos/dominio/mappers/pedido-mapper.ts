@@ -25,7 +25,6 @@ export class PedidoMapper {
       raw.montoTotal,
       raw.descuento,
       undefined,
-      raw.preferenceId,
     );
     return pedido;
   }

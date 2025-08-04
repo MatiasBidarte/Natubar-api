@@ -15,6 +15,7 @@ import { EstadosPedido, Pedido } from './entities/pedido.entity';
 import { GetByEstado } from '../dominio/casosDeUso/GetByEstado';
 import { ICrearPreferencia } from './interfaces/ICrearPreferencia';
 import { ChangeEstado } from '../dominio/casosDeUso/ChangeEstado';
+import { ObtenerPedidos } from '../dominio/casosDeUso/ObtenerPedidos';
 
 export class WebhookDto {
   topic: 'payment' | 'merchant_order';
@@ -27,9 +28,8 @@ interface MercadoPagoOrderResponse {
   payments: Array<{
     id: string;
     status: string;
-    [key: string]: any; // si querés flexibilidad
+    [key: string]: any;
   }>;
-  // otros campos si los necesitás
 }
 export interface MercadoPagoPayment {
   id: string;
@@ -52,6 +52,7 @@ export class PedidosController {
     private readonly confirmar: ConfirmarPedido,
     private readonly getByEstado: GetByEstado,
     private readonly changeEstado: ChangeEstado,
+    private readonly obtenerPedidos: ObtenerPedidos,
   ) {}
   @Get('PedidosPorEstado/:estadoRaw')
   async getPedidos(@Param('estadoRaw') estadoRaw: string): Promise<Pedido[]> {
@@ -61,6 +62,11 @@ export class PedidosController {
     const estado = estadoRaw as EstadosPedido;
     const pedidos: Pedido[] = await this.getByEstado.ejecutar(estado);
     return pedidos;
+  }
+
+  @Get()
+  async getAllPedidos(): Promise<Pedido[]> {
+    return await this.obtenerPedidos.ejecutar();
   }
 
   @Post()
