@@ -33,7 +33,7 @@ export class Cliente {
   @IsNotEmpty()
   departamento: string;
 
-  @Column({ name: 'tipo', update: false })
+  @Column({ name: 'tipo' })
   tipo: string;
 
   @Column()
