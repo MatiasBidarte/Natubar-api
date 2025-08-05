@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { LoginClienteDto } from '../dto/login-cliente.dto';
 import { ClienteService } from 'src/modules/cliente/infraestructura/cliente.service';
 import {
@@ -26,7 +26,6 @@ export class LoginCliente {
       clienteLoginDto.contrasena,
       cliente.contrasena,
     );
-
     if (!esContrasenaValida) {
       throw new UnauthorizedException('Contraseña incorrecta');
     } else {
