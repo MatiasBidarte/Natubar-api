@@ -6,10 +6,10 @@ import {
 import { PedidoDto } from '../../dto/pedido.dto';
 
 export interface PedidoRepository {
-  obtenerTodos(): Pedido[] | PromiseLike<Pedido[]>;
+  obtenerTodos(): Promise<PedidoDto[]>;
   crearPedido(pedido: PedidoDto);
   confirmarPedido(pedidoId: string): Promise<Pedido>;
-  getByEstado(estado: EstadosPedido): Promise<Pedido[]>;
-  changeEstado(id: number, estado: EstadosPedido): Promise<Pedido>;
-  changeEstadoPago(id: number, estado: EstadosPago): Promise<Pedido>;
+  getByEstado(estado: EstadosPedido): Promise<PedidoDto[]>;
+  changeEstado(id: number, estado: EstadosPedido): Promise<PedidoDto>;
+  changeEstadoPago(id: number, estado: EstadosPago): Promise<PedidoDto>;
 }
