@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ApiRestPedidosRepository } from '../../infraestructura/ApiRestPedidosRepository';
 import { PedidoRepository } from '../interfaces/repositorio/PedidoRepository';
-import { Pedido } from '../../infraestructura/entities/pedido.entity';
+import { PedidoDto } from '../dto/pedido.dto';
 
 @Injectable()
 export class ObtenerPedidos {
@@ -10,7 +10,7 @@ export class ObtenerPedidos {
     private readonly pedidoRepository: PedidoRepository,
   ) {}
 
-  async ejecutar(): Promise<Pedido[]> {
+  async ejecutar(): Promise<PedidoDto[]> {
     return await this.pedidoRepository.obtenerTodos();
   }
 }

@@ -58,8 +58,14 @@ export class ClienteService {
       relations: [
         'pedidos',
         'pedidos.productos',
+        'pedidos.productos.productoSabores',
         'pedidos.productos.productoSabores.sabor',
       ],
+      order: {
+        pedidos: {
+          fechaCreacion: 'DESC',
+        },
+      },
     });
     return cliente ? cliente.pedidos : [];
   }

@@ -14,7 +14,6 @@ import { ProductosService } from 'src/modules/productos/infraestructura/producto
 import { PedidoMapper } from '../dominio/mappers/pedido-mapper';
 import { DetallePedidoMapper } from '../dominio/mappers/detalle-pedido-mapper';
 import { ProductoSabor } from 'src/modules/productos/infraestructura/entities/producto-sabor.entity';
-import { AuthService } from 'src/auth/auth.service';
 import { SaboresRepository } from 'src/modules/sabores/dominio/interfaces/SaboresRepository';
 import { ApiRestSaboresRepository } from 'src/modules/sabores/infraestructura/ApiRestSaboresRepository';
 import { ApiRestNotificacionesRepository } from 'src/modules/notificacion/infraestructura/ApiRestNotificacionesRepository';
@@ -32,17 +31,17 @@ export class ApiRestPedidosRepository implements PedidoRepository {
 
     @Inject(forwardRef(() => ApiRestSaboresRepository))
     private readonly saboresRepository: SaboresRepository,
-    @Inject(forwardRef(() => AuthService))
-    private readonly authService: AuthService,
     @Inject(forwardRef(() => ApiRestNotificacionesRepository))
     private readonly notificacionesRepository: ApiRestNotificacionesRepository,
   ) {}
-  getByEstado(estado: EstadosPedido): Promise<Pedido[]> {
-    return this.contextPedido.getByEstado(estado);
+  async getByEstado(estado: EstadosPedido): Promise<PedidoDto[]> {
+    const pedidos = await this.contextPedido.getByEstado(estado);
+    return pedidos.map((pedido) => PedidoMapper.toDto(pedido));
   }
 
-  obtenerTodos(): Pedido[] | PromiseLike<Pedido[]> {
-    return this.contextPedido.obtenerPedidos();
+  async obtenerTodos(): Promise<PedidoDto[]> {
+    const pedidos = await this.contextPedido.obtenerPedidos();
+    return pedidos.map((pedido) => PedidoMapper.toDto(pedido));
   }
 
   async crearPedido(pedidoDto: PedidoDto): Promise<{ id: number }> {
@@ -107,7 +106,8 @@ export class ApiRestPedidosRepository implements PedidoRepository {
   confirmarPedido(pedidoId: string): Promise<Pedido> {
     return this.contextPedido.confirmarPedido(pedidoId);
   }
-  async changeEstado(id: number, estado: EstadosPedido): Promise<Pedido> {
+
+  async changeEstado(id: number, estado: EstadosPedido): Promise<PedidoDto> {
     const pedido: Pedido = await this.contextPedido.cambiarEstado(id, estado);
     await this.notificacionesRepository.MandarNotificacion(
       pedido.cliente.id,
@@ -117,14 +117,14 @@ export class ApiRestPedidosRepository implements PedidoRepository {
     if (!pedido) {
       throw new NotFoundException(`Pedido con ID ${id} no encontrado`);
     }
-    return pedido;
+    return PedidoMapper.toDto(pedido);
   }
 
-  async changeEstadoPago(id: number, estado: EstadosPago): Promise<Pedido> {
+  async changeEstadoPago(id: number, estado: EstadosPago): Promise<PedidoDto> {
     const pedido: Pedido = await this.contextPedido.cambiarEstadoPago(
       id,
       estado,
     );
-    return pedido;
+    return PedidoMapper.toDto(pedido);
   }
 }

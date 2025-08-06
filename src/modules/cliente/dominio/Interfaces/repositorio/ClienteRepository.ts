@@ -11,4 +11,5 @@ export interface ClienteRepository {
     clienteDto: ActualizarClienteDto,
   ): Promise<{ cliente: Partial<Cliente>; access_token: string }>;
   pedidosPorCliente(id: number): Promise<PedidoDto[]>;
+  obtenerPorId(id: number): Promise<Cliente | null>;
 }

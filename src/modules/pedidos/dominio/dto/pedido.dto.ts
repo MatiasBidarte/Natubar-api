@@ -1,5 +1,8 @@
 import { IsEnum } from 'class-validator';
-import { EstadosPedido } from '../../infraestructura/entities/pedido.entity';
+import {
+  EstadosPago,
+  EstadosPedido,
+} from '../../infraestructura/entities/pedido.entity';
 import { DetallePedidoDto } from './detalle-pedido.dto';
 import { ClienteDto } from 'src/modules/cliente/dominio/dto/cliente.dto';
 
@@ -15,10 +18,10 @@ export class PedidoDto {
   fechaEntregaEstimada?: Date;
   montoTotal: number;
   descuento?: number;
-  preferenceId?: string;
   estado: EstadosPedido;
+  estadoPago: EstadosPago;
   productos: DetallePedidoDto[];
-  cliente: Partial<ClienteDto>;
+  cliente?: ClienteDto;
   observaciones?: string;
   constructor(
     id: number,
@@ -27,16 +30,22 @@ export class PedidoDto {
     fechaEntregaEstimada: Date,
     montoTotal: number,
     descuento: number,
+    productos: DetallePedidoDto[],
+    estado: EstadosPedido,
+    estadoPago: EstadosPago,
     observaciones?: string,
+    cliente?: ClienteDto,
   ) {
     this.id = id;
     this.fechaCreacion = fechaCreacion;
     this.fechaEntrega = fechaEntrega;
     this.fechaEntregaEstimada = fechaEntregaEstimada;
     this.montoTotal = montoTotal;
-    this.estado = EstadosPedido.enPreparacion;
+    this.estado = estado ?? EstadosPedido.enPreparacion;
+    this.estadoPago = estadoPago ?? EstadosPago.pendiente;
+    this.productos = productos;
     this.descuento = descuento;
-    this.productos = [];
     this.observaciones = observaciones;
+    this.cliente = cliente;
   }
 }

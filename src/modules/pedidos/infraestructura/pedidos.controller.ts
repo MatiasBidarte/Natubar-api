@@ -11,7 +11,7 @@ import { CrearPedido } from '../dominio/casosDeUso/CrearPedido';
 import { ConfirmarPedido } from '../dominio/casosDeUso/ConfirmarPedido';
 import axios from 'axios';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
-import { EstadosPago, EstadosPedido, Pedido } from './entities/pedido.entity';
+import { EstadosPago, EstadosPedido } from './entities/pedido.entity';
 import { GetByEstado } from '../dominio/casosDeUso/GetByEstado';
 import { ICrearPreferencia } from './interfaces/ICrearPreferencia';
 import { ChangeEstado } from '../dominio/casosDeUso/ChangeEstado';
@@ -56,18 +56,20 @@ export class PedidosController {
     private readonly obtenerPedidos: ObtenerPedidos,
     private readonly changeEstadoPago: ChangeEstadoPago,
   ) {}
-  @Get('PedidosPorEstado/:estadoRaw')
-  async getPedidos(@Param('estadoRaw') estadoRaw: string): Promise<Pedido[]> {
+  @Get('pedidosPorEstado/:estadoRaw')
+  async getPedidos(
+    @Param('estadoRaw') estadoRaw: string,
+  ): Promise<PedidoDto[]> {
     if (estadoRaw == null) {
       return [];
     }
     const estado = estadoRaw as EstadosPedido;
-    const pedidos: Pedido[] = await this.getByEstado.ejecutar(estado);
+    const pedidos = await this.getByEstado.ejecutar(estado);
     return pedidos;
   }
 
   @Get()
-  async getAllPedidos(): Promise<Pedido[]> {
+  async getAllPedidos(): Promise<PedidoDto[]> {
     return await this.obtenerPedidos.ejecutar();
   }
 
@@ -150,14 +152,14 @@ export class PedidosController {
     return { received: true };
   }
 
-  @Post('CambiarEstado')
+  @Post('cambiarEstado')
   async CambiarEstado(@Body() body: { estado: EstadosPedido; pedido: number }) {
     const { estado, pedido } = body;
     const pedidoActualizado = await this.changeEstado.ejecutar(pedido, estado);
     return pedidoActualizado;
   }
 
-  @Post('CambiarEstadoPago')
+  @Post('cambiarEstadoPago')
   async CambiarEstadoPago(
     @Body() body: { estado: EstadosPago; pedido: number },
   ) {
