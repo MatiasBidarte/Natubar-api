@@ -24,12 +24,13 @@ export class NotificacionService {
       const client = this.oneSignalService.client as {
         createNotification: (data: any) => Promise<any>;
       };
-      await client.createNotification({
+      const res = await client.createNotification({
         app_id: this.configService.get<string>('ONESIGNAL_APP_ID'),
         include_player_ids: [dto.playerId],
         headings: { en: dto.cabezal || 'Notificación' },
         contents: { en: dto.mensaje },
       });
+      console.log('Notificación enviada:', res);
     } catch (error) {
       console.error('Error al enviar notificación:', error);
       throw error;

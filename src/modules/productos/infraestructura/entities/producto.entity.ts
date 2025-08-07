@@ -43,7 +43,7 @@ export class Producto {
   @Column({ nullable: true })
   peso: number;
 
-  @Column()
+  @Column({ nullable: true })
   costoProduccion: number;
 
   @Column()

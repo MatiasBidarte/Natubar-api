@@ -11,6 +11,9 @@ export class SuscripcionNotificacion {
   @Column()
   clienteId: number;
 
+  @Column({ nullable: true })
+  externalId: string;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   registradoEn: Date;
 

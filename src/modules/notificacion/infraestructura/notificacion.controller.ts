@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { SuscripcionNotificacion } from './entities/suscripcionNotificacion.entity';
 import { SuscribirDispositivo } from '../dominio/casosDeUso/SuscribirDispositivo';
 import { DesuscribirDispositivo } from '../dominio/casosDeUso/DesuscribirDispositivo';
@@ -13,16 +13,18 @@ export class NotificacionController {
     private readonly notificar: MandarNotificacion,
   ) {}
 
-  public async suscribirDispositivo(
-    notificacion: SuscripcionNotificacion,
-  ): Promise<void> {
+  @Post('suscribirDispositivo')
+  public async suscribirDispositivo(@Body() notificacion: any): Promise<void> {
     return await this.suscribir.ejecutar(notificacion);
   }
-
+  @Post('desuscribirDispositivo')
   public async desuscribirDispositivo(
-    notificacion: SuscripcionNotificacion,
+    @Body()
+    body: {
+      notificacion: SuscripcionNotificacion;
+    },
   ): Promise<void> {
-    return await this.desuscribir.ejecutar(notificacion);
+    return await this.desuscribir.ejecutar(body.notificacion);
   }
 
   public async mandarNotificacion(

@@ -72,6 +72,15 @@ export class PedidosService {
       throw new Error('Pedido no encontrado');
     }
     pedido.estado = estado;
+    if (estado === EstadosPedido.entregado) {
+      pedido.fechaEntrega = new Date();
+    }
+    if (estado === EstadosPedido.enPreparacion) {
+      const hoy = new Date();
+      hoy.setDate(hoy.getDate() + 7);
+      pedido.fechaEntregaEstimada = hoy;
+    }
+
     return await this.pedidoRepository.save(pedido);
   }
 
