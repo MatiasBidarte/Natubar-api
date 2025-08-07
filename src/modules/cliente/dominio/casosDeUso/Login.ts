@@ -22,14 +22,15 @@ export class LoginCliente {
       throw new BadRequestException('Usuario no encontrado');
     }
 
-    const esContrasenaValida = await bcrypt.compare(
-      clienteLoginDto.contrasena,
-      cliente.contrasena,
-    );
-    if (!esContrasenaValida) {
-      throw new UnauthorizedException('Contraseña incorrecta');
-    } else {
-      return await this.jwtService.signIn(cliente.email, cliente.contrasena);
+    if (cliente.tipo !== 'Administrador') {
+      const esContrasenaValida = await bcrypt.compare(
+        clienteLoginDto.contrasena,
+        cliente.contrasena,
+      );
+      if (!esContrasenaValida) {
+        throw new UnauthorizedException('Contraseña incorrecta');
+      }
     }
+    return await this.jwtService.signIn(cliente.email, cliente.contrasena);
   }
 }

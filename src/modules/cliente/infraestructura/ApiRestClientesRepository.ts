@@ -135,4 +135,22 @@ export class ApiRestClientesRepository implements ClienteRepository {
       }
     }
   }
+
+  async obtenerPorId(id: number): Promise<Cliente | null> {
+    try {
+      const cliente = await this.context.findById(id);
+      if (!cliente) {
+        throw new HttpException('Cliente no encontrado', 404);
+      }
+      return cliente;
+    } catch (error: unknown) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(
+          'Error desconocido al obtener el cliente.',
+        );
+      }
+    }
+  }
 }

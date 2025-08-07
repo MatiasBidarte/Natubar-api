@@ -21,6 +21,11 @@ export class PedidosService {
       order: {
         fechaCreacion: 'DESC',
       },
+      relations: [
+        'productos',
+        'productos.productoSabores',
+        'productos.productoSabores.sabor',
+      ],
     });
   }
 
@@ -57,6 +62,11 @@ export class PedidosService {
   async cambiarEstado(id: number, estado: EstadosPedido): Promise<Pedido> {
     const pedido = await this.pedidoRepository.findOne({
       where: { id },
+      relations: [
+        'productos',
+        'productos.productoSabores',
+        'productos.productoSabores.sabor',
+      ],
     });
     if (!pedido) {
       throw new Error('Pedido no encontrado');
@@ -77,6 +87,11 @@ export class PedidosService {
   async cambiarEstadoPago(id: number, estado: EstadosPago): Promise<Pedido> {
     const pedido = await this.pedidoRepository.findOne({
       where: { id },
+      relations: [
+        'productos',
+        'productos.productoSabores',
+        'productos.productoSabores.sabor',
+      ],
     });
     if (!pedido) {
       throw new Error('Pedido no encontrado');

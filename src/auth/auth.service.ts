@@ -40,12 +40,6 @@ export class AuthService {
     const { contrasena, ...userWithoutPassword } = user;
     const payload = {
       ...userWithoutPassword,
-      tipo:
-        user instanceof ClientePersona
-          ? 'PERSONA'
-          : user instanceof ClienteEmpresa
-            ? 'EMPRESA'
-            : 'ADMINISTRADOR',
     };
     const token = this.jwtService.sign(payload);
     return {
@@ -53,7 +47,6 @@ export class AuthService {
     };
   }
 
-  // Nuevo método para generar token sin verificar contraseña
   generateTokenForUser(cliente: Partial<Cliente>): { access_token: string } {
     const { contrasena, ...userWithoutPassword } = cliente;
     const payload = {

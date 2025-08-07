@@ -1,6 +1,8 @@
 import { ClientePersona } from '../../infraestructura/entities/cliente-persona.entity';
+import { ClienteEmpresa } from '../../infraestructura/entities/cliente-empresa.entity';
 import { Cliente } from '../../infraestructura/entities/cliente.entity';
 import { ClienteDto } from '../dto/cliente.dto';
+
 export class ClienteMapper {
   static toDomain(raw: ClienteDto): Cliente {
     return new Cliente(
@@ -15,7 +17,8 @@ export class ClienteMapper {
   }
 
   static toDto(cliente: Cliente): ClienteDto {
-    return {
+    const baseDto = {
+      id: cliente.id,
       email: cliente.email,
       contrasena: cliente.contrasena,
       observaciones: cliente.observaciones,
@@ -23,7 +26,26 @@ export class ClienteMapper {
       ciudad: cliente.ciudad,
       direccion: cliente.direccion,
       telefono: cliente.telefono,
-      tipo: cliente instanceof ClientePersona ? 'Persona' : 'Empresa',
+      tipo:
+        cliente.tipo ||
+        (cliente instanceof ClientePersona ? 'Persona' : 'Empresa'),
     };
+
+    if (cliente instanceof ClientePersona) {
+      return {
+        ...baseDto,
+        nombre: cliente.nombre,
+        apellido: cliente.apellido,
+      };
+    } else if (cliente instanceof ClienteEmpresa) {
+      return {
+        ...baseDto,
+        nombreEmpresa: cliente.nombreEmpresa,
+        nombreContacto: cliente.nombreContacto,
+        rut: cliente.rut,
+      };
+    }
+
+    return baseDto;
   }
 }
