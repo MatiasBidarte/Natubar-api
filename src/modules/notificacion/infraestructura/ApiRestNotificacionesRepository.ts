@@ -15,6 +15,7 @@ export class ApiRestNotificacionesRepository
     mensaje: string,
   ): Promise<void> {
     const suscripciones = await this.service.buscarSuscripciones(clienteId);
+
     for (const suscripcion of suscripciones) {
       await this.service.MandarNotificacion({
         playerId: suscripcion.playerId,

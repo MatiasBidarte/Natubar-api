@@ -16,10 +16,17 @@ import { NotificacionModule } from './modules/notificacion/infraestructura/notif
     ClienteModule,
     ProductosModule,
     PedidosModule,
+    NotificacionModule,
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule, ClienteModule, PedidosModule, ProductosModule],
+      imports: [
+        ConfigModule,
+        ClienteModule,
+        PedidosModule,
+        ProductosModule,
+        NotificacionModule,
+      ],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
