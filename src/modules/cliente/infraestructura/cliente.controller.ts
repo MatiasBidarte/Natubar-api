@@ -21,6 +21,8 @@ import { ObtenerTodosCliente } from '../dominio/casosDeUso/ObtenerTodosCliente';
 import { ActualizarClienteDto } from '../dominio/dto/actualizar-cliente.dto';
 import { ActualizarCliente } from '../dominio/casosDeUso/ActualizarCliente';
 import { PedidosDeCliente } from '../dominio/casosDeUso/PedidosDeCliente';
+import { UseGuards } from '@nestjs/common';
+import { JwtAdminGuard } from '../../../auth/jwt-admin.guard';
 
 @Controller('clientes')
 export class ClienteController {
@@ -31,6 +33,18 @@ export class ClienteController {
     private readonly actualizar: ActualizarCliente,
     private readonly pedidosDeCliente: PedidosDeCliente,
   ) {}
+
+  @Get()
+  @UseGuards(JwtAdminGuard)
+  async getAll() {
+    try {
+      const clientes = await this.obtenerTodos.ejecutar();
+      return clientes;
+    } catch (error) {
+      throw new InternalServerErrorException('Error al obtener los clientes');
+    }
+  }
+
   @Post()
   async add(@Body() clienteDto: ClienteDto) {
     try {

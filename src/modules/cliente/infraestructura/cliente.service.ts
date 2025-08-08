@@ -5,6 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ClientePersona } from 'src/modules/cliente/infraestructura/entities/cliente-persona.entity';
 import { ClienteEmpresa } from 'src/modules/cliente/infraestructura/entities/cliente-empresa.entity';
 import { ClienteAdministrador } from 'src/modules/cliente/infraestructura/entities/cliente-administrador.entity';
+import { ClienteDto } from 'src/modules/cliente/dominio/dto/cliente.dto';
+import { ClienteMapper } from 'src/modules/cliente/dominio/mapper/UsuarioMapper';
 
 @Injectable()
 export class ClienteService {
@@ -39,9 +41,11 @@ export class ClienteService {
     }
   }
 
-  async findAll(): Promise<Cliente[]> {
+  async findAll(): Promise<ClienteDto[]> {
     const clientes = await this.clienteRepository.find();
-    return clientes.filter((c) => !(c instanceof ClienteAdministrador));
+    return clientes
+      .filter((c) => !(c instanceof ClienteAdministrador))
+      .map((c) => ClienteMapper.toDto(c));
   }
 
   async findByEmail(email: string): Promise<boolean> {

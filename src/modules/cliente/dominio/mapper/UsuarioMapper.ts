@@ -1,4 +1,5 @@
 import { ClientePersona } from '../../infraestructura/entities/cliente-persona.entity';
+import { ClienteEmpresa } from '../../infraestructura/entities/cliente-empresa.entity';
 import { Cliente } from '../../infraestructura/entities/cliente.entity';
 import { ClienteDto } from '../dto/cliente.dto';
 export class ClienteMapper {
@@ -23,7 +24,12 @@ export class ClienteMapper {
       ciudad: cliente.ciudad,
       direccion: cliente.direccion,
       telefono: cliente.telefono,
-      tipo: cliente instanceof ClientePersona ? 'Persona' : 'Empresa',
+      tipo:
+        cliente instanceof ClientePersona
+          ? 'PERSONA'
+          : cliente instanceof ClienteEmpresa
+            ? 'EMPRESA'
+            : 'ADMINISTRADOR',
     };
   }
 }
