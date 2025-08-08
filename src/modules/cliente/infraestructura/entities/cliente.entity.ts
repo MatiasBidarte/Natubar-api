@@ -33,9 +33,8 @@ export class Cliente {
   @IsNotEmpty()
   departamento: string;
 
-  /*
-  @Column({ name: 'tipo', insert: false, update: false, select: true })
-  tipo: string;*/
+  @Column({ name: 'tipo' })
+  tipo: string;
 
   @Column()
   @IsNotEmpty()

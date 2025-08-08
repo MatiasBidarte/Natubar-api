@@ -5,6 +5,7 @@ import {
   Get,
   HttpException,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -21,6 +22,7 @@ import { ObtenerTodosCliente } from '../dominio/casosDeUso/ObtenerTodosCliente';
 import { ActualizarClienteDto } from '../dominio/dto/actualizar-cliente.dto';
 import { ActualizarCliente } from '../dominio/casosDeUso/ActualizarCliente';
 import { PedidosDeCliente } from '../dominio/casosDeUso/PedidosDeCliente';
+import { ObtenerClientePorId } from '../dominio/casosDeUso/ObtenerClientePorId';
 import { UseGuards } from '@nestjs/common';
 import { JwtAdminGuard } from '../../../auth/jwt-admin.guard';
 
@@ -32,6 +34,7 @@ export class ClienteController {
     private readonly loginCU: LoginCliente,
     private readonly actualizar: ActualizarCliente,
     private readonly pedidosDeCliente: PedidosDeCliente,
+    private readonly obtenerClientePorId: ObtenerClientePorId,
   ) {}
 
   @Get()
@@ -160,9 +163,25 @@ export class ClienteController {
     }
   }
 
-  @Get('Prueba')
-  prueba() {
-    return 'Hola';
+  @Get(':id')
+  async getCliente(@Param('id') id: number) {
+    try {
+      const cliente = await this.obtenerClientePorId.ejecutar(id);
+      if (!cliente) {
+        throw new NotFoundException(`Cliente con ID ${id} no encontrado`);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { contrasena, ...clienteSinContrasena } = cliente;
+      return clienteSinContrasena;
+    } catch (ex) {
+      if (ex instanceof HttpException) {
+        throw ex;
+      } else {
+        throw new InternalServerErrorException(
+          'Error al obtener el cliente: error desconocido',
+        );
+      }
+    }
   }
 
   @Post('login')

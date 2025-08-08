@@ -6,6 +6,7 @@ export class ProductoDto {
   precioEmpresas: number;
   stock: boolean;
   esCajaDeBarras: boolean;
+  costoProduccion: number;
   urlImagen?: string;
   peso?: number;
   cantidadDeBarras?: number;
@@ -17,6 +18,7 @@ export class ProductoDto {
     precioEmpresas: number,
     stock: boolean,
     esCajaDeBarras: boolean,
+    costoProduccion: number,
     urlImagen?: string,
     peso?: number,
     cantidadDeBarras?: number,
@@ -28,6 +30,7 @@ export class ProductoDto {
     this.precioEmpresas = precioEmpresas;
     this.stock = stock;
     this.urlImagen = urlImagen;
+    this.costoProduccion = costoProduccion;
     this.peso = peso;
     this.esCajaDeBarras = esCajaDeBarras;
     this.cantidadDeBarras = cantidadDeBarras;

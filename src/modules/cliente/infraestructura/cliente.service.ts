@@ -17,15 +17,7 @@ export class ClienteService {
 
   async create(cliente: Cliente) {
     try {
-      if (cliente instanceof ClientePersona) {
-        return await this.clienteRepository.save(cliente);
-      }
-      if (cliente instanceof ClienteEmpresa) {
-        return await this.clienteRepository.save(cliente);
-      }
-      if (cliente instanceof ClienteAdministrador) {
-        return await this.clienteRepository.save(cliente);
-      }
+      return await this.clienteRepository.save(cliente);
     } catch (error) {
       console.error('Error al crear cliente:', error);
       throw error;
@@ -72,8 +64,14 @@ export class ClienteService {
       relations: [
         'pedidos',
         'pedidos.productos',
+        'pedidos.productos.productoSabores',
         'pedidos.productos.productoSabores.sabor',
       ],
+      order: {
+        pedidos: {
+          fechaCreacion: 'DESC',
+        },
+      },
     });
     return cliente ? cliente.pedidos : [];
   }

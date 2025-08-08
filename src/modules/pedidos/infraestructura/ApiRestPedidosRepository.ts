@@ -8,15 +8,16 @@ import {
 import { PedidoRepository } from '../dominio/interfaces/repositorio/PedidoRepository';
 import { PedidosService } from './pedidos.service';
 import { PedidoDto } from '../dominio/dto/pedido.dto';
-import { EstadosPedido, Pedido } from './entities/pedido.entity';
+import { EstadosPago, EstadosPedido, Pedido } from './entities/pedido.entity';
 import { ClienteService } from 'src/modules/cliente/infraestructura/cliente.service';
 import { ProductosService } from 'src/modules/productos/infraestructura/productos.service';
 import { PedidoMapper } from '../dominio/mappers/pedido-mapper';
 import { DetallePedidoMapper } from '../dominio/mappers/detalle-pedido-mapper';
 import { ProductoSabor } from 'src/modules/productos/infraestructura/entities/producto-sabor.entity';
-import { AuthService } from 'src/auth/auth.service';
 import { SaboresRepository } from 'src/modules/sabores/dominio/interfaces/SaboresRepository';
 import { ApiRestSaboresRepository } from 'src/modules/sabores/infraestructura/ApiRestSaboresRepository';
+import { ApiRestNotificacionesRepository } from 'src/modules/notificacion/infraestructura/ApiRestNotificacionesRepository';
+import { construirMensajeEstado } from 'src/modules/notificacion/dominio/utils/construirMensajeEstado';
 
 @Injectable()
 export class ApiRestPedidosRepository implements PedidoRepository {
@@ -30,15 +31,17 @@ export class ApiRestPedidosRepository implements PedidoRepository {
 
     @Inject(forwardRef(() => ApiRestSaboresRepository))
     private readonly saboresRepository: SaboresRepository,
-    @Inject(forwardRef(() => AuthService))
-    private readonly authService: AuthService,
+    @Inject(forwardRef(() => ApiRestNotificacionesRepository))
+    private readonly notificacionesRepository: ApiRestNotificacionesRepository,
   ) {}
-  getByEstado(estado: EstadosPedido): Promise<Pedido[]> {
-    return this.contextPedido.getByEstado(estado);
+  async getByEstado(estado: EstadosPedido): Promise<PedidoDto[]> {
+    const pedidos = await this.contextPedido.getByEstado(estado);
+    return pedidos.map((pedido) => PedidoMapper.toDto(pedido));
   }
 
-  obtenerTodos(): Pedido[] | PromiseLike<Pedido[]> {
-    return this.contextPedido.obtenerPedidos();
+  async obtenerTodos(): Promise<PedidoDto[]> {
+    const pedidos = await this.contextPedido.obtenerPedidos();
+    return pedidos.map((pedido) => PedidoMapper.toDto(pedido));
   }
 
   async crearPedido(pedidoDto: PedidoDto): Promise<{ id: number }> {
@@ -57,63 +60,71 @@ export class ApiRestPedidosRepository implements PedidoRepository {
         'La lista de detalleProductos es requerida y no puede estar vacía',
       );
     }
+
     const pedidoGuardado = await this.contextPedido.crearPedido(pedido);
     const sabores = await this.saboresRepository.obtenerTodos();
+
     for (const detalleDto of pedidoDto.productos) {
       const producto = await this.contextProducto.findById(
         detalleDto.producto?.id ?? 0,
       );
       if (!producto) {
-        throw new NotFoundException(`Producto ${detalleDto.id} no encontrado`);
-      }
-      const detalle = DetallePedidoMapper.toDomain(detalleDto);
-      const saborBD = await this.saboresRepository.obtenerTodos();
-      for (const saborDto of detalleDto.sabores) {
-        const saborEncontrado = saborBD.find((s) => s.id === saborDto.id);
-        if (!saborEncontrado) {
-          throw new NotFoundException(`Sabor ${saborDto.id} no encontrado`);
-        }
-        const productoSabor = new ProductoSabor(
-          saborEncontrado,
-          saborDto.cantidad || 0,
+        throw new NotFoundException(
+          `Producto ${detalleDto.producto?.id ?? 0} no encontrado`,
         );
-        detalle.productoSabores.push(productoSabor);
       }
+
+      const detalle = DetallePedidoMapper.toDomain(detalleDto);
       detalle.producto = producto;
       detalle.pedido = pedidoGuardado;
+      detalle.productoSabores = [];
 
       const detalleGuardado =
         await this.contextPedido.guardarDetallePedido(detalle);
+
       for (const productoSabor of detalleDto.sabores) {
         const saborEncontrado = sabores.find(
           (s) => s.id === productoSabor.sabor?.id,
         );
-
         if (!saborEncontrado) {
-          throw new Error(
+          throw new NotFoundException(
             `Sabor con ID ${productoSabor.sabor?.id} no encontrado`,
           );
         }
-
         const nuevoProductoSabor = new ProductoSabor(
           saborEncontrado,
           productoSabor.cantidad ?? 1,
         );
-
         nuevoProductoSabor.detallePedido = detalleGuardado;
-
         await this.contextPedido.guardarProductoSabor(nuevoProductoSabor);
-        // Ahora podés guardar o hacer lo que necesites con nuevoProductoSabor
       }
     }
+
     return { id: pedidoGuardado.id };
   }
 
   confirmarPedido(pedidoId: string): Promise<Pedido> {
     return this.contextPedido.confirmarPedido(pedidoId);
   }
-  async changeEstado(id: number, estado: EstadosPedido): Promise<Pedido> {
+
+  async changeEstado(id: number, estado: EstadosPedido): Promise<PedidoDto> {
     const pedido: Pedido = await this.contextPedido.cambiarEstado(id, estado);
-    return pedido;
+    await this.notificacionesRepository.MandarNotificacion(
+      pedido.cliente.id,
+      'Hay novedades sobre tu pedido',
+      construirMensajeEstado(estado),
+    );
+    if (!pedido) {
+      throw new NotFoundException(`Pedido con ID ${id} no encontrado`);
+    }
+    return PedidoMapper.toDto(pedido);
+  }
+
+  async changeEstadoPago(id: number, estado: EstadosPago): Promise<PedidoDto> {
+    const pedido: Pedido = await this.contextPedido.cambiarEstadoPago(
+      id,
+      estado,
+    );
+    return PedidoMapper.toDto(pedido);
   }
 }

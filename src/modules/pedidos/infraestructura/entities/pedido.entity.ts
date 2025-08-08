@@ -47,7 +47,7 @@ export class Pedido {
   descuento: number;
 
   @Column({ nullable: true })
-  preferenceId: string;
+  observaciones: string;
 
   @OneToMany(() => DetallePedido, (detallePedido) => detallePedido.pedido, {
     eager: true,
@@ -65,7 +65,7 @@ export class Pedido {
     montoTotal?: number,
     descuento?: number,
     cliente?: Cliente,
-    preferenceId?: string,
+    observaciones?: string,
   ) {
     if (id !== undefined) this.id = id;
     if (fechaEntrega !== undefined) this.fechaEntrega = fechaEntrega;
@@ -73,10 +73,11 @@ export class Pedido {
       this.fechaEntregaEstimada = fechaEntregaEstimada;
     if (montoTotal !== undefined) this.montoTotal = montoTotal;
     if (descuento !== undefined) this.descuento = descuento;
-    if (preferenceId !== undefined) this.preferenceId = preferenceId;
     if (cliente !== undefined) this.cliente = cliente;
     this.estado = EstadosPedido.pendientePago;
     this.estadoPago = EstadosPago.pendiente;
+    this.fechaCreacion = new Date();
+    if (observaciones !== undefined) this.observaciones = observaciones;
   }
 
   addDetallePedido(detallePedido: DetallePedido) {

@@ -11,10 +11,12 @@ import { CrearPedido } from '../dominio/casosDeUso/CrearPedido';
 import { ConfirmarPedido } from '../dominio/casosDeUso/ConfirmarPedido';
 import axios from 'axios';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
-import { EstadosPedido, Pedido } from './entities/pedido.entity';
+import { EstadosPago, EstadosPedido } from './entities/pedido.entity';
 import { GetByEstado } from '../dominio/casosDeUso/GetByEstado';
 import { ICrearPreferencia } from './interfaces/ICrearPreferencia';
 import { ChangeEstado } from '../dominio/casosDeUso/ChangeEstado';
+import { ObtenerPedidos } from '../dominio/casosDeUso/ObtenerPedidos';
+import { ChangeEstadoPago } from '../dominio/casosDeUso/ChangeEstadoPago';
 
 export class WebhookDto {
   topic: 'payment' | 'merchant_order';
@@ -27,9 +29,8 @@ interface MercadoPagoOrderResponse {
   payments: Array<{
     id: string;
     status: string;
-    [key: string]: any; // si querés flexibilidad
+    [key: string]: any;
   }>;
-  // otros campos si los necesitás
 }
 export interface MercadoPagoPayment {
   id: string;
@@ -52,15 +53,24 @@ export class PedidosController {
     private readonly confirmar: ConfirmarPedido,
     private readonly getByEstado: GetByEstado,
     private readonly changeEstado: ChangeEstado,
+    private readonly obtenerPedidos: ObtenerPedidos,
+    private readonly changeEstadoPago: ChangeEstadoPago,
   ) {}
-  @Get('PedidosPorEstado/:estadoRaw')
-  async getPedidos(@Param('estadoRaw') estadoRaw: string): Promise<Pedido[]> {
+  @Get('pedidosPorEstado/:estadoRaw')
+  async getPedidos(
+    @Param('estadoRaw') estadoRaw: string,
+  ): Promise<PedidoDto[]> {
     if (estadoRaw == null) {
       return [];
     }
     const estado = estadoRaw as EstadosPedido;
-    const pedidos: Pedido[] = await this.getByEstado.ejecutar(estado);
+    const pedidos = await this.getByEstado.ejecutar(estado);
     return pedidos;
+  }
+
+  @Get()
+  async getAllPedidos(): Promise<PedidoDto[]> {
+    return await this.obtenerPedidos.ejecutar();
   }
 
   @Post()
@@ -143,9 +153,21 @@ export class PedidosController {
   }
 
   @Post('cambiarEstado')
-  async cambiarEstado(@Body() estadoRaw: string, id: number) {
-    const estado = estadoRaw as EstadosPedido;
-    const pedido: Pedido = await this.changeEstado.ejecutar(id, estado);
-    return pedido;
+  async CambiarEstado(@Body() body: { estado: EstadosPedido; pedido: number }) {
+    const { estado, pedido } = body;
+    const pedidoActualizado = await this.changeEstado.ejecutar(pedido, estado);
+    return pedidoActualizado;
+  }
+
+  @Post('cambiarEstadoPago')
+  async CambiarEstadoPago(
+    @Body() body: { estado: EstadosPago; pedido: number },
+  ) {
+    const { estado, pedido } = body;
+    const pedidoActualizado = await this.changeEstadoPago.ejecutar(
+      pedido,
+      estado,
+    );
+    return pedidoActualizado;
   }
 }

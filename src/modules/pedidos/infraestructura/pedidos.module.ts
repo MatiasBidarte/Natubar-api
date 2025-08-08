@@ -16,6 +16,9 @@ import { SaboresModule } from 'src/modules/sabores/infraestructura/sabores.modul
 import { ChangeEstado } from '../dominio/casosDeUso/ChangeEstado';
 import { DetallePedido } from './entities/detalle-pedido.entity';
 import { ProductoSabor } from 'src/modules/productos/infraestructura/entities/producto-sabor.entity';
+import { ObtenerPedidos } from '../dominio/casosDeUso/ObtenerPedidos';
+import { ChangeEstadoPago } from '../dominio/casosDeUso/ChangeEstadoPago';
+import { NotificacionModule } from 'src/modules/notificacion/infraestructura/notificacion.module';
 
 @Module({
   imports: [
@@ -31,6 +34,7 @@ import { ProductoSabor } from 'src/modules/productos/infraestructura/entities/pr
     ProductosModule,
     PedidosModule,
     SaboresModule,
+    NotificacionModule,
   ],
   controllers: [PedidosController],
   providers: [
@@ -40,6 +44,8 @@ import { ProductoSabor } from 'src/modules/productos/infraestructura/entities/pr
     ConfirmarPedido,
     GetByEstado,
     ChangeEstado,
+    ObtenerPedidos,
+    ChangeEstadoPago,
   ],
   exports: [
     PedidosService,
@@ -48,6 +54,7 @@ import { ProductoSabor } from 'src/modules/productos/infraestructura/entities/pr
     ConfirmarPedido,
     GetByEstado,
     ChangeEstado,
+    ChangeEstadoPago,
   ],
 })
 export class PedidosModule {}

@@ -17,7 +17,16 @@ export class PedidosService {
   ) {}
 
   obtenerPedidos() {
-    return [];
+    return this.pedidoRepository.find({
+      order: {
+        fechaCreacion: 'DESC',
+      },
+      relations: [
+        'productos',
+        'productos.productoSabores',
+        'productos.productoSabores.sabor',
+      ],
+    });
   }
 
   getByEstado(estado: EstadosPedido): Promise<Pedido[]> {
@@ -53,11 +62,41 @@ export class PedidosService {
   async cambiarEstado(id: number, estado: EstadosPedido): Promise<Pedido> {
     const pedido = await this.pedidoRepository.findOne({
       where: { id },
+      relations: [
+        'productos',
+        'productos.productoSabores',
+        'productos.productoSabores.sabor',
+      ],
     });
     if (!pedido) {
       throw new Error('Pedido no encontrado');
     }
     pedido.estado = estado;
+    if (estado === EstadosPedido.entregado) {
+      pedido.fechaEntrega = new Date();
+    }
+    if (estado === EstadosPedido.enPreparacion) {
+      const hoy = new Date();
+      hoy.setDate(hoy.getDate() + 7);
+      pedido.fechaEntregaEstimada = hoy;
+    }
+
+    return await this.pedidoRepository.save(pedido);
+  }
+
+  async cambiarEstadoPago(id: number, estado: EstadosPago): Promise<Pedido> {
+    const pedido = await this.pedidoRepository.findOne({
+      where: { id },
+      relations: [
+        'productos',
+        'productos.productoSabores',
+        'productos.productoSabores.sabor',
+      ],
+    });
+    if (!pedido) {
+      throw new Error('Pedido no encontrado');
+    }
+    pedido.estadoPago = estado;
     return await this.pedidoRepository.save(pedido);
   }
 
