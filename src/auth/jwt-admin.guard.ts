@@ -23,7 +23,7 @@ export class JwtAdminGuard implements CanActivate {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'jwtsecret') as any;
 
-      if (decoded.tipo !== 'ADMINISTRADOR') {
+      if (decoded.tipo !== 'Administrador') {
         throw new ForbiddenException('No tiene permisos de administrador');
       }
 

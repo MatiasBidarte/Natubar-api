@@ -28,10 +28,10 @@ export class ClienteMapper {
       telefono: cliente.telefono,
       tipo:
         cliente instanceof ClientePersona
-          ? 'PERSONA'
+          ? 'Persona'
           : cliente instanceof ClienteEmpresa
-            ? 'EMPRESA'
-            : 'ADMINISTRADOR',
+            ? 'Empresa'
+            : 'Administrador',
     };
 
     if (cliente instanceof ClientePersona) {

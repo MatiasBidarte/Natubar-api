@@ -53,10 +53,10 @@ export class AuthService {
       ...userWithoutPassword,
       tipo:
         cliente instanceof ClientePersona
-          ? 'PERSONA'
+          ? 'Persona'
           : ClienteEmpresa
-            ? 'EMPRESA'
-            : 'ADMINISTRADOR',
+            ? 'Empresa'
+            : 'Administrador',
     };
     const token = this.jwtService.sign(payload);
     return {
