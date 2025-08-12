@@ -39,7 +39,13 @@ export class NotificacionService {
     notificacion: SuscripcionNotificacion,
   ): Promise<void> {
     try {
-      await this.notificacionesRepository.save(notificacion);
+      const existe = await this.notificacionesRepository.findOne({
+        where: { playerId: notificacion.playerId },
+      });
+
+      if (!existe) {
+        await this.notificacionesRepository.save(notificacion);
+      }
     } catch (error) {
       console.error('Error al crear notificación:', error);
       throw error;

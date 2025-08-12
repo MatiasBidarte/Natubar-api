@@ -7,11 +7,7 @@ import { ConfigService } from '@nestjs/config';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: [
-      'https://natubar.vercel.app',
-      'http://localhost:3000',
-      'https://6738e4a6f142.ngrok-free.app',
-    ],
+    origin: ['https://natubar.vercel.app', 'http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key'],
     credentials: true,
