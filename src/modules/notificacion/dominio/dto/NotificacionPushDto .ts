@@ -1,10 +1,10 @@
 import { Cliente } from 'src/modules/cliente/infraestructura/entities/cliente.entity';
 
 export class NotificacionPushDto {
-  playerId: string;
+  playersId: string[];
   clienteId: number;
   cliente?: Cliente;
-  dispositivo: string;
+  dispositivo?: string;
   cabezal: string;
   mensaje: string;
 }

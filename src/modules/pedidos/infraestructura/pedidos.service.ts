@@ -42,6 +42,18 @@ export class PedidosService {
       },
     });
   }
+
+  findById(id: number): Promise<Pedido | null> {
+    return this.pedidoRepository.findOne({
+      where: { id: id },
+      relations: [
+        'productos',
+        'productos.productoSabores',
+        'productos.productoSabores.sabor',
+      ],
+    });
+  }
+
   async crearPedido(pedido: Pedido): Promise<Pedido> {
     const pedidoEntity = this.pedidoRepository.create(pedido);
     await this.pedidoRepository.save(pedidoEntity);

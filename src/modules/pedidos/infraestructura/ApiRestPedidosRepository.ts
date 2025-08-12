@@ -44,6 +44,13 @@ export class ApiRestPedidosRepository implements PedidoRepository {
     return pedidos.map((pedido) => PedidoMapper.toDto(pedido));
   }
 
+  async findById(id: number): Promise<PedidoDto> {
+    const pedido = await this.contextPedido.findById(id);
+    if (!pedido) {
+      throw new NotFoundException(`Pedido con ID ${id} no encontrado`);
+    }
+    return PedidoMapper.toDto(pedido);
+  }
   async crearPedido(pedidoDto: PedidoDto): Promise<{ id: number }> {
     if (!pedidoDto.cliente?.id) {
       throw new BadRequestException('El id del cliente es requerido');

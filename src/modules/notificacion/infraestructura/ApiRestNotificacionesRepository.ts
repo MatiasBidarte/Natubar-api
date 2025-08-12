@@ -16,15 +16,12 @@ export class ApiRestNotificacionesRepository
   ): Promise<void> {
     const suscripciones = await this.service.buscarSuscripciones(clienteId);
 
-    for (const suscripcion of suscripciones) {
-      await this.service.MandarNotificacion({
-        playerId: suscripcion.playerId,
-        clienteId,
-        cabezal,
-        mensaje,
-        dispositivo: suscripcion.dispositivo,
-      });
-    }
+    await this.service.MandarNotificacion({
+      playersId: suscripciones.map((s) => s.playerId),
+      clienteId,
+      cabezal,
+      mensaje,
+    });
   }
 
   async SuscribirDispositivo(

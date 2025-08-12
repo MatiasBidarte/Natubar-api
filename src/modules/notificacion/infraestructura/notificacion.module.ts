@@ -12,12 +12,14 @@ import { OneSignalModule } from 'nestjs-onesignal';
 import { SuscribirDispositivo } from '../dominio/casosDeUso/SuscribirDispositivo';
 import { DesuscribirDispositivo } from '../dominio/casosDeUso/DesuscribirDispositivo';
 import { MandarNotificacion } from '../dominio/casosDeUso/MandarNotificacion';
+import { RecordarPago } from 'src/modules/pedidos/dominio/casosDeUso/RecordarPago';
+import { PedidosModule } from 'src/modules/pedidos/infraestructura/pedidos.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([SuscripcionNotificacion, Cliente]),
     forwardRef(() => AuthModule),
-    NotificacionModule,
+    forwardRef(() => PedidosModule),
     ClienteModule,
     ConfigModule,
     OneSignalModule.forRootAsync({
@@ -36,6 +38,7 @@ import { MandarNotificacion } from '../dominio/casosDeUso/MandarNotificacion';
     SuscribirDispositivo,
     DesuscribirDispositivo,
     MandarNotificacion,
+    RecordarPago,
   ],
   exports: [
     NotificacionService,
@@ -43,6 +46,7 @@ import { MandarNotificacion } from '../dominio/casosDeUso/MandarNotificacion';
     SuscribirDispositivo,
     DesuscribirDispositivo,
     MandarNotificacion,
+    RecordarPago,
   ],
 })
 export class NotificacionModule {}

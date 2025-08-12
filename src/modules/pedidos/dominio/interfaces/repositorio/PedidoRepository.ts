@@ -12,4 +12,5 @@ export interface PedidoRepository {
   getByEstado(estado: EstadosPedido): Promise<PedidoDto[]>;
   changeEstado(id: number, estado: EstadosPedido): Promise<PedidoDto>;
   changeEstadoPago(id: number, estado: EstadosPago): Promise<PedidoDto>;
+  findById(id: number): Promise<PedidoDto>;
 }
