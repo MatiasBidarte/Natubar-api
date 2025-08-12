@@ -19,6 +19,7 @@ import { ProductoSabor } from 'src/modules/productos/infraestructura/entities/pr
 import { ObtenerPedidos } from '../dominio/casosDeUso/ObtenerPedidos';
 import { ChangeEstadoPago } from '../dominio/casosDeUso/ChangeEstadoPago';
 import { NotificacionModule } from 'src/modules/notificacion/infraestructura/notificacion.module';
+import { RecordarPago } from '../dominio/casosDeUso/RecordarPago';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { NotificacionModule } from 'src/modules/notificacion/infraestructura/not
       ProductoSabor,
     ]),
     forwardRef(() => AuthModule),
+    forwardRef(() => NotificacionModule),
     ClienteModule,
     ProductosModule,
     PedidosModule,
@@ -46,6 +48,7 @@ import { NotificacionModule } from 'src/modules/notificacion/infraestructura/not
     ChangeEstado,
     ObtenerPedidos,
     ChangeEstadoPago,
+    RecordarPago,
   ],
   exports: [
     PedidosService,
@@ -55,6 +58,7 @@ import { NotificacionModule } from 'src/modules/notificacion/infraestructura/not
     GetByEstado,
     ChangeEstado,
     ChangeEstadoPago,
+    RecordarPago,
   ],
 })
 export class PedidosModule {}
