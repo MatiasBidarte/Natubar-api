@@ -18,6 +18,7 @@ import { ClienteEmpresa } from './entities/cliente-empresa.entity';
 import { Pedido } from 'src/modules/pedidos/infraestructura/entities/pedido.entity';
 import { PedidoDto } from 'src/modules/pedidos/dominio/dto/pedido.dto';
 import { PedidoMapper } from 'src/modules/pedidos/dominio/mappers/pedido-mapper';
+import { ClienteDto } from 'src/modules/cliente/dominio/dto/cliente.dto';
 
 @Injectable()
 export class ApiRestClientesRepository implements ClienteRepository {
@@ -32,7 +33,7 @@ export class ApiRestClientesRepository implements ClienteRepository {
     return pedidos.map((pedido: Pedido) => PedidoMapper.toDto(pedido));
   }
 
-  obtenerTodos(): Cliente[] | PromiseLike<Cliente[]> {
+  obtenerTodos(): Cliente[] | PromiseLike<Cliente[]> | Promise<ClienteDto[]> {
     return this.context.findAll();
   }
 
