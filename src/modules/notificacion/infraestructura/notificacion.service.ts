@@ -28,7 +28,7 @@ export class NotificacionService {
         app_id: this.configService.get<string>('ONESIGNAL_APP_ID'),
         target_channel: 'push',
         include_aliases: {
-          onesignal_id: dto.playersId, // Aquí estás usando OneSignal User IDs
+          onesignal_id: dto.playersId,
         },
         headings: { en: dto.cabezal || 'Notificación' },
         contents: { en: dto.mensaje },
