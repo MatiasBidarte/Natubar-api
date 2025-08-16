@@ -1,12 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { DetallePedido } from 'src/modules/pedidos/infraestructura/entities/detalle-pedido.entity';
 
 @Entity({ name: 'productos' })
 export class Producto {
-  @PrimaryColumn()
-  @IsNotEmpty()
-  @IsNumber()
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column()

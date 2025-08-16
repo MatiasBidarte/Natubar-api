@@ -1,4 +1,5 @@
 export class CrearActualizarProductoDto {
+  id?: number;
   nombre: string;
   descripcion: string;
   precioPersonas: number;
