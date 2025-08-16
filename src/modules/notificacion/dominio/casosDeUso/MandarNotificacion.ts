@@ -10,10 +10,24 @@ export class MandarNotificacion {
   ) {}
 
   async ejecutar(notificacion: NotificacionPushDto): Promise<void> {
-    await this.notificacionesRepository.MandarNotificacion(
-      notificacion.clienteId,
-      notificacion.cabezal,
-      notificacion.mensaje,
-    );
+    console.log(notificacion);
+    if (
+      notificacion.tipoCliente != null &&
+      notificacion.tipoCliente.length != 0
+    ) {
+      await this.notificacionesRepository.MandarNotificacionIndividual(
+        notificacion.cabezal,
+        notificacion.mensaje,
+        notificacion.tipoCliente,
+        notificacion.fecha,
+      );
+    }
+    if (notificacion.clienteId != null) {
+      await this.notificacionesRepository.MandarNotificacion(
+        notificacion.clienteId,
+        notificacion.cabezal,
+        notificacion.mensaje,
+      );
+    }
   }
 }

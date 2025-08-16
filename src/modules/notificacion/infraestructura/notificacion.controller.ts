@@ -35,6 +35,7 @@ export class NotificacionController {
   public async mandarNotificacion(
     @Body() notificacion: NotificacionPushDto,
   ): Promise<void> {
+    console.log(notificacion);
     return await this.notificar.ejecutar(notificacion);
   }
 

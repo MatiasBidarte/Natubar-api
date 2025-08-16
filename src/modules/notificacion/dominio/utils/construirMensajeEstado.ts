@@ -6,6 +6,9 @@ export function construirMensajeEstado(estado: EstadosPedido): string {
       return 'Tu pedido está en camino 🚚';
     case EstadosPedido.entregado:
       return '¡Tu pedido fue entregado! 🎉';
+
+    case EstadosPedido.enPreparacion:
+      return '¡Tu pedido esta en preparación! 🎉';
     default:
       return `Tu pedido está en estado: ${estado}`;
   }

@@ -7,7 +7,10 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { SuscripcionNotificacion } from './entities/suscripcionNotificacion.entity';
 import { Repository } from 'typeorm';
-import { NotificacionPushDto } from '../dominio/dto/NotificacionPushDto ';
+import {
+  NotificacionPushDto,
+  OneSignalPayload,
+} from '../dominio/dto/NotificacionPushDto ';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 @Injectable()
@@ -64,6 +67,63 @@ export class NotificacionService {
       );
     }
   }
+  async MandarNotificacionIndividual(dto: NotificacionPushDto): Promise<any> {
+    try {
+      if (!dto.tipoCliente) {
+        throw new BadRequestException(
+          'Falta información de segmentación por tag',
+        );
+      }
+      const data: OneSignalPayload = {
+        app_id: this.configService.get<string>('ONESIGNAL_APP_ID'),
+        target_channel: 'push',
+        headings: { en: dto.cabezal || 'Notificación' },
+        contents: { en: dto.mensaje },
+      };
+
+      if (dto.tipoCliente == 'Todos') {
+        data.included_segments = ['Subscribed Users'];
+      } else {
+        data.filters = [
+          {
+            field: 'tag',
+            key: 'tipoCliente',
+            relation: '=',
+            value: dto.tipoCliente,
+          },
+        ];
+      }
+
+      if (dto.fecha) {
+        const fechaUtc = new Date(dto.fecha).toISOString();
+        data.send_after = fechaUtc;
+      }
+      console.log(data);
+      const response = await axios.post(
+        `${this.configService.get<string>('BASE_URL_ONESIGNAL')}/notifications`,
+        data,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Basic ${this.configService.get<string>('ONESIGNAL_APP_KEY')}`,
+          },
+        },
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const message =
+          typeof error.response?.data === 'string'
+            ? error.response.data
+            : 'Error al enviar la notificación';
+
+        throw new BadRequestException(message);
+      }
+      throw error;
+    }
+  }
+
   async SuscribirDispositivo(
     notificacion: SuscripcionNotificacion,
   ): Promise<void> {
