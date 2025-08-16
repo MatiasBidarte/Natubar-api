@@ -4,35 +4,32 @@ export class ProductoDto {
   descripcion: string;
   precioPersonas: number;
   precioEmpresas: number;
-  stock: boolean;
   esCajaDeBarras: boolean;
   costoProduccion: number;
   urlImagen?: string;
-  peso?: number;
   cantidadDeBarras?: number;
+  estaActivo?: boolean;
   constructor(
     id: number,
     nombre: string,
     descripcion: string,
     precioPersonas: number,
     precioEmpresas: number,
-    stock: boolean,
     esCajaDeBarras: boolean,
     costoProduccion: number,
     urlImagen?: string,
-    peso?: number,
     cantidadDeBarras?: number,
+    estaActivo?: boolean,
   ) {
     this.id = id;
     this.nombre = nombre;
     this.descripcion = descripcion;
     this.precioPersonas = precioPersonas;
     this.precioEmpresas = precioEmpresas;
-    this.stock = stock;
     this.urlImagen = urlImagen;
     this.costoProduccion = costoProduccion;
-    this.peso = peso;
     this.esCajaDeBarras = esCajaDeBarras;
     this.cantidadDeBarras = cantidadDeBarras;
+    this.estaActivo = estaActivo;
   }
 }

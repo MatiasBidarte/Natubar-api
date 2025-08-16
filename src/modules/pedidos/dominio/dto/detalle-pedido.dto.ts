@@ -8,7 +8,6 @@ export class DetallePedidoDto {
   descripcion: string;
   precioPersonas: number;
   precioEmpresas: number;
-  stock: boolean;
   urlImagen?: string;
   peso?: number;
   esCajaDeBarras: boolean;
