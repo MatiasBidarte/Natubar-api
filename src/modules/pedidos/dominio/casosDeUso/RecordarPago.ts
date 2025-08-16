@@ -1,13 +1,12 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { PedidoRepository } from '../interfaces/repositorio/PedidoRepository';
 import { ApiRestPedidosRepository } from '../../infraestructura/ApiRestPedidosRepository';
-import { EstadosPedido } from '../../infraestructura/entities/pedido.entity';
 import { PedidoDto } from '../dto/pedido.dto';
 import { NotificacionesRepository } from 'src/modules/notificacion/dominio/interfaces/NotificacionesRepository';
 import { ApiRestNotificacionesRepository } from 'src/modules/notificacion/infraestructura/ApiRestNotificacionesRepository';
 
 @Injectable()
-export class ChangeEstado {
+export class RecordarPago {
   constructor(
     @Inject(forwardRef(() => ApiRestPedidosRepository))
     private readonly pedidoRepository: PedidoRepository,
@@ -15,14 +14,14 @@ export class ChangeEstado {
     private readonly notificacionesRepostory: NotificacionesRepository,
   ) {}
 
-  async ejecutar(id: number, estado: EstadosPedido): Promise<PedidoDto> {
-    const pedido = await this.pedidoRepository.changeEstado(id, estado);
+  async ejecutar(id: number): Promise<PedidoDto> {
+    const pedido = await this.pedidoRepository.findById(id);
 
     if (pedido.cliente && pedido.cliente.id !== undefined) {
       await this.notificacionesRepostory.MandarNotificacion(
         pedido.cliente.id,
-        'cambioEstado',
-        'El estado del pedido ha cambiado a ' + estado,
+        'Tus barritas están en pausa 😅',
+        `Parece que el pago no se completó. ¡Dales luz verde y llegan volando!`,
       );
     }
 

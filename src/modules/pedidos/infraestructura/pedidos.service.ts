@@ -42,6 +42,18 @@ export class PedidosService {
       },
     });
   }
+
+  findById(id: number): Promise<Pedido | null> {
+    return this.pedidoRepository.findOne({
+      where: { id: id },
+      relations: [
+        'productos',
+        'productos.productoSabores',
+        'productos.productoSabores.sabor',
+      ],
+    });
+  }
+
   async crearPedido(pedido: Pedido): Promise<Pedido> {
     const pedidoEntity = this.pedidoRepository.create(pedido);
     await this.pedidoRepository.save(pedidoEntity);
@@ -72,6 +84,15 @@ export class PedidosService {
       throw new Error('Pedido no encontrado');
     }
     pedido.estado = estado;
+    if (estado === EstadosPedido.entregado) {
+      pedido.fechaEntrega = new Date();
+    }
+    if (estado === EstadosPedido.enPreparacion) {
+      const hoy = new Date();
+      hoy.setDate(hoy.getDate() + 7);
+      pedido.fechaEntregaEstimada = hoy;
+    }
+
     return await this.pedidoRepository.save(pedido);
   }
 

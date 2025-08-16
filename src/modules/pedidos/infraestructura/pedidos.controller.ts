@@ -17,6 +17,7 @@ import { ICrearPreferencia } from './interfaces/ICrearPreferencia';
 import { ChangeEstado } from '../dominio/casosDeUso/ChangeEstado';
 import { ObtenerPedidos } from '../dominio/casosDeUso/ObtenerPedidos';
 import { ChangeEstadoPago } from '../dominio/casosDeUso/ChangeEstadoPago';
+import { RecordarPago } from '../dominio/casosDeUso/RecordarPago';
 
 export class WebhookDto {
   topic: 'payment' | 'merchant_order';
@@ -55,6 +56,7 @@ export class PedidosController {
     private readonly changeEstado: ChangeEstado,
     private readonly obtenerPedidos: ObtenerPedidos,
     private readonly changeEstadoPago: ChangeEstadoPago,
+    private readonly recordarPago: RecordarPago,
   ) {}
   @Get('pedidosPorEstado/:estadoRaw')
   async getPedidos(
