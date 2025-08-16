@@ -82,7 +82,7 @@ export class NotificacionService {
       };
 
       if (dto.tipoCliente == 'Todos') {
-        data.included_segments = ['Subscribed Users'];
+        data.included_segments = ['All'];
       } else {
         data.filters = [
           {

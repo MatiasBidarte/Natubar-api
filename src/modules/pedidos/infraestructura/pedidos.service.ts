@@ -112,6 +112,25 @@ export class PedidosService {
     return await this.pedidoRepository.save(pedido);
   }
 
+  async ingresarFechaUltimoRecordatorioPago(
+    id: number,
+    fecha: Date,
+  ): Promise<Pedido> {
+    const pedido = await this.pedidoRepository.findOne({
+      where: { id },
+      relations: [
+        'productos',
+        'productos.productoSabores',
+        'productos.productoSabores.sabor',
+      ],
+    });
+    if (!pedido) {
+      throw new Error('Pedido no encontrado');
+    }
+    pedido.ultimoRecordatorioPago = fecha;
+    return await this.pedidoRepository.save(pedido);
+  }
+
   async guardarDetallePedido(detalle: DetallePedido): Promise<DetallePedido> {
     return this.detallePedidoRepository.save(detalle);
   }
