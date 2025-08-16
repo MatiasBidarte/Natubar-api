@@ -9,11 +9,9 @@ export class ProductoMapper {
       producto.descripcion,
       producto.precioPersonas,
       producto.precioEmpresas,
-      producto.stock,
       producto.esCajaDeBarras,
       producto.costoProduccion,
       producto.urlImagen,
-      producto.peso,
       producto.cantidadDeBarras,
     );
   }
@@ -24,7 +22,6 @@ export class ProductoMapper {
       raw.descripcion,
       raw.precioPersonas,
       raw.precioEmpresas,
-      raw.stock,
       raw.urlImagen ?? '',
     );
     return producto;
@@ -37,7 +34,6 @@ export class ProductoMapper {
       descripcion: producto.descripcion,
       precioPersonas: producto.precioPersonas,
       precioEmpresas: producto.precioEmpresas,
-      stock: producto.stock,
       esCajaDeBarras: producto.esCajaDeBarras,
       cantidadDeBarras: producto.cantidadDeBarras,
     };
