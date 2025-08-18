@@ -1,12 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
-import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { DetallePedido } from 'src/modules/pedidos/infraestructura/entities/detalle-pedido.entity';
 
 @Entity({ name: 'productos' })
 export class Producto {
-  @PrimaryColumn()
-  @IsNotEmpty()
-  @IsNumber()
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
@@ -28,11 +26,6 @@ export class Producto {
   @IsNumber()
   precioEmpresas: number;
 
-  @Column()
-  @IsNotEmpty()
-  @IsBoolean()
-  stock: boolean;
-
   @Column({ nullable: true })
   esCajaDeBarras: boolean;
 
@@ -40,15 +33,15 @@ export class Producto {
   @IsNumber()
   cantidadDeBarras: number;
 
-  @Column({ nullable: true })
-  peso: number;
-
-  @Column({ nullable: true })
+  @Column()
   costoProduccion: number;
 
   @Column()
   @IsString()
   urlImagen?: string;
+
+  @Column({ default: true })
+  estaActivo: boolean;
 
   @OneToMany(() => DetallePedido, (detallePedido) => detallePedido.producto)
   productos: DetallePedido[];
@@ -59,7 +52,6 @@ export class Producto {
     descripcion: string,
     precioPersonas: number,
     precioEmpresas: number,
-    stock: boolean,
     urlImagen: string,
   ) {
     this.id = id;
@@ -67,7 +59,6 @@ export class Producto {
     this.descripcion = descripcion;
     this.precioPersonas = precioPersonas;
     this.precioEmpresas = precioEmpresas;
-    this.stock = stock;
     this.urlImagen = urlImagen;
   }
 }
