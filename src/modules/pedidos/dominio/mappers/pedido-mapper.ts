@@ -26,6 +26,7 @@ export class PedidoMapper {
       pedido.estadoPago,
       pedido.observaciones,
       ClienteMapper.toDto(pedido.cliente),
+      pedido.ultimoRecordatorioPago,
     );
 
     return pedidoDto;
@@ -39,6 +40,8 @@ export class PedidoMapper {
       raw.montoTotal,
       raw.descuento,
       undefined,
+      undefined,
+      raw.ultimoRecordatorioPago,
     );
     return pedido;
   }
@@ -53,6 +56,7 @@ export class PedidoMapper {
       undefined,
       cliente,
       raw.observaciones,
+      raw.ultimoRecordatorioPago,
     );
     pedido.estado = EstadosPedido.enPreparacion;
     return pedido;

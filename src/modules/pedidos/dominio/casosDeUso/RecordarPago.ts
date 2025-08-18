@@ -24,7 +24,8 @@ export class RecordarPago {
         `Parece que el pago no se completó. ¡Dales luz verde y llegan volando!`,
       );
     }
-
+    pedido.ultimoRecordatorioPago = new Date();
+    await this.pedidoRepository.ingresarFechaUltimoRecordatorioPago(pedido);
     return pedido;
   }
 }

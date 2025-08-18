@@ -49,6 +49,9 @@ export class Pedido {
   @Column({ nullable: true })
   observaciones: string;
 
+  @Column({ nullable: true })
+  ultimoRecordatorioPago: Date;
+
   @OneToMany(() => DetallePedido, (detallePedido) => detallePedido.pedido, {
     eager: true,
     cascade: true,
@@ -66,6 +69,7 @@ export class Pedido {
     descuento?: number,
     cliente?: Cliente,
     observaciones?: string,
+    ultimoRecordatorioPago?: Date,
   ) {
     if (id !== undefined) this.id = id;
     if (fechaEntrega !== undefined) this.fechaEntrega = fechaEntrega;
@@ -78,6 +82,8 @@ export class Pedido {
     this.estadoPago = EstadosPago.pendiente;
     this.fechaCreacion = new Date();
     if (observaciones !== undefined) this.observaciones = observaciones;
+    if (ultimoRecordatorioPago !== undefined)
+      this.ultimoRecordatorioPago = ultimoRecordatorioPago;
   }
 
   addDetallePedido(detallePedido: DetallePedido) {

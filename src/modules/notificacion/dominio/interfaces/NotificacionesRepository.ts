@@ -6,6 +6,12 @@ export interface NotificacionesRepository {
     cabezal: string,
     mensaje: string,
   ): Promise<void>;
+  MandarNotificacionIndividual(
+    cabezal: string,
+    mensaje: string,
+    tipoCliente: string,
+    fechaProgramada?: Date,
+  ): Promise<void>;
   SuscribirDispositivo(notificacion: SuscripcionNotificacion): Promise<void>;
   DesuscribirDispositivo(notificacion: SuscripcionNotificacion): Promise<void>;
   BuscarSuscripcionesDeCliente(
