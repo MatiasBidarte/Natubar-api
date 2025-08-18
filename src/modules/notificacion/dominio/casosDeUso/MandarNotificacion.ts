@@ -10,7 +10,6 @@ export class MandarNotificacion {
   ) {}
 
   async ejecutar(notificacion: NotificacionPushDto): Promise<void> {
-    console.log(notificacion);
     if (
       notificacion.tipoCliente != null &&
       notificacion.tipoCliente.length != 0

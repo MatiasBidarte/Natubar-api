@@ -98,7 +98,6 @@ export class NotificacionService {
         const fechaUtc = new Date(dto.fecha).toISOString();
         data.send_after = fechaUtc;
       }
-      console.log(data);
       const response = await axios.post(
         `${this.configService.get<string>('BASE_URL_ONESIGNAL')}/notifications`,
         data,
@@ -109,7 +108,6 @@ export class NotificacionService {
           },
         },
       );
-      console.log(response.data);
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
