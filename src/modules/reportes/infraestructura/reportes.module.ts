@@ -1,4 +1,3 @@
-// src/modules/reportes/infraestructura/reportes.module.ts
 import { Module } from '@nestjs/common';
 import { ReportesController } from './reportes.controller';
 import { GenerarReporteEntregas } from '../dominio/casosDeUso/GenerarReporteEntregas';

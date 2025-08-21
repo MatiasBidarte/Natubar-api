@@ -69,7 +69,7 @@ export class ApiRestReportesRepository implements ReporteRepository {
     const rowHeight = 25;
     const tablaAltura = datos.length * rowHeight + rowHeight; // altura de la tabla
     const espacioTitulos = 80; // espacio para títulos y separaciones
-    const espacioObservaciones = 60; // espacio para observaciones y monto
+    const espacioObservaciones = 60; // espacio para observaciones
     const espacioTotalNecesario =
       tablaAltura + espacioTitulos + espacioObservaciones;
 
