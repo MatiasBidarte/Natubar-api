@@ -13,4 +13,5 @@ export interface PedidoRepository {
   changeEstado(id: number, estado: EstadosPedido): Promise<PedidoDto>;
   changeEstadoPago(id: number, estado: EstadosPago): Promise<PedidoDto>;
   findById(id: number): Promise<PedidoDto>;
+  ingresarFechaUltimoRecordatorioPago(pedido: PedidoDto): Promise<PedidoDto>;
 }

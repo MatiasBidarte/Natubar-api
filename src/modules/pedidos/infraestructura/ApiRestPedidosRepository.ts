@@ -134,4 +134,18 @@ export class ApiRestPedidosRepository implements PedidoRepository {
     );
     return PedidoMapper.toDto(pedido);
   }
+
+  async ingresarFechaUltimoRecordatorioPago(
+    pedido: PedidoDto,
+  ): Promise<PedidoDto> {
+    if (pedido.id) {
+      const pedidoEditado: Pedido =
+        await this.contextPedido.ingresarFechaUltimoRecordatorioPago(
+          pedido.id,
+          pedido.ultimoRecordatorioPago,
+        );
+      return PedidoMapper.toDto(pedidoEditado);
+    }
+    throw new Error('No se encontro el pedido');
+  }
 }

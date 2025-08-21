@@ -24,6 +24,20 @@ export class ApiRestNotificacionesRepository
     });
   }
 
+  async MandarNotificacionIndividual(
+    cabezal: string,
+    mensaje: string,
+    tipoCliente: string,
+    fecha: Date | undefined,
+  ): Promise<void> {
+    await this.service.MandarNotificacionIndividual({
+      cabezal,
+      mensaje,
+      tipoCliente,
+      fecha,
+    });
+  }
+
   async SuscribirDispositivo(
     notificacion: SuscripcionNotificacion,
   ): Promise<void> {

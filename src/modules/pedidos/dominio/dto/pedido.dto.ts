@@ -23,6 +23,7 @@ export class PedidoDto {
   productos: DetallePedidoDto[];
   cliente?: ClienteDto;
   observaciones?: string;
+  ultimoRecordatorioPago: Date;
   constructor(
     id: number,
     fechaCreacion: Date,
@@ -35,6 +36,7 @@ export class PedidoDto {
     estadoPago: EstadosPago,
     observaciones?: string,
     cliente?: ClienteDto,
+    ultimoRecordatorioPago?: Date,
   ) {
     this.id = id;
     this.fechaCreacion = fechaCreacion;
@@ -47,5 +49,7 @@ export class PedidoDto {
     this.descuento = descuento;
     this.observaciones = observaciones;
     this.cliente = cliente;
+    if (ultimoRecordatorioPago !== undefined)
+      this.ultimoRecordatorioPago = ultimoRecordatorioPago;
   }
 }
