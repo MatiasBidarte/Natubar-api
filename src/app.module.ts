@@ -10,6 +10,7 @@ import { SaboresModule } from './modules/sabores/infraestructura/sabores.module'
 import { AuthModule } from 'src/auth/auth.module';
 import { PedidosModule } from './modules/pedidos/infraestructura/pedidos.module';
 import { NotificacionModule } from './modules/notificacion/infraestructura/notificacion.module';
+import { ReportesModule } from './modules/reportes/infraestructura/reportes.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { NotificacionModule } from './modules/notificacion/infraestructura/notif
         PedidosModule,
         ProductosModule,
         NotificacionModule,
+        ReportesModule,
       ],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
@@ -36,7 +38,7 @@ import { NotificacionModule } from './modules/notificacion/infraestructura/notif
         username: configService.get('PGUSER'),
         password: configService.get('PGPASSWORD'),
         entities: [join(process.cwd(), 'dist', '**', '*.entity{.ts,.js}')],
-        synchronize: /* configService.get('ENV') === 'dev' */ true,
+        synchronize: configService.get('ENV') === 'dev',
       }),
     }),
     SaboresModule,
