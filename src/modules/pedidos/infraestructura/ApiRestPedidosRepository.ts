@@ -116,11 +116,13 @@ export class ApiRestPedidosRepository implements PedidoRepository {
 
   async changeEstado(id: number, estado: EstadosPedido): Promise<PedidoDto> {
     const pedido: Pedido = await this.contextPedido.cambiarEstado(id, estado);
-    await this.notificacionesRepository.MandarNotificacion(
-      pedido.cliente.id,
-      'Hay novedades sobre tu pedido',
-      construirMensajeEstado(estado),
-    );
+    if (pedido.cliente && pedido.cliente.id !== undefined) {
+      await this.notificacionesRepository.MandarNotificacion(
+        pedido.cliente.id,
+        'Hay novedades sobre tu pedido',
+        construirMensajeEstado(estado),
+      );
+    }
     if (!pedido) {
       throw new NotFoundException(`Pedido con ID ${id} no encontrado`);
     }

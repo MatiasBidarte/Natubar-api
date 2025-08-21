@@ -18,14 +18,6 @@ export class ChangeEstado {
   async ejecutar(id: number, estado: EstadosPedido): Promise<PedidoDto> {
     const pedido = await this.pedidoRepository.changeEstado(id, estado);
 
-    if (pedido.cliente && pedido.cliente.id !== undefined) {
-      await this.notificacionesRepostory.MandarNotificacion(
-        pedido.cliente.id,
-        'cambioEstado',
-        'El estado del pedido ha cambiado a ' + estado,
-      );
-    }
-
     return pedido;
   }
 }
