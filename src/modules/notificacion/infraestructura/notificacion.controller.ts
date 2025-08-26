@@ -19,7 +19,7 @@ export class NotificacionController {
   public async suscribirDispositivo(
     @Body() notificacion: SuscripcionNotificacion,
   ): Promise<void> {
-    return await this.suscribir.ejecutar(notificacion);
+    await this.suscribir.ejecutar(notificacion);
   }
   @Post('desuscribirDispositivo')
   public async desuscribirDispositivo(
