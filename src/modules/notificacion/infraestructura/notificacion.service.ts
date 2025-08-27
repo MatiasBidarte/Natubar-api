@@ -104,7 +104,7 @@ export class NotificacionService {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Key ${this.configService.get<string>('ONESIGNAL_APP_KEY')}`,
+            Authorization: `Basic ${this.configService.get<string>('ONESIGNAL_APP_KEY')}`,
           },
         },
       );
