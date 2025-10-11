@@ -12,12 +12,16 @@ export class ProductosService {
   ) {}
 
   obtener(): Promise<Producto[]> {
-    return this.productoRepository.find({
-      where: { estaActivo: true },
-      order: {
-        esCajaDeBarras: 'DESC',
-      },
-    });
+    return this.productoRepository
+      .createQueryBuilder('producto')
+      .where('producto.estaActivo = :estaActivo', { estaActivo: true })
+      .orderBy('producto.esCajaDeBarras', 'DESC')
+      .addOrderBy(
+        `CASE WHEN LOWER(producto.nombre) LIKE '%barras%' THEN 0 ELSE 1 END`,
+        'ASC',
+      )
+      .addOrderBy('producto.nombre', 'ASC')
+      .getMany();
   }
 
   async findById(id: number): Promise<Producto | null> {
