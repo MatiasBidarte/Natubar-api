@@ -1,45 +1,23 @@
-import {
-  addDays,
-  setHours,
-  setMinutes,
-  setSeconds,
-  setMilliseconds,
-  isTuesday,
-  isThursday,
-  nextTuesday,
-  nextThursday,
-} from 'date-fns';
-import { toZonedTime } from 'date-fns-tz';
-
 export function obtenerProximoMartesoJueves(): Date {
+  const fechaActual = new Date();
   const timeZone = 'America/Montevideo';
-
-  const fechaUruguay = toZonedTime(new Date(), timeZone);
-
-  const proximoMartes = toZonedTime(
-    isTuesday(fechaUruguay)
-      ? addDays(nextTuesday(fechaUruguay), 7)
-      : nextTuesday(fechaUruguay),
-    timeZone,
+  const fechaUruguay = new Date(
+    fechaActual.toLocaleString('en-US', { timeZone }),
   );
 
-  const proximoJueves = toZonedTime(
-    isThursday(fechaUruguay)
-      ? addDays(nextThursday(fechaUruguay), 7)
-      : nextThursday(fechaUruguay),
-    timeZone,
-  );
+  const diaActual = fechaUruguay.getDay();
 
-  const fechaResultado =
-    proximoMartes < proximoJueves ? proximoMartes : proximoJueves;
+  let diasHastaMartes = (2 - diaActual + 7) % 7 || 7;
+  let diasHastaJueves = (4 - diaActual + 7) % 7 || 7;
 
-  const fechaFinal = toZonedTime(
-    setMilliseconds(
-      setSeconds(setMinutes(setHours(fechaResultado, 0), 0), 0),
-      0,
-    ),
-    timeZone,
-  );
+  if (diaActual === 2) diasHastaMartes = 7;
+  if (diaActual === 4) diasHastaJueves = 7;
 
-  return fechaFinal;
+  const diasParaAgregar = Math.min(diasHastaMartes, diasHastaJueves);
+
+  const fechaResultado = new Date(fechaUruguay);
+  fechaResultado.setDate(fechaUruguay.getDate() + diasParaAgregar);
+  fechaResultado.setHours(0, 0, 0, 0);
+
+  return fechaResultado;
 }
