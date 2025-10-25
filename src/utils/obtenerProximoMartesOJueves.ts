@@ -8,18 +8,24 @@ import {
   isThursday,
   nextTuesday,
   nextThursday,
+  addHours,
 } from 'date-fns';
-import { subHours } from 'date-fns';
 
-export function obtenerProximoMartesoJueves(fecha: Date = new Date()): Date {
-  const fechaLocal = subHours(fecha, 3);
+export function obtenerProximoMartesoJueves(): Date {
+  const fechaServidor = new Date();
 
-  const proximoMartes = isTuesday(fechaLocal)
-    ? addDays(nextTuesday(fechaLocal), 7)
-    : nextTuesday(fechaLocal);
-  const proximoJueves = isThursday(fechaLocal)
-    ? addDays(nextThursday(fechaLocal), 7)
-    : nextThursday(fechaLocal);
+  const offsetUruguay = -3; // UTC-3
+  const offsetET = fechaServidor.getTimezoneOffset() / 60; // Obtiene offset del servidor
+  const diferenciaHoras = offsetUruguay - offsetET;
+  const fechaUruguay = addHours(fechaServidor, diferenciaHoras);
+
+  const proximoMartes = isTuesday(fechaUruguay)
+    ? addDays(nextTuesday(fechaUruguay), 7)
+    : nextTuesday(fechaUruguay);
+
+  const proximoJueves = isThursday(fechaUruguay)
+    ? addDays(nextThursday(fechaUruguay), 7)
+    : nextThursday(fechaUruguay);
 
   const fechaResultado =
     proximoMartes < proximoJueves ? proximoMartes : proximoJueves;
