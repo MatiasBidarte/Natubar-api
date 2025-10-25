@@ -1,41 +1,19 @@
 export function obtenerProximoMartesoJueves(fecha: Date = new Date()): Date {
-  const hoy = fecha.getDay();
-  const martes = 2;
-  const miercoles = 3;
-  const jueves = 4;
-  const viernes = 5;
-  const sabado = 6;
-  const domingo = 0;
-  const lunes = 1;
+  const fechaLocal = new Date(fecha.getTime() - 3 * 60 * 60 * 1000);
+  const diaSemana = fechaLocal.getDay();
 
-  let diasParaAgregar = 0;
+  const diasHastaMartes = (2 - diaSemana + 7) % 7 || 7;
+  const diasHastaJueves = (4 - diaSemana + 7) % 7 || 7;
 
-  switch (hoy) {
-    case martes:
-      diasParaAgregar = 2;
-      break;
-    case miercoles:
-      diasParaAgregar = 1;
-      break;
-    case jueves:
-      diasParaAgregar = 5;
-      break;
-    case viernes:
-      diasParaAgregar = 4;
-      break;
-    case sabado:
-      diasParaAgregar = 3;
-      break;
-    case domingo:
-      diasParaAgregar = 2;
-      break;
-    case lunes:
-      diasParaAgregar = 1;
-      break;
-  }
+  const diasParaAgregar = Math.min(diasHastaMartes, diasHastaJueves);
 
-  const proximaFecha = new Date(fecha);
-  proximaFecha.setDate(fecha.getDate() + diasParaAgregar);
-
-  return proximaFecha;
+  return new Date(
+    fechaLocal.getFullYear(),
+    fechaLocal.getMonth(),
+    fechaLocal.getDate() + diasParaAgregar,
+    0,
+    0,
+    0,
+    0,
+  );
 }
