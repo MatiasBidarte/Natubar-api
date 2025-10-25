@@ -8,30 +8,38 @@ import {
   isThursday,
   nextTuesday,
   nextThursday,
-  addHours,
 } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 
 export function obtenerProximoMartesoJueves(): Date {
-  const fechaServidor = new Date();
+  const timeZone = 'America/Montevideo';
 
-  const offsetUruguay = -3; // UTC-3
-  const offsetET = fechaServidor.getTimezoneOffset() / 60; // Obtiene offset del servidor
-  const diferenciaHoras = offsetUruguay - offsetET;
-  const fechaUruguay = addHours(fechaServidor, diferenciaHoras);
+  const fechaUruguay = toZonedTime(new Date(), timeZone);
 
-  const proximoMartes = isTuesday(fechaUruguay)
-    ? addDays(nextTuesday(fechaUruguay), 7)
-    : nextTuesday(fechaUruguay);
+  const proximoMartes = toZonedTime(
+    isTuesday(fechaUruguay)
+      ? addDays(nextTuesday(fechaUruguay), 7)
+      : nextTuesday(fechaUruguay),
+    timeZone,
+  );
 
-  const proximoJueves = isThursday(fechaUruguay)
-    ? addDays(nextThursday(fechaUruguay), 7)
-    : nextThursday(fechaUruguay);
+  const proximoJueves = toZonedTime(
+    isThursday(fechaUruguay)
+      ? addDays(nextThursday(fechaUruguay), 7)
+      : nextThursday(fechaUruguay),
+    timeZone,
+  );
 
   const fechaResultado =
     proximoMartes < proximoJueves ? proximoMartes : proximoJueves;
 
-  return setMilliseconds(
-    setSeconds(setMinutes(setHours(fechaResultado, 0), 0), 0),
-    0,
+  const fechaFinal = toZonedTime(
+    setMilliseconds(
+      setSeconds(setMinutes(setHours(fechaResultado, 0), 0), 0),
+      0,
+    ),
+    timeZone,
   );
+
+  return fechaFinal;
 }
