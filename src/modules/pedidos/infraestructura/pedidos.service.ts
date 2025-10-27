@@ -56,7 +56,6 @@ export class PedidosService {
 
   async crearPedido(pedido: Pedido): Promise<Pedido> {
     const pedidoEntity = this.pedidoRepository.create(pedido);
-    console.log('pedido entity', pedidoEntity);
     await this.pedidoRepository.save(pedidoEntity);
     return pedidoEntity;
   }
