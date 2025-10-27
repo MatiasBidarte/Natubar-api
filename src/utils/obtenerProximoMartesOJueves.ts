@@ -36,21 +36,15 @@ export function obtenerProximoMartesoJueves(): Date {
     diasParaAgregar,
   );
 
-  // Crear nueva fecha resultado
-  const fechaResultado = new Date(
-    fechaUruguay.getFullYear(),
-    fechaUruguay.getMonth(),
-    fechaUruguay.getDate() + diasParaAgregar,
-    0,
-    0,
-    0,
-    0,
-  );
+  // Crear fecha resultado usando formato ISO y zona horaria específica
+  const fechaBase = new Date(fechaUruguay);
+  fechaBase.setDate(fechaBase.getDate() + diasParaAgregar);
 
-  // Asegurar que la fecha esté en zona horaria de Uruguay
-  const fechaFinal = new Date(
-    fechaResultado.toLocaleString('en-US', { timeZone }),
-  );
+  // Formar string de fecha en formato ISO con hora 00:00:00
+  const fechaStr = `${fechaBase.getFullYear()}-${String(fechaBase.getMonth() + 1).padStart(2, '0')}-${String(fechaBase.getDate()).padStart(2, '0')}T00:00:00`;
+
+  // Crear fecha final usando el string ISO y asegurando zona horaria
+  const fechaFinal = new Date(fechaStr);
 
   console.log(
     '7. Fecha resultado:',
