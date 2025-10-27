@@ -36,15 +36,27 @@ export function obtenerProximoMartesoJueves(): Date {
     diasParaAgregar,
   );
 
-  const fechaResultado = new Date(fechaUruguay);
-  fechaResultado.setDate(fechaUruguay.getDate() + diasParaAgregar);
-  fechaResultado.setHours(0, 0, 0, 0);
+  // Crear nueva fecha resultado
+  const fechaResultado = new Date(
+    fechaUruguay.getFullYear(),
+    fechaUruguay.getMonth(),
+    fechaUruguay.getDate() + diasParaAgregar,
+    0,
+    0,
+    0,
+    0,
+  );
+
+  // Asegurar que la fecha esté en zona horaria de Uruguay
+  const fechaFinal = new Date(
+    fechaResultado.toLocaleString('en-US', { timeZone }),
+  );
 
   console.log(
     '7. Fecha resultado:',
-    fechaResultado.toLocaleString('es-UY', { timeZone }),
+    fechaFinal.toLocaleString('es-UY', { timeZone }),
   );
   console.log('--- Fin cálculo próxima fecha ---');
 
-  return fechaResultado;
+  return fechaFinal;
 }
