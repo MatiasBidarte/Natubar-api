@@ -61,6 +61,7 @@ export class ApiRestPedidosRepository implements PedidoRepository {
       throw new NotFoundException('Cliente no encontrado');
     }
     const pedido = PedidoMapper.createFromDto(pedidoDto, cliente);
+    console.log('pedido en repository', pedido);
 
     if (!pedidoDto.productos || pedidoDto.productos.length === 0) {
       throw new BadRequestException(

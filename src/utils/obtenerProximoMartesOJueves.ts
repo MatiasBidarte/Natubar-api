@@ -48,7 +48,7 @@ export function obtenerProximoMartesoJueves(): Date {
       fechaUruguay.getFullYear(),
       fechaUruguay.getMonth(),
       fechaUruguay.getDate() + diasParaAgregar,
-      0,
+      12,
       0,
       0,
       0,
