@@ -6,12 +6,18 @@ export function obtenerProximoMartesoJueves(): Date {
 
   const timeZone = 'America/Montevideo';
   const fechaUruguay = new Date(
-    fechaActual.toLocaleString('en-US', { timeZone }),
+    new Date().toLocaleString('en-US', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    }),
   );
-  console.log(
-    '2. Fecha en Uruguay:',
-    fechaUruguay.toLocaleString('es-UY', { timeZone }),
-  );
+  console.log('2. Fecha en Uruguay:', fechaUruguay);
 
   const diaActual = fechaUruguay.getDay();
   console.log('3. Día actual (0=domingo, 1=lunes, ..., 6=sábado):', diaActual);
@@ -36,21 +42,21 @@ export function obtenerProximoMartesoJueves(): Date {
     diasParaAgregar,
   );
 
-  // Crear fecha resultado usando formato ISO y zona horaria específica
-  const fechaBase = new Date(fechaUruguay);
-  fechaBase.setDate(fechaBase.getDate() + diasParaAgregar);
-
-  // Formar string de fecha en formato ISO con hora 00:00:00
-  const fechaStr = `${fechaBase.getFullYear()}-${String(fechaBase.getMonth() + 1).padStart(2, '0')}-${String(fechaBase.getDate()).padStart(2, '0')}T00:00:00`;
-
-  // Crear fecha final usando el string ISO y asegurando zona horaria
-  const fechaFinal = new Date(fechaStr);
-
-  console.log(
-    '7. Fecha resultado:',
-    fechaFinal.toLocaleString('es-UY', { timeZone }),
+  // Crear nueva fecha resultado usando UTC para evitar problemas de zona horaria
+  const fechaResultado = new Date(
+    Date.UTC(
+      fechaUruguay.getFullYear(),
+      fechaUruguay.getMonth(),
+      fechaUruguay.getDate() + diasParaAgregar,
+      0,
+      0,
+      0,
+      0,
+    ),
   );
+
+  console.log('7. Fecha resultado:', fechaResultado);
   console.log('--- Fin cálculo próxima fecha ---');
 
-  return fechaFinal;
+  return fechaResultado;
 }
