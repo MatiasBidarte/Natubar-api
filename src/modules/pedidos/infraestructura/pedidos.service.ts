@@ -60,6 +60,10 @@ export class PedidosService {
     return pedidoEntity;
   }
 
+  async eliminarPedido(id: number): Promise<void> {
+    await this.pedidoRepository.delete(id);
+  }
+
   async confirmarPedido(pedidoId: string): Promise<Pedido> {
     const pedido = await this.pedidoRepository.findOneBy({
       id: Number(pedidoId),

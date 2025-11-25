@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   InternalServerErrorException,
   Param,
@@ -17,7 +18,7 @@ import { ICrearPreferencia } from './interfaces/ICrearPreferencia';
 import { ChangeEstado } from '../dominio/casosDeUso/ChangeEstado';
 import { ObtenerPedidos } from '../dominio/casosDeUso/ObtenerPedidos';
 import { ChangeEstadoPago } from '../dominio/casosDeUso/ChangeEstadoPago';
-import { RecordarPago } from '../dominio/casosDeUso/RecordarPago';
+import { EliminarPedido } from '../dominio/casosDeUso/EliminarPedido';
 
 export class WebhookDto {
   topic: 'payment' | 'merchant_order';
@@ -56,7 +57,7 @@ export class PedidosController {
     private readonly changeEstado: ChangeEstado,
     private readonly obtenerPedidos: ObtenerPedidos,
     private readonly changeEstadoPago: ChangeEstadoPago,
-    private readonly recordarPago: RecordarPago,
+    private readonly eliminarPedidoCU: EliminarPedido,
   ) {}
   @Get('pedidosPorEstado/:estadoRaw')
   async getPedidos(
@@ -78,6 +79,11 @@ export class PedidosController {
   @Post()
   async crearPedido(@Body() body: PedidoDto): Promise<{ id: number }> {
     return await this.crear.ejecutar(body);
+  }
+
+  @Delete(':id')
+  async eliminarPedido(@Param('id') id: number) {
+    await this.eliminarPedidoCU.ejecutar(id);
   }
 
   @Post('crear-preferencia')
