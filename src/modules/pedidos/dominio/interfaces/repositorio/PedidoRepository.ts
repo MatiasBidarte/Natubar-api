@@ -8,6 +8,7 @@ import { PedidoDto } from '../../dto/pedido.dto';
 export interface PedidoRepository {
   obtenerTodos(): Promise<PedidoDto[]>;
   crearPedido(pedido: PedidoDto);
+  eliminarPedido(id: number): Promise<void>;
   confirmarPedido(pedidoId: string): Promise<Pedido>;
   getByEstado(estado: EstadosPedido): Promise<PedidoDto[]>;
   changeEstado(id: number, estado: EstadosPedido): Promise<PedidoDto>;

@@ -20,6 +20,7 @@ import { ObtenerPedidos } from '../dominio/casosDeUso/ObtenerPedidos';
 import { ChangeEstadoPago } from '../dominio/casosDeUso/ChangeEstadoPago';
 import { NotificacionModule } from 'src/modules/notificacion/infraestructura/notificacion.module';
 import { RecordarPago } from '../dominio/casosDeUso/RecordarPago';
+import { EliminarPedido } from '../dominio/casosDeUso/EliminarPedido';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { RecordarPago } from '../dominio/casosDeUso/RecordarPago';
     ObtenerPedidos,
     ChangeEstadoPago,
     RecordarPago,
+    EliminarPedido,
   ],
   exports: [
     PedidosService,
@@ -59,6 +61,7 @@ import { RecordarPago } from '../dominio/casosDeUso/RecordarPago';
     ChangeEstado,
     ChangeEstadoPago,
     RecordarPago,
+    EliminarPedido,
   ],
 })
 export class PedidosModule {}

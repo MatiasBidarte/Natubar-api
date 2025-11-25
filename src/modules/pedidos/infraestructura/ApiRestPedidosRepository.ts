@@ -34,6 +34,11 @@ export class ApiRestPedidosRepository implements PedidoRepository {
     @Inject(forwardRef(() => ApiRestNotificacionesRepository))
     private readonly notificacionesRepository: ApiRestNotificacionesRepository,
   ) {}
+
+  async eliminarPedido(id: number): Promise<void> {
+    await this.contextPedido.eliminarPedido(id);
+  }
+
   async getByEstado(estado: EstadosPedido): Promise<PedidoDto[]> {
     const pedidos = await this.contextPedido.getByEstado(estado);
     return pedidos.map((pedido) => PedidoMapper.toDto(pedido));
