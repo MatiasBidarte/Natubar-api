@@ -38,7 +38,7 @@ export class ClienteController {
   ) {}
 
   @Get()
-  @UseGuards(JwtAdminGuard)
+  //@UseGuards(JwtAdminGuard)
   async getAll() {
     try {
       const clientes = await this.obtenerTodos.ejecutar();
